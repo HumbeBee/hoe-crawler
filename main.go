@@ -3,30 +3,33 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/chromedp/chromedp"
+	"github.com/haovoanh28/gai-webscraper/gaito"
 )
 
 func main() {
-	url := "https://www.gaito.mom/gai-goi/khu-vuc/H%E1%BB%93%20Ch%C3%AD%20Minh/Qu%E1%BA%ADn%207"
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
-	var htmlContents []string
-
-	err := chromedp.Run(ctx,
-		chromedp.Navigate(url),
-		chromedp.WaitVisible(`div[ng-repeat="item in products"]`, chromedp.ByQueryAll),
-		// chromedp.Sleep(2*time.Second),
-		chromedp.Evaluate(`Array.from(document.querySelectorAll('div[ng-repeat="item in products"]')).map(e => e.outerHTML)`, &htmlContents),
-	)
+	// itemThreshold := 100
+	urlList, err := gaito.ProcessListPage(ctx)
 
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
-	for _, content := range htmlContents {
-		fmt.Println(content)
+	for _, url := range urlList {
+		// gaito.ProcessDetailPage(ctx, url)
+		fmt.Println(url)
 	}
+
+	// From now, just process the first page to make it works first
+	hoe, err := gaito.ProcessDetailPage(ctx, urlList[0])
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%+v", hoe)
 }
