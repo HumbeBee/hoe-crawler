@@ -1,54 +1,102 @@
 package gaito
 
 import (
-	"context"
 	"fmt"
-	"strconv"
+	"strings"
 	"time"
 
-	"github.com/chromedp/chromedp"
-	"github.com/haovoanh28/gai-webscraper/models"
+	"github.com/haovoanh28/gai-webscraper/internal/hoe"
 	"github.com/haovoanh28/gai-webscraper/utils"
+
+	"github.com/go-rod/rod"
 )
 
-func ProcessDetailPage(ctx context.Context, detailUrl string) (models.Hoe, error) {
+func ProcessDetailUrl(url string) *hoe.Hoe {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Printf("Error processing detail URL %s: %v\n", url, err)
+		}
+	}()
+
+	result := ProcessDetailPage(url)
+	return &result
+}
+
+func ProcessDetailPage(detailUrl string) hoe.Hoe {
 	url := BaseUrl + detailUrl
 
-	id, err := strconv.Atoi(utils.GetHoeIDFromUrl(detailUrl))
-	if err != nil {
-		id = -1
+	id := utils.GetIDFromUrl(detailUrl)
+
+	// Wait until content element is visible
+	page := rod.New().MustConnect().MustPage(url)
+	containerElement := page.MustElement(`.container.seduction-container .ow_page_container`).MustWaitVisible()
+	detailInfoElement := page.MustElement(`.tab-content`).MustWaitVisible()
+
+	var mainInfo hoe.HoeMainInfo
+	mainInfo.Name = utils.GetElementsText(containerElement, `body > div.container.seduction-container > div.knn_page_wrap > div.ow_page_padding > div > div > div > div > div > div:nth-child(3) > div > h1`, "name")
+	mainInfo.ImageUrl = utils.GetElementAttribute(containerElement, `body > div.container.seduction-container > div.knn_page_wrap > div.ow_page_padding > div > div > div > div > div > div:nth-child(3) > div > div:nth-child(3) > div > div > div > div.tab-pane.ng-scope.active > div.jumbotron.ng-scope > div > div.col-md-3.col-sm-4.media.escort_item_wrap > div > image-placeholder > img`, "src", "image_url")
+	// Ex: "300 k" => "300k"
+	price := utils.GetElementText(detailInfoElement, `.jumbotron .fa.fa-money + span`, "price")
+	mainInfo.Price = strings.ReplaceAll(price, "\u00A0", "")
+	// Ex: "0123.456.789" -> "0123456789"
+	phone := utils.GetElementText(detailInfoElement, `.jumbotron .fa.fa-phone + a`, "phone")
+	mainInfo.Phone = strings.ReplaceAll(phone, ".", "")
+	mainInfo.Address = utils.GetElementText(detailInfoElement, `.jumbotron .fa.fa-map-marker + a`, "address")
+	mainInfo.Author = utils.GetElementText(detailInfoElement, `.jumbotron .fa.fa-user + a`, "author")
+	mainInfo.Status = utils.GetElementText(detailInfoElement, `.jumbotron .fa.fa-file-o + span`, "status")
+
+	var detailInfo hoe.HoeDetailInfo
+	detailInfoElement = page.MustElement(`product-attribute .table-responsive`).MustWaitVisible()
+	time.Sleep(2 * time.Second)
+	detailInfo.BirthYear = utils.GetElementText(detailInfoElement, `body > div.container.seduction-container > div.knn_page_wrap > div.ow_page_padding > div > div > div > div > div > div:nth-child(3) > div > div:nth-child(3) > div > div > div > div.tab-pane.ng-scope.active > div:nth-child(2) > product-attribute > div > div > div > table > tbody > tr:nth-child(3) > td:nth-child(2) > attribute-dob-box > div > div`, "birth_year")
+	detailInfo.Height = utils.GetElementText(detailInfoElement, `product-attribute table > tbody > tr:nth-child(4) > td:nth-child(2) > attribute-number-box .ng-scope`, "height") + "cm"
+	detailInfo.Weight = utils.GetElementText(detailInfoElement, `product-attribute table > tbody > tr:nth-child(5) > td:nth-child(2) > attribute-number-box .ng-scope`, "weight") + "kg"
+	detailInfo.From = utils.GetElementsText(detailInfoElement, `product-attribute table > tbody > tr:nth-child(9) > td:nth-child(2) > attribute-radio-box span span[ng-repeat="item in attributeDto.settings.values"]`, "from")
+	detailInfo.Service = utils.GetElementsText(detailInfoElement, `product-attribute table > tbody > tr:nth-child(12) > td:nth-child(2) > attribute-choices-box span span[ng-repeat="item in attributeDto.settings.values"]`, "service")
+	detailInfo.Duration = utils.GetElementText(detailInfoElement, `product-attribute table > tbody > tr:nth-child(15) > td:nth-child(2) > attribute-text-box span`, "duration")
+	detailInfo.WorkTime = utils.GetElementText(detailInfoElement, `product-attribute table > tbody > tr:nth-child(16) > td:nth-child(2) > attribute-text-box span`, "work_time")
+
+	// Get report urls
+	var reportUrls []string
+	page.MustElement(`li[index="2"] a.nav-link`).MustClick().MustWaitLoad()
+	time.Sleep(1 * time.Second)
+	reportTabElement := page.MustElement(`product-review[ng-if="reviewTabLoaded"]`)
+
+	for {
+		reportElements, err := reportTabElement.Elements(`div[ng-repeat="review in reviews"]`)
+		if err != nil {
+			panic(err)
+		}
+		if len(reportElements) == 0 && len(reportUrls) == 0 {
+			continue
+			// panic(fmt.Errorf("empty reportElements ?: %v", err))
+		}
+
+		for _, reportElement := range reportElements {
+			btnElement, err := reportElement.Element(`a.view_more_report`)
+			if err != nil {
+				panic(fmt.Errorf("failed to get view_more_report: %v", err))
+			}
+
+			reportUrl, err := btnElement.Attribute("href")
+			if err != nil {
+				panic(fmt.Errorf("failed to get reportUrl: %v", err))
+			}
+			reportUrls = append(reportUrls, *reportUrl)
+		}
+
+		if len(reportUrls) == 0 {
+			break
+		}
+
+		goNextPageBtn, err := page.Timeout(1 * time.Second).Element(`product-review li.pagination-next:not(.disabled) a[ng-click]`)
+		if err != nil {
+			break
+		} else {
+			goNextPageBtn.MustClick().MustWaitLoad().CancelTimeout()
+			time.Sleep(1 * time.Second)
+		}
 	}
 
-	var mainInfo models.HoeMainInfo
-	var detailInfo models.HoeDetailInfo
-
-	err = chromedp.Run(ctx, chromedp.Navigate(url),
-		chromedp.WaitVisible(".tab-content"),
-		// Get main information
-		chromedp.Evaluate(`document.querySelector('.jumbotron .fa.fa-money + span')?.textContent?.replace(/\s+/g, '')`, &mainInfo.Price),
-		chromedp.Evaluate(`document.querySelector('.jumbotron .fa.fa-phone + a')?.textContent?.split(".")?.join("").trim()`, &mainInfo.Phone),
-		chromedp.Evaluate(`document.querySelector('.jumbotron .fa.fa-map-marker + a')?.textContent?.trim()`, &mainInfo.Address),
-		chromedp.Evaluate(`document.querySelector('.jumbotron .fa.fa-user + a')?.textContent?.trim()`, &mainInfo.Author),
-		chromedp.Evaluate(`document.querySelector('.jumbotron .fa.fa-file-o + span')?.textContent?.trim()`, &mainInfo.Status),
-
-		// Get detail information
-		chromedp.WaitVisible("product-attribute .table-responsive"),
-		chromedp.Sleep(2*time.Second),
-		chromedp.Evaluate(`document.querySelector('product-attribute table > tbody > tr:nth-child(3) > td:nth-child(2) > attribute-dob-box .ng-scope')?.textContent?.trim()`, &detailInfo.BirthYear),
-		chromedp.Evaluate(`document.querySelector('product-attribute table > tbody > tr:nth-child(4) > td:nth-child(2) > attribute-number-box .ng-scope')?.textContent?.trim()`, &detailInfo.Height),
-		chromedp.Evaluate(`document.querySelector('product-attribute table > tbody > tr:nth-child(5) > td:nth-child(2) > attribute-number-box .ng-scope')?.textContent?.trim()`, &detailInfo.Weight),
-		chromedp.Evaluate(`Array.from(document.querySelectorAll('product-attribute table > tbody > tr:nth-child(9) > td:nth-child(2) > attribute-radio-box span span[ng-repeat="item in attributeDto.settings.values"]')).map(item => { const text = item.querySelector('.ng-scope')?.textContent; if (text) { return text.trim(); } return ''; }).filter(Boolean).join(",")`, &detailInfo.From),
-		chromedp.Evaluate(`Array.from(document.querySelectorAll('product-attribute table > tbody > tr:nth-child(12) > td:nth-child(2) > attribute-choices-box span span[ng-repeat="item in attributeDto.settings.values"]')).map(item => { const text = item.querySelector('.ng-scope')?.textContent; if (text) { return text.trim(); } return ''; }).filter(Boolean).join(',')`, &detailInfo.Service),
-		chromedp.Evaluate(`document.querySelector('product-attribute table > tbody > tr:nth-child(15) > td:nth-child(2) > attribute-text-box span').textContent.trim()`, &detailInfo.Duration),
-		chromedp.Evaluate(`document.querySelector('product-attribute table > tbody > tr:nth-child(16) > td:nth-child(2) > attribute-text-box span').textContent.trim()`, &detailInfo.WorkTime),
-	)
-
-	if err != nil {
-		return models.Hoe{}, err
-	}
-
-	fmt.Printf("mainInfo: %+v \n", mainInfo)
-	fmt.Printf("detail info: %+v \n", detailInfo)
-
-	return models.Hoe{ID: id, Url: url, MainInfo: &mainInfo, DetailInfo: &detailInfo}, nil
+	return hoe.Hoe{ID: id, Url: url, MainInfo: &mainInfo, DetailInfo: &detailInfo, ReportURLs: reportUrls}
 }

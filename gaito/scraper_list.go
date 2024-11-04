@@ -1,31 +1,47 @@
 package gaito
 
 import (
-	"context"
 	"fmt"
+	"time"
 
-	"github.com/chromedp/cdproto/runtime"
-	"github.com/chromedp/chromedp"
+	"github.com/go-rod/rod"
 )
 
-var BaseUrl = "https://www.gaito.mom"
+var BaseUrl = "https://www.gaito.love"
 
-func ProcessListPage(ctx context.Context) ([]string, error) {
-	url := BaseUrl + "/gai-goi/khu-vuc/H%E1%BB%93%20Ch%C3%AD%20Minh/Qu%E1%BA%ADn%207"
+func ProcessListPage() []string {
+	url := BaseUrl + "/gai-goi/khu-vuc/Hồ%20Chí%20Minh/Quận%207"
 	var urlList []string
 
-	itemThreshold := 20
-	evaluateScript := fmt.Sprintf(`new Promise((resolve, reject) => { const processItems = (items) => { return Array.from(items).map( (item) => item.querySelector(".thumbnail a").getAttribute("href") || "" ); }; const checkAndLoad = () => { const items = document.querySelectorAll( 'div[ng-repeat="item in products"]' ); if (items.length > %v) { resolve(processItems(items)); return; } const loadMoreButton = document.querySelector( "body > div.container.seduction-container > div.knn_page_wrap > div.ow_page_padding > div > div > div > div > div > div:nth-child(3) > div:nth-child(4) > div > button" ); if (loadMoreButton) { loadMoreButton.click(); setTimeout(checkAndLoad, 2000); } else { resolve(processItems(items)); } }; checkAndLoad(); });`, itemThreshold)
-	err := chromedp.Run(ctx, chromedp.Navigate(url),
-		chromedp.WaitVisible(`div[ng-repeat="item in products"]`, chromedp.ByQueryAll),
-		chromedp.Evaluate(evaluateScript, &urlList, func(p *runtime.EvaluateParams) *runtime.EvaluateParams {
-			return p.WithAwaitPromise(true)
-		}),
-	)
+	itemThreshold := 30
 
-	if err != nil {
-		return nil, err
+	page := rod.New().Timeout(30 * time.Second).MustConnect().MustPage(url).MustWaitStable()
+	defer page.Close()
+	itemsQuery := `div[ng-repeat="item in products"]`
+
+	fmt.Println("Loading...", page.MustInfo())
+
+	for {
+		items := page.MustElements(itemsQuery)
+		currentLength := len(items)
+
+		// currentLength >= itemThreshold: enough items
+		// currentLength == 0: for some reason, the query doesn't return any items (Ex: Cloudflare, ...)
+		if currentLength >= itemThreshold || currentLength == 0 {
+			break
+		}
+
+		loadMoreBtn := page.MustElement(`body > div.container.seduction-container > div.knn_page_wrap > div.ow_page_padding > div > div > div > div > div > div:nth-child(3) > div:nth-child(4) > div > button`)
+		loadMoreBtn.MustClick()
+
+		page.MustWaitElementsMoreThan(itemsQuery, currentLength)
 	}
 
-	return urlList, nil
+	elements := page.MustElements(itemsQuery)
+	fmt.Println("Found", len(elements), "items")
+	for _, elem := range elements {
+		urlList = append(urlList, *elem.MustElement(".thumbnail a").MustAttribute("href"))
+	}
+
+	return urlList
 }

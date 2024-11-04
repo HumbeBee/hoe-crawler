@@ -1,35 +1,72 @@
 package main
 
 import (
-	"context"
 	"fmt"
+	"sync"
 
-	"github.com/chromedp/chromedp"
 	"github.com/haovoanh28/gai-webscraper/gaito"
+	"github.com/haovoanh28/gai-webscraper/internal/hoe"
+	"github.com/haovoanh28/gai-webscraper/utils"
 )
 
 func main() {
-	ctx, cancel := chromedp.NewContext(context.Background())
-	defer cancel()
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(err)
+		}
+	}()
 
-	// itemThreshold := 100
-	urlList, err := gaito.ProcessListPage(ctx)
+	urlList := gaito.ProcessListPage()
 
-	if err != nil {
-		panic(err)
+	rateLimiter := utils.NewRateLimiter(1.0)
+	urlChan := make(chan string, len(urlList))
+	resultChan := make(chan hoe.Hoe, len(urlList))
+	var wg sync.WaitGroup
+
+	numWorkers := 2
+	for i := 0; i < numWorkers; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for url := range urlChan {
+				// Wait for rate limiter before making request
+				rateLimiter.Wait()
+
+				if result := gaito.ProcessDetailUrl(url); result != nil {
+					fmt.Println("Processed", url)
+					resultChan <- *result
+				}
+			}
+		}()
 	}
 
-	for _, url := range urlList {
-		// gaito.ProcessDetailPage(ctx, url)
-		fmt.Println(url)
+	go func() {
+		wg.Wait()
+		close(resultChan)
+	}()
+
+	// Test for first 4 item
+	for i := 0; i < 30; i++ {
+		urlChan <- urlList[i]
+	}
+	close(urlChan)
+
+	var results []hoe.Hoe
+	for result := range resultChan {
+		results = append(results, result)
 	}
 
-	// From now, just process the first page to make it works first
-	hoe, err := gaito.ProcessDetailPage(ctx, urlList[0])
-
-	if err != nil {
-		panic(err)
+	for _, result := range results {
+		result.Print()
 	}
 
-	fmt.Printf("%+v", hoe)
+	// if len(hoe.ReportURLs) > 0 {
+	// 	urlChans := make(chan string, len(hoe.ReportURLs))
+
+	// 	for _, reportUrl := range hoe.ReportURLs {
+	// 		urlChans <- reportUrl
+	// 		// reportDetail := gaito.ProcessReportPage(reportUrl)
+	// 	}
+	// 	close(urlChans)
+	// }
 }
