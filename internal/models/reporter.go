@@ -1,4 +1,4 @@
-package reporter
+package models
 
 type Reporter struct {
 	ID   string `json:"id"`

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/haovoanh28/gai-webscraper/gaito"
-	"github.com/haovoanh28/gai-webscraper/internal/hoe"
-	"github.com/haovoanh28/gai-webscraper/utils"
+	"github.com/haovoanh28/gai-webscraper/internal/models"
+	"github.com/haovoanh28/gai-webscraper/internal/sites/gaito"
+	"github.com/haovoanh28/gai-webscraper/internal/utils/browser"
 )
 
 func main() {
@@ -18,9 +18,9 @@ func main() {
 
 	urlList := gaito.ProcessListPage()
 
-	rateLimiter := utils.NewRateLimiter(1.0)
+	rateLimiter := browser.NewRateLimiter(1.0)
 	urlChan := make(chan string, len(urlList))
-	resultChan := make(chan hoe.Hoe, len(urlList))
+	resultChan := make(chan models.HoeInfo, len(urlList))
 	var wg sync.WaitGroup
 
 	numWorkers := 2
@@ -46,27 +46,22 @@ func main() {
 	}()
 
 	// Test for first 4 item
-	for i := 0; i < 30; i++ {
-		urlChan <- urlList[i]
+	for _, url := range urlList {
+		urlChan <- url
 	}
 	close(urlChan)
 
-	var results []hoe.Hoe
-	for result := range resultChan {
-		results = append(results, result)
+	var hoeList []models.HoeInfo
+	for hoe := range resultChan {
+		hoeList = append(hoeList, hoe)
 	}
 
-	for _, result := range results {
-		result.Print()
+	for _, hoe := range hoeList {
+		hoe.Print()
+
+		if len(hoe.ReportURLs) > 0 {
+			// Process report url or put it into db ???
+		}
 	}
 
-	// if len(hoe.ReportURLs) > 0 {
-	// 	urlChans := make(chan string, len(hoe.ReportURLs))
-
-	// 	for _, reportUrl := range hoe.ReportURLs {
-	// 		urlChans <- reportUrl
-	// 		// reportDetail := gaito.ProcessReportPage(reportUrl)
-	// 	}
-	// 	close(urlChans)
-	// }
 }
