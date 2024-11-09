@@ -1,16 +1,16 @@
 package browser
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/go-rod/rod"
 )
 
-func retryRodElement[T any](operation func() (T, error), fieldName string) (T, error) {
+func retryRodElement[T any](operation func() (T, error)) (T, error) {
 	maxAttempts := 20
 	interval := 500 * time.Millisecond
 
+	var lastErr error
 	for attempt := 0; attempt < maxAttempts; attempt++ {
 		result, err := operation()
 		if err == nil {
@@ -26,9 +26,10 @@ func retryRodElement[T any](operation func() (T, error), fieldName string) (T, e
 				}
 			}
 		}
+		lastErr = err
 		time.Sleep(interval)
 	}
 
 	var zero T
-	return zero, fmt.Errorf("failed to execute operation %s after %d attempts", fieldName, maxAttempts)
+	return zero, lastErr
 }

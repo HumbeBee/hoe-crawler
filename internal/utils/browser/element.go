@@ -1,50 +1,92 @@
 package browser
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/go-rod/rod"
-	"github.com/haovoanh28/gai-webscraper/internal/utils"
 )
 
-func GetElementWithRetry(rodElement *rod.Element, selector string, fieldName string) (*rod.Element, error) {
+type ElementFinder interface {
+	Elements(selector string) ([]*rod.Element, error)
+}
+
+func getVisibleElement(rodElement *rod.Element, selector string) (*rod.Element, error) {
+	element, err := GetElementWithRetry(rodElement, selector)
+	if err != nil {
+		return nil, fmt.Errorf("get element: %w", err)
+	}
+
+	if err = element.WaitVisible(); err != nil {
+		return nil, fmt.Errorf("wait visible: %w", err)
+	}
+
+	return element, nil
+}
+
+func GetElementWithRetry(rodElement *rod.Element, selector string) (*rod.Element, error) {
 	return retryRodElement(func() (*rod.Element, error) {
 		return rodElement.Element(selector)
-	}, fieldName)
+	})
 }
 
-func GetElementText(rodElement *rod.Element, selector string, fieldName string) string {
-	// element, err := rodElement.Element(selector)
-	element, err := GetElementWithRetry(rodElement, selector, fieldName)
-	utils.HandleError(err, "get element", fieldName)
+func GetMultipleElementsWithRetry(rodElement *rod.Element, selector string) ([]*rod.Element, error) {
+	elements, err := retryRodElement(func() ([]*rod.Element, error) {
+		return rodElement.Elements(selector)
+	})
 
-	err = element.WaitVisible()
-	utils.HandleError(err, "wait visible", fieldName)
+	if err != nil {
+		return nil, err
+	}
+
+	return elements, nil
+}
+
+func GetElementText(rodElement *rod.Element, selector string) (string, error) {
+	// element, err := rodElement.Element(selector)
+	element, err := getVisibleElement(rodElement, selector)
+	if err != nil {
+		return "", err
+	}
 
 	text, err := element.Text()
-	utils.HandleError(err, "get text", fieldName)
+	if err != nil {
+		return "", fmt.Errorf("get text: %w", err)
+	}
 
-	return strings.TrimSpace(text)
+	return strings.TrimSpace(text), nil
 }
 
-func GetElementAttribute(rodElement *rod.Element, selector string, attributeName string, fieldName string) string {
-	element, err := GetElementWithRetry(rodElement, selector, fieldName)
-	utils.HandleError(err, "get element", fieldName)
+func GetElementAttribute(rodElement *rod.Element, selector string, attributeName string) (string, error) {
+	element, err := getVisibleElement(rodElement, selector)
+	if err != nil {
+		return "", err
+	}
 
 	attribute, err := element.Attribute(attributeName)
-	utils.HandleError(err, "get attribute", fieldName)
+	if err != nil {
+		return "", fmt.Errorf("get attribute: %w", err)
+	}
 
-	return *attribute
+	if attribute == nil {
+		return "", nil
+	}
+
+	return *attribute, nil
 }
 
-func GetElementsText(rodElement *rod.Element, selector string, fieldName string) string {
+func GetElementsText(rodElement *rod.Element, selector string) (string, error) {
 	elements, err := rodElement.Elements(selector)
-	utils.HandleError(err, "get elements", fieldName)
+	if err != nil {
+		return "", fmt.Errorf("get elements: %w", err)
+	}
 
 	var texts []string
 	for _, element := range elements {
 		text, err := element.Text()
-		utils.HandleError(err, "get text", fieldName)
+		if err != nil {
+			return "", fmt.Errorf("get text: %w", err)
+		}
 
 		text = strings.TrimSpace(text)
 		if text != "" {
@@ -52,5 +94,5 @@ func GetElementsText(rodElement *rod.Element, selector string, fieldName string)
 		}
 	}
 
-	return strings.Join(texts, ", ")
+	return strings.Join(texts, ", "), nil
 }

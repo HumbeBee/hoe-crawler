@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/haovoanh28/gai-webscraper/cmd/config"
@@ -10,9 +11,17 @@ import (
 func main() {
 	config.InitLogger()
 
-	log.Println("Starting URL list scraper ...")
+	scraper := gaito.NewScraper(config.BaseUrl, config.RequestPerSecond, log.Default())
+	urls, err := scraper.GetList()
+	if err != nil {
+		scraper.ErrorHandler.Fatal(err.Error())
+	}
 
-	scraper := gaito.NewScraper(config.BaseUrl, config.RequestPerSecond)
-
-	urls := scraper.GetList()
+	if len(urls) == 0 {
+		scraper.ErrorHandler.Info("No items found (Maybe Cloudflare block ?)")
+	} else {
+		for _, url := range urls {
+			fmt.Println(url)
+		}
+	}
 }
