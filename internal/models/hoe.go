@@ -19,7 +19,7 @@ type HoeInfo struct {
 	Service    string   `json:"service"`
 	Duration   string   `json:"duration"`
 	WorkTime   string   `json:"work_time"`
-	ReportURLs []string `json:"report_urls"`
+	ReportUrls []string `json:"report_urls"`
 }
 
 type HoeReportInfo struct {

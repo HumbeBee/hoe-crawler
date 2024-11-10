@@ -21,5 +21,11 @@ func main() {
 		scraper.ErrorHandler.Fatal(err.Error())
 	}
 
+	// Save hoeInfo to db
+
+	if len(hoeInfo.ReportUrls) > 0 {
+		// Should save urls into db
+	}
+
 	hoeInfo.Print()
 }

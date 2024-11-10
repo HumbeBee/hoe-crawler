@@ -47,7 +47,7 @@ var (
 		DetailInfoCard: `.jumbotron.ng-scope`,
 
 		ReportTab:           `li[index="2"] a.nav-link`,
-		ReportTabContent:    `product-review[ng-if="reviewTabLoaded"]`,
+		ReportTabContent:    `product-review[ng-if="reviewTabLoaded"] div.panel-body`,
 		ReportList:          `div[ng-repeat="review in reviews"]`,
 		ReportViewMoreBtn:   `a.view_more_report`,
 		ReportGoNextPageBtn: `product-review li.pagination-next:not(.disabled) a[ng-click]`,

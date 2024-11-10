@@ -1,7 +1,6 @@
 package gaito
 
 import (
-	"fmt"
 	"strings"
 	"time"
 
@@ -43,9 +42,11 @@ func (s *Scraper) processDetailPage(detailUrl string) (*models.HoeInfo, error) {
 
 	hoeInfo.ImageUrl = browser.MustGetElementAttribute(containerEle, detailPageSelectors.ImageUrl, "src")
 
-	// Ex: "300 k" => "300k"
 	price := browser.MustGetElementText(detailInfoTabEle, detailPageSelectors.Price)
+	// Ex: "300 k" => "300k"
 	hoeInfo.Price = strings.ReplaceAll(price, "\u00A0", "")
+	// Ex: "1.000k" => "1000k"
+	hoeInfo.Price = strings.ReplaceAll(hoeInfo.Price, ".", "")
 
 	// Ex: "0123.456.789" -> "0123456789"
 	phone := browser.MustGetElementText(detailInfoTabEle, detailPageSelectors.Phone)
@@ -110,43 +111,6 @@ func (s *Scraper) processDetailPage(detailUrl string) (*models.HoeInfo, error) {
 		}
 	}
 
-	// for {
-	// 	reportElements, err := reportTabElement.Elements(`div[ng-repeat="review in reviews"]`)
-	// 	if err != nil {
-	// 		panic(err)
-	// 	}
-	// 	if len(reportElements) == 0 && len(reportUrls) == 0 {
-	// 		continue
-	// 		// panic(fmt.Errorf("empty reportElements ?: %v", err))
-	// 	}
-
-	// 	for _, reportElement := range reportElements {
-	// 		btnElement, err := reportElement.Element(`a.view_more_report`)
-	// 		if err != nil {
-	// 			panic(fmt.Errorf("failed to get view_more_report: %v", err))
-	// 		}
-
-	// 		reportUrl, err := btnElement.Attribute("href")
-	// 		if err != nil {
-	// 			panic(fmt.Errorf("failed to get reportUrl: %v", err))
-	// 		}
-	// 		reportUrls = append(reportUrls, *reportUrl)
-	// 	}
-
-	// 	if len(reportUrls) == 0 {
-	// 		break
-	// 	}
-
-	// 	goNextPageBtn, err := page.Timeout(1 * time.Second).Element(`product-review li.pagination-next:not(.disabled) a[ng-click]`)
-	// 	if err != nil {
-	// 		break
-	// 	} else {
-	// 		goNextPageBtn.MustClick().MustWaitLoad().CancelTimeout()
-	// 		time.Sleep(1 * time.Second)
-	// 	}
-	// }
-
-	fmt.Println("Found", len(reportUrls), "report urls")
-
+	hoeInfo.ReportUrls = reportUrls
 	return &hoeInfo, err
 }
