@@ -10,7 +10,7 @@ import (
 	"github.com/haovoanh28/gai-webscraper/internal/utils/browser"
 )
 
-func (s *Scraper) processDetailPage(detailUrl string) (*models.HoeInfo, error) {
+func (s *Scraper) getHoeInfoFromDetailPage(detailUrl string) (*models.HoeInfo, error) {
 	url := s.baseURL + detailUrl
 
 	id := utils.GetIDFromUrl(detailUrl)
@@ -113,4 +113,8 @@ func (s *Scraper) processDetailPage(detailUrl string) (*models.HoeInfo, error) {
 
 	hoeInfo.ReportUrls = reportUrls
 	return &hoeInfo, err
+}
+
+func (s *Scraper) processHoeInfo(hoeInfo *models.HoeInfo) {
+
 }

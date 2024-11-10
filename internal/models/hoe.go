@@ -22,15 +22,6 @@ type HoeInfo struct {
 	ReportUrls []string `json:"report_urls"`
 }
 
-type HoeReportInfo struct {
-	ID          string    `json:"id"`
-	DetailUrl   string    `json:"detail_url"`
-	Rating      string    `json:"rating"`
-	Author      *Reporter `json:"author"`
-	Time        string    `json:"time"`
-	Description string    `json:"description"`
-}
-
 func (hoe *HoeInfo) Print() {
 	fmt.Printf("=========== Hoe %s ===========\n", hoe.ID)
 	fmt.Printf("Url: %s\n", hoe.Url)
