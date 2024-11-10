@@ -110,6 +110,14 @@ func MustGetElementText(rodElement *rod.Element, selector string) string {
 	return text
 }
 
+func MustGetElementsText(rodElement *rod.Element, selector string) string {
+	text, err := GetElementsText(rodElement, selector)
+	if err != nil {
+		panic(fmt.Errorf("cannot get text from selector '%s': %w", selector, err))
+	}
+	return text
+}
+
 func MustGetElementAttribute(rodElement *rod.Element, selector string, attributeName string) string {
 	attr, err := GetElementAttribute(rodElement, selector, attributeName)
 	if err != nil {

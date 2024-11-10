@@ -1,8 +1,11 @@
 package gaito
 
 import (
+	"fmt"
 	"strings"
+	"time"
 
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/haovoanh28/gai-webscraper/internal/models"
 	"github.com/haovoanh28/gai-webscraper/internal/utils"
 	"github.com/haovoanh28/gai-webscraper/internal/utils/browser"
@@ -52,21 +55,60 @@ func (s *Scraper) processDetailPage(detailUrl string) (*models.HoeInfo, error) {
 	hoeInfo.Provider = browser.MustGetElementText(detailInfoTabEle, detailPageSelectors.Author)
 	hoeInfo.Status = browser.MustGetElementText(detailInfoTabEle, detailPageSelectors.Status)
 
-	// detailInfoElement = page.MustElement(`product-attribute .table-responsive`).MustWaitVisible()
-	// time.Sleep(2 * time.Second)
-	// hoeInfo.BirthYear = browser.GetElementText(detailInfoElement, `body > div.container.seduction-container > div.knn_page_wrap > div.ow_page_padding > div > div > div > div > div > div:nth-child(3) > div > div:nth-child(3) > div > div > div > div.tab-pane.ng-scope.active > div:nth-child(2) > product-attribute > div > div > div > table > tbody > tr:nth-child(3) > td:nth-child(2) > attribute-dob-box > div > div`, "birth_year")
-	// hoeInfo.Height = browser.GetElementText(detailInfoElement, `product-attribute table > tbody > tr:nth-child(4) > td:nth-child(2) > attribute-number-box .ng-scope`, "height") + "cm"
-	// hoeInfo.Weight = browser.GetElementText(detailInfoElement, `product-attribute table > tbody > tr:nth-child(5) > td:nth-child(2) > attribute-number-box .ng-scope`, "weight") + "kg"
-	// hoeInfo.From = browser.GetElementsText(detailInfoElement, `product-attribute table > tbody > tr:nth-child(9) > td:nth-child(2) > attribute-radio-box span span[ng-repeat="item in attributeDto.settings.values"]`, "from")
-	// hoeInfo.Service = browser.GetElementsText(detailInfoElement, `product-attribute table > tbody > tr:nth-child(12) > td:nth-child(2) > attribute-choices-box span span[ng-repeat="item in attributeDto.settings.values"]`, "service")
-	// hoeInfo.Duration = browser.GetElementText(detailInfoElement, `product-attribute table > tbody > tr:nth-child(15) > td:nth-child(2) > attribute-text-box span`, "duration")
-	// hoeInfo.WorkTime = browser.GetElementText(detailInfoElement, `product-attribute table > tbody > tr:nth-child(16) > td:nth-child(2) > attribute-text-box span`, "work_time")
+	hoeInfo.BirthYear = browser.MustGetElementText(detailInfoTabEle, detailPageSelectors.BirthYear)
+	hoeInfo.Height = browser.MustGetElementText(detailInfoTabEle, detailPageSelectors.Height)
+	hoeInfo.Weight = browser.MustGetElementText(detailInfoTabEle, detailPageSelectors.Weight)
+	hoeInfo.From = browser.MustGetElementsText(detailInfoTabEle, detailPageSelectors.From)
+	hoeInfo.Service = browser.MustGetElementsText(detailInfoTabEle, detailPageSelectors.Service)
+	hoeInfo.Duration = browser.MustGetElementText(detailInfoTabEle, detailPageSelectors.Duration)
+	hoeInfo.WorkTime = browser.MustGetElementText(detailInfoTabEle, detailPageSelectors.WorkTime)
 
 	// Get report urls
-	// var reportUrls []string
-	// page.MustElement(`li[index="2"] a.nav-link`).MustClick().MustWaitLoad()
-	// time.Sleep(1 * time.Second)
-	// reportTabElement := page.MustElement(`product-review[ng-if="reviewTabLoaded"]`)
+	var reportUrls []string
+	reportTabEle, err := browser.GetVisibleElement(root, detailPageSelectors.ReportTab)
+	if err != nil {
+		return nil, s.ErrorHandler.WrapError("get report tab element", err, url)
+	}
+
+	if err := reportTabEle.Click(proto.InputMouseButtonLeft, 1); err != nil {
+		return nil, s.ErrorHandler.WrapError("click report tab element", err, url)
+	}
+
+	if err := reportTabEle.WaitVisible(); err != nil {
+		return nil, s.ErrorHandler.WrapError("wait report tab element visible", err, url)
+	}
+
+	reportTabContentEle, err := browser.GetVisibleElement(root, detailPageSelectors.ReportTabContent)
+	if err != nil {
+		return nil, s.ErrorHandler.WrapError("get report tab content element", err, url)
+	}
+
+	for {
+		reportsEle, err := browser.GetMultipleElementsWithRetry(reportTabContentEle, detailPageSelectors.ReportList)
+		if err != nil {
+			return nil, s.ErrorHandler.WrapError("get report elements", err, url)
+		}
+
+		for _, reportEle := range reportsEle {
+			reportUrl, err := browser.GetElementAttribute(reportEle, detailPageSelectors.ReportViewMoreBtn, "href")
+			if err != nil {
+				return nil, s.ErrorHandler.WrapError("get report url", err, url)
+			}
+			reportUrls = append(reportUrls, reportUrl)
+		}
+
+		goNextPageBtn, err := browser.GetVisibleElement(root, detailPageSelectors.ReportGoNextPageBtn)
+		if err != nil {
+			break
+		} else {
+			// Click go next page button
+			if err := goNextPageBtn.Click(proto.InputMouseButtonLeft, 1); err != nil {
+				return nil, s.ErrorHandler.WrapError("click go next page button", err, url)
+			}
+
+			time.Sleep(1 * time.Second)
+		}
+	}
 
 	// for {
 	// 	reportElements, err := reportTabElement.Elements(`div[ng-repeat="review in reviews"]`)
@@ -103,6 +145,8 @@ func (s *Scraper) processDetailPage(detailUrl string) (*models.HoeInfo, error) {
 	// 		time.Sleep(1 * time.Second)
 	// 	}
 	// }
+
+	fmt.Println("Found", len(reportUrls), "report urls")
 
 	return &hoeInfo, err
 }
