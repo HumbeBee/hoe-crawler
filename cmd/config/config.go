@@ -12,5 +12,5 @@ const (
 // - File name and line number (file.go:123)
 // This helps with debugging by showing exactly where and when each log occurred
 func InitLogger() {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.SetFlags(log.LstdFlags)
 }

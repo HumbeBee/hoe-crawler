@@ -10,7 +10,7 @@ type HoeInfo struct {
 	Price      string   `json:"price"`
 	Phone      string   `json:"phone"`
 	Address    string   `json:"address"`
-	Author     string   `json:"author"`
+	Provider   string   `json:"provider"`
 	Status     string   `json:"status"`
 	BirthYear  string   `json:"birth_year"`
 	Height     string   `json:"height"`
@@ -41,7 +41,7 @@ func (hoe *HoeInfo) Print() {
 	fmt.Printf("Price: %s\n", hoe.Price)
 	fmt.Printf("Phone: %s\n", hoe.Phone)
 	fmt.Printf("Address: %s\n", hoe.Address)
-	fmt.Printf("Author: %s\n", hoe.Author)
+	fmt.Printf("Provider: %s\n", hoe.Provider)
 	fmt.Printf("Status: %s\n", hoe.Status)
 	fmt.Printf("Birth year: %s\n", hoe.BirthYear)
 	fmt.Printf("Height: %s\n", hoe.Height)

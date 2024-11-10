@@ -7,18 +7,14 @@ import (
 	"github.com/go-rod/rod"
 )
 
-type ElementFinder interface {
-	Elements(selector string) ([]*rod.Element, error)
-}
-
-func getVisibleElement(rodElement *rod.Element, selector string) (*rod.Element, error) {
+func GetVisibleElement(rodElement *rod.Element, selector string) (*rod.Element, error) {
 	element, err := GetElementWithRetry(rodElement, selector)
 	if err != nil {
-		return nil, fmt.Errorf("get element: %w", err)
+		return nil, err
 	}
 
 	if err = element.WaitVisible(); err != nil {
-		return nil, fmt.Errorf("wait visible: %w", err)
+		return nil, err
 	}
 
 	return element, nil
@@ -43,29 +39,28 @@ func GetMultipleElementsWithRetry(rodElement *rod.Element, selector string) ([]*
 }
 
 func GetElementText(rodElement *rod.Element, selector string) (string, error) {
-	// element, err := rodElement.Element(selector)
-	element, err := getVisibleElement(rodElement, selector)
+	element, err := GetVisibleElement(rodElement, selector)
 	if err != nil {
 		return "", err
 	}
 
 	text, err := element.Text()
 	if err != nil {
-		return "", fmt.Errorf("get text: %w", err)
+		return "", err
 	}
 
 	return strings.TrimSpace(text), nil
 }
 
 func GetElementAttribute(rodElement *rod.Element, selector string, attributeName string) (string, error) {
-	element, err := getVisibleElement(rodElement, selector)
+	element, err := GetVisibleElement(rodElement, selector)
 	if err != nil {
 		return "", err
 	}
 
 	attribute, err := element.Attribute(attributeName)
 	if err != nil {
-		return "", fmt.Errorf("get attribute: %w", err)
+		return "", err
 	}
 
 	if attribute == nil {
@@ -76,16 +71,16 @@ func GetElementAttribute(rodElement *rod.Element, selector string, attributeName
 }
 
 func GetElementsText(rodElement *rod.Element, selector string) (string, error) {
-	elements, err := rodElement.Elements(selector)
+	elements, err := GetMultipleElementsWithRetry(rodElement, selector)
 	if err != nil {
-		return "", fmt.Errorf("get elements: %w", err)
+		return "", err
 	}
 
 	var texts []string
 	for _, element := range elements {
 		text, err := element.Text()
 		if err != nil {
-			return "", fmt.Errorf("get text: %w", err)
+			return "", err
 		}
 
 		text = strings.TrimSpace(text)
@@ -95,4 +90,31 @@ func GetElementsText(rodElement *rod.Element, selector string) (string, error) {
 	}
 
 	return strings.Join(texts, ", "), nil
+}
+
+// MUST FUNCTIONS
+// Thêm mấy hàm Must để YOLO
+func MustGetVisibleElement(rodElement *rod.Element, selector string) *rod.Element {
+	element, err := GetVisibleElement(rodElement, selector)
+	if err != nil {
+		panic(fmt.Errorf("selector '%s': %w", selector, err))
+	}
+	return element
+}
+
+func MustGetElementText(rodElement *rod.Element, selector string) string {
+	text, err := GetElementText(rodElement, selector)
+	if err != nil {
+		panic(fmt.Errorf("cannot get text from selector '%s': %w", selector, err))
+	}
+	return text
+}
+
+func MustGetElementAttribute(rodElement *rod.Element, selector string, attributeName string) string {
+	attr, err := GetElementAttribute(rodElement, selector, attributeName)
+	if err != nil {
+		panic(fmt.Errorf("cannot get attribute '%s' from selector '%s': %w",
+			attributeName, selector, err))
+	}
+	return attr
 }

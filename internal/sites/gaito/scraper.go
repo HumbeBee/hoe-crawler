@@ -3,6 +3,7 @@ package gaito
 import (
 	"log"
 
+	"github.com/haovoanh28/gai-webscraper/internal/models"
 	"github.com/haovoanh28/gai-webscraper/internal/utils/errutil"
 )
 
@@ -20,7 +21,6 @@ func (s *Scraper) GetList() ([]string, error) {
 	return s.processListPage()
 }
 
-// func (s *Scraper) GetDetail(url string) *models.HoeInfo {
-// 	result := ProcessDetailPage(url)
-// 	return &result
-// }
+func (s *Scraper) GetDetail(url string) (*models.HoeInfo, error) {
+	return s.processDetailPage(url)
+}

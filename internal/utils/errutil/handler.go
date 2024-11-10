@@ -2,6 +2,7 @@ package errutil
 
 import (
 	"log"
+	"os"
 	"runtime"
 	"strings"
 )
@@ -78,7 +79,8 @@ func (h *ErrorHandler) Error(msg string, args ...interface{}) {
 
 func (h *ErrorHandler) Fatal(msg string, args ...interface{}) {
 	h.log(FATAL, msg, args...)
-	panic(msg) // or os.Exit(1) depending on your needs
+	// panic(msg) // or os.Exit(1) depending on your needs
+	os.Exit(1)
 }
 
 // Internal logging method

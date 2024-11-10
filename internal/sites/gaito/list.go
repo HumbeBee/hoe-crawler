@@ -2,9 +2,7 @@ package gaito
 
 import (
 	"fmt"
-	"time"
 
-	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/haovoanh28/gai-webscraper/internal/utils/browser"
 )
@@ -12,29 +10,18 @@ import (
 func (s *Scraper) processListPage() ([]string, error) {
 	const (
 		itemThreshold = 30
-		stableTimeout = 30
 	)
 	url := s.baseURL + "/gai-goi/khu-vuc/Hồ%20Chí%20Minh/Quận%207"
 
 	fmt.Println("Starting to load", url)
 
-	rodBrowser := rod.New()
-	if err := rodBrowser.Connect(); err != nil {
-		return nil, s.ErrorHandler.WrapError("connect browser", err, url)
+	rodBrowser, page, root, err := browser.ConnectToPage(url)
+	if err != nil {
+		return nil, s.ErrorHandler.WrapError("connect to page", err, url)
 	}
 	defer rodBrowser.Close()
-
-	page, err := rodBrowser.Page(proto.TargetCreateTarget{URL: url})
-	if err != nil {
-		return nil, s.ErrorHandler.WrapError("create page", err, url)
-	}
 	defer page.Close()
 
-	if err := page.WaitStable(time.Duration(stableTimeout)); err != nil {
-		return nil, s.ErrorHandler.WrapError("wait stable", err, url)
-	}
-
-	root := page.MustElement("html")
 	var urlList []string
 	for {
 		items, err := browser.GetMultipleElementsWithRetry(root, listPageSelectors.Items)
