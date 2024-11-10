@@ -39,7 +39,9 @@ func (hoe *HoeInfo) Print() {
 	fmt.Printf("Weight: %s\n", hoe.Weight)
 	fmt.Printf("From: %s\n", hoe.From)
 	fmt.Printf("Service: %s\n", hoe.Service)
+	fmt.Printf("Work Time: %s\n", hoe.WorkTime)
 	fmt.Printf("Duration: %s\n", hoe.Duration)
+	fmt.Print("Report count: ", len(hoe.ReportUrls))
 
 	fmt.Println("==============================")
 	fmt.Print("\n\n")
