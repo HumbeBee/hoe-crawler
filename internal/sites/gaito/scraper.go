@@ -3,6 +3,7 @@ package gaito
 import (
 	"log"
 
+	"github.com/haovoanh28/gai-webscraper/internal/db"
 	"github.com/haovoanh28/gai-webscraper/internal/utils/errutil"
 )
 
@@ -64,10 +65,14 @@ func (s *Scraper) ProcessDetailPage(url string) {
 	}
 
 	// Save hoeInfo to db
-
-	if len(hoeInfo.ReportUrls) > 0 {
-		// Should save urls into db
+	dbConfig := db.NewConfig()
+	dbo, err := db.GetDB(dbConfig)
+	if err != nil {
+		s.ErrorHandler.Fatal(err.Error())
 	}
+	defer dbo.Close()
 
-	hoeInfo.Print()
+	if err := dbo.InsertHoe(hoeInfo); err != nil {
+		s.ErrorHandler.Fatal(err.Error())
+	}
 }

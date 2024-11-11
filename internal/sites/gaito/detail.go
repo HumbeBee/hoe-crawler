@@ -25,7 +25,7 @@ func (s *Scraper) getHoeInfoFromDetailPage(detailUrl string) (*models.HoeInfo, e
 
 	containerEle, err := browser.GetVisibleElement(root, detailPageSelectors.PageContainer)
 	if err != nil {
-		return nil, s.ErrorHandler.WrapError("get container element", err, url)
+		return nil, s.ErrorHandler.WrapError("get container element (Cloudflare block ?)", err, url)
 	}
 
 	detailInfoTabEle, err := browser.GetVisibleElement(containerEle, detailPageSelectors.DetailInfoTab)
@@ -34,8 +34,8 @@ func (s *Scraper) getHoeInfoFromDetailPage(detailUrl string) (*models.HoeInfo, e
 	}
 
 	hoeInfo := models.HoeInfo{
-		Url: url,
-		ID:  id,
+		OriginID: id,
+		Url:      url,
 	}
 
 	hoeInfo.Name = browser.MustGetElementText(containerEle, detailPageSelectors.Name)
@@ -59,13 +59,13 @@ func (s *Scraper) getHoeInfoFromDetailPage(detailUrl string) (*models.HoeInfo, e
 	hoeInfo.BirthYear = browser.MustGetElementText(detailInfoTabEle, detailPageSelectors.BirthYear)
 	hoeInfo.Height = browser.MustGetElementText(detailInfoTabEle, detailPageSelectors.Height)
 	hoeInfo.Weight = browser.MustGetElementText(detailInfoTabEle, detailPageSelectors.Weight)
-	hoeInfo.From = browser.MustGetElementsText(detailInfoTabEle, detailPageSelectors.From)
+	hoeInfo.Country = browser.MustGetElementsText(detailInfoTabEle, detailPageSelectors.Country)
 	hoeInfo.Service = browser.MustGetElementsText(detailInfoTabEle, detailPageSelectors.Service)
 	hoeInfo.Duration = browser.MustGetElementText(detailInfoTabEle, detailPageSelectors.Duration)
 	hoeInfo.WorkTime = browser.MustGetElementText(detailInfoTabEle, detailPageSelectors.WorkTime)
 
 	// Get report urls
-	var reportUrls []string
+	var reports []*models.HoeReport
 	reportTabEle, err := browser.GetVisibleElement(root, detailPageSelectors.ReportTab)
 	if err != nil {
 		return nil, s.ErrorHandler.WrapError("get report tab element", err, url)
@@ -95,7 +95,9 @@ func (s *Scraper) getHoeInfoFromDetailPage(detailUrl string) (*models.HoeInfo, e
 			if err != nil {
 				return nil, s.ErrorHandler.WrapError("get report url", err, url)
 			}
-			reportUrls = append(reportUrls, reportUrl)
+			reports = append(reports, &models.HoeReport{
+				ReportURL: reportUrl,
+			})
 		}
 
 		goNextPageBtn, err := browser.GetVisibleElement(root, detailPageSelectors.ReportGoNextPageBtn)
@@ -111,7 +113,7 @@ func (s *Scraper) getHoeInfoFromDetailPage(detailUrl string) (*models.HoeInfo, e
 		}
 	}
 
-	hoeInfo.ReportUrls = reportUrls
+	hoeInfo.Reports = reports
 	return &hoeInfo, err
 }
 

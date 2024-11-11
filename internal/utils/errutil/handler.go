@@ -56,7 +56,7 @@ func (h *ErrorHandler) WrapError(op string, err error, target string) error {
 		Line:   line,
 	}
 
-	h.log(ERROR, "%s at %s:%d - %v", op, file, line, err)
+	// h.log(ERROR, "%s at %s:%d - %v", op, file, line, err)
 
 	return serr
 }
