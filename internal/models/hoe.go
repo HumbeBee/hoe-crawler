@@ -23,9 +23,10 @@ type HoeInfo struct {
 	Service   string       `gorm:"column:service"`
 	Duration  string       `gorm:"column:duration"`
 	WorkTime  string       `gorm:"column:work_time"`
+	Site      string       `gorm:"column:site"`
 	CreatedAt time.Time    `gorm:"column:created_at"`
 	UpdatedAt time.Time    `gorm:"column:updated_at"`
-	Reports   []*HoeReport `gorm:"foreignKey:HoeID;references:ID"`
+	Reports   []*HoeReport `gorm:"foreignKey:HoeID;references:ID;constraint:OnDelete:CASCADE"`
 }
 
 func (HoeInfo) TableName() string {

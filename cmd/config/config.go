@@ -13,4 +13,5 @@ const (
 // This helps with debugging by showing exactly where and when each log occurred
 func InitLogger() {
 	log.SetFlags(log.LstdFlags)
+
 }

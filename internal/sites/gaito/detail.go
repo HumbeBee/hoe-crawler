@@ -116,7 +116,3 @@ func (s *Scraper) getHoeInfoFromDetailPage(detailUrl string) (*models.HoeInfo, e
 	hoeInfo.Reports = reports
 	return &hoeInfo, err
 }
-
-func (s *Scraper) processHoeInfo(hoeInfo *models.HoeInfo) {
-
-}

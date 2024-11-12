@@ -34,6 +34,7 @@ func (dbo *DBO) InsertHoe(hoeInfo *models.HoeInfo) error {
 	}
 
 	if err := transaction.Commit().Error; err != nil {
+		transaction.Rollback()
 		return err
 	}
 
