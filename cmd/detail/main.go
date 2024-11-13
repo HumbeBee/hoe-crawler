@@ -1,19 +1,24 @@
 package main
 
 import (
-	"log"
-
-	"github.com/haovoanh28/gai-webscraper/cmd/config"
-	"github.com/haovoanh28/gai-webscraper/internal/sites/gaito"
+	"github.com/haovoanh28/gai-webscraper/internal/scrapers"
+	"github.com/haovoanh28/gai-webscraper/internal/utils/logutil"
 )
 
 func main() {
-	config.InitLogger()
+	logger := logutil.InitLogger()
 
 	// Example url
-	// url := "https://www.gaito.love/gai-goi/chi-tiet/56042/hot-girl-diep-anhmat-xinh-nguc-dep-bu-cu-dieu-luyen"
 	url := "/gai-goi/chi-tiet/56042/hot-girl-diep-anhmat-xinh-nguc-dep-bu-cu-dieu-luyen"
 
-	scraper := gaito.NewScraper(config.BaseUrl, config.RequestPerSecond, log.Default())
-	scraper.ProcessDetailPage(url)
+	scraper, err := scrapers.CreateScraper("gaito")
+	if err != nil {
+		logger.Fatal(err.Error())
+	}
+
+	hoe, err := scraper.ProcessDetailPage(url)
+	if err != nil {
+		logger.Fatal(err.Error())
+	}
+	hoe.Print()
 }

@@ -1,30 +1,26 @@
 package main
 
 import (
-	"fmt"
-	"log"
-
-	"github.com/haovoanh28/gai-webscraper/cmd/config"
 	"github.com/haovoanh28/gai-webscraper/internal/scrapers"
-	"github.com/haovoanh28/gai-webscraper/internal/utils/errutil"
+	"github.com/haovoanh28/gai-webscraper/internal/utils/logutil"
 )
 
 func main() {
-	config.InitLogger()
+	logger := logutil.InitLogger()
 
-	errorHandler := errutil.NewErrorHandler(log.Default(), errutil.DEBUG)
-	scraper, err := scrapers.CreateScraper("gaito")
+	scraper, err := scrapers.CreateScraper("gaito", logger)
 	if err != nil {
-		panic(err)
+		logger.Fatal("create scraper", err.Error())
 	}
+
 	urlList, err := scraper.ProcessListPage()
 	if err != nil {
-		errorHandler.Fatal(err.Error())
+		logger.Fatal("process list page", err.Error())
 	}
 
 	if len(urlList) == 0 {
-		fmt.Println("No items found (Maybe Cloudflare block ?)")
+		logger.Warn("No items found (Maybe Cloudflare block ?)")
 	} else {
-		log.Println("Found", len(urlList), "items")
+		logger.Info("Found", len(urlList), "items")
 	}
 }

@@ -6,12 +6,14 @@ import (
 	"github.com/haovoanh28/gai-webscraper/internal/definitions"
 	"github.com/haovoanh28/gai-webscraper/internal/interfaces"
 	"github.com/haovoanh28/gai-webscraper/internal/scrapers/gaito"
+	"github.com/haovoanh28/gai-webscraper/internal/utils/logutil"
 )
 
-func CreateScraper(site string) (interfaces.Scraper, error) {
+func CreateScraper(site string, logger *logutil.Logger) (interfaces.Scraper, error) {
 
 	baseConfigs := definitions.ScraperConfig{
 		RequestsPerSecond: 1.0,
+		Logger:            logger,
 	}
 
 	switch site {

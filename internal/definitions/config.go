@@ -1,7 +1,9 @@
 package definitions
 
+import "github.com/haovoanh28/gai-webscraper/internal/utils/logutil"
+
 type ScraperConfig struct {
 	BaseURL           string
 	RequestsPerSecond float64
-	// other common configs
+	Logger            *logutil.Logger
 }
