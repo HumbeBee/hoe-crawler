@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func (s *Scraper) ProcessListPage() ([]string, error) {
+func (s *scraper) ProcessListPage() ([]string, error) {
 	const (
 		itemThreshold = 30
 	)

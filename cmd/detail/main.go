@@ -5,14 +5,17 @@ import (
 )
 
 func main() {
-	scraper, logger := setuputil.SetupEnvironment()
+	appContext, err := setuputil.CreateAppContext()
+	if err != nil {
+		panic(err)
+	}
 
 	// Example url
 	url := "/gai-goi/chi-tiet/56042/hot-girl-diep-anhmat-xinh-nguc-dep-bu-cu-dieu-luyen"
 
-	hoe, err := scraper.ProcessDetailPage(url)
+	hoe, err := appContext.Scraper.ProcessDetailPage(url)
 	if err != nil {
-		logger.Fatal(err.Error())
+		appContext.Logger.Fatal(err.Error())
 	}
 
 	if hoe != nil {

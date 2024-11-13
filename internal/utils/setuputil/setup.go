@@ -6,11 +6,21 @@ import (
 	"log"
 	"os"
 
+	"github.com/haovoanh28/gai-webscraper/internal/db"
 	"github.com/haovoanh28/gai-webscraper/internal/definitions"
 	"github.com/haovoanh28/gai-webscraper/internal/interfaces"
+	"github.com/haovoanh28/gai-webscraper/internal/repository"
 	"github.com/haovoanh28/gai-webscraper/internal/scrapers"
+	"github.com/haovoanh28/gai-webscraper/internal/service"
+	"github.com/haovoanh28/gai-webscraper/internal/utils/errutil"
 	"github.com/haovoanh28/gai-webscraper/internal/utils/logutil"
 )
+
+type AppContext struct {
+	Scraper    interfaces.Scraper
+	Logger     *logutil.Logger
+	HoeService *service.HoeService
+}
 
 func InitLogger() *logutil.Logger {
 	log.SetFlags(log.LstdFlags)
@@ -25,7 +35,7 @@ func InitLogger() *logutil.Logger {
 	return logutil.NewLogger(logLevel)
 }
 
-func SetupEnvironment() (interfaces.Scraper, *logutil.Logger) {
+func CreateAppContext() (*AppContext, error) {
 	// Get site from cmd options
 	site := flag.String("site", "", "The site to scrape")
 	flag.Parse()
@@ -33,7 +43,7 @@ func SetupEnvironment() (interfaces.Scraper, *logutil.Logger) {
 	siteType := definitions.SiteType(*site)
 	baseURL, ok := definitions.SiteConfigs[siteType]
 	if !ok {
-		panic(fmt.Errorf("unknown site: %s", *site))
+		return nil, fmt.Errorf("unknown site: %s", *site)
 	}
 
 	logger := InitLogger()
@@ -44,5 +54,19 @@ func SetupEnvironment() (interfaces.Scraper, *logutil.Logger) {
 		Logger:            logger,
 	}
 
-	return scrapers.CreateScraper(baseConfig), logger
+	scraper := scrapers.CreateScraper(baseConfig)
+
+	dbConfig := db.NewConfig()
+	dbo, err := db.GetDB(dbConfig)
+	if err != nil {
+		return nil, errutil.WrapError("failed to connect to database", err, "")
+	}
+	hoeRepo := repository.NewHoeRepository(dbo)
+	hoeService := service.NewHoeService(hoeRepo, logger)
+
+	return &AppContext{
+		Scraper:    scraper,
+		Logger:     logger,
+		HoeService: hoeService,
+	}, nil
 }

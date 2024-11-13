@@ -11,7 +11,7 @@ import (
 	"github.com/haovoanh28/gai-webscraper/internal/utils/errutil"
 )
 
-func (s *Scraper) ProcessDetailPage(detailUrl string) (*models.HoeInfo, error) {
+func (s *scraper) ProcessDetailPage(detailUrl string) (*models.HoeInfo, error) {
 	url := s.BaseURL + detailUrl
 
 	id := utils.GetIDFromUrl(detailUrl)
