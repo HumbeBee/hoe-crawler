@@ -17,19 +17,6 @@ func NewLogger(minLevel LogLevel) *Logger {
 	}
 }
 
-func InitLogger() *Logger {
-	log.SetFlags(log.LstdFlags)
-
-	logLevelStr := os.Getenv("LOG_LEVEL")
-	logLevel, err := ParseLogLevel(logLevelStr)
-	if err != nil {
-		log.Printf("Invalid log level '%s', defaulting to INFO", logLevelStr)
-		logLevel = INFO
-	}
-
-	return NewLogger(logLevel)
-}
-
 // Internal logging method
 func (l *Logger) Log(level LogLevel, msg string, args ...interface{}) {
 	if level >= l.minLevel {

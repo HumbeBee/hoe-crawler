@@ -1,17 +1,11 @@
 package main
 
 import (
-	"github.com/haovoanh28/gai-webscraper/internal/scrapers"
-	"github.com/haovoanh28/gai-webscraper/internal/utils/logutil"
+	"github.com/haovoanh28/gai-webscraper/internal/utils/setuputil"
 )
 
 func main() {
-	logger := logutil.InitLogger()
-
-	scraper, err := scrapers.CreateScraper("gaito", logger)
-	if err != nil {
-		logger.Fatal("create scraper", err.Error())
-	}
+	scraper, logger := setuputil.SetupEnvironment()
 
 	urlList, err := scraper.ProcessListPage()
 	if err != nil {
