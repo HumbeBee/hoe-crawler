@@ -9,8 +9,8 @@ import (
 	"github.com/go-rod/stealth"
 )
 
-func ConnectToPage(url string) (*rod.Browser, *rod.Page, *rod.Element, error) {
-	rodBrowser := rod.New()
+func ConnectToPage(url string, timeout time.Duration) (*rod.Browser, *rod.Page, *rod.Element, error) {
+	rodBrowser := rod.New().Timeout(timeout)
 	if err := rodBrowser.Connect(); err != nil {
 		return nil, nil, nil, err
 	}

@@ -11,13 +11,13 @@ import (
 	"github.com/haovoanh28/gai-webscraper/internal/utils/errutil"
 )
 
-func (s *gaitoScraper) ProcessDetailPage(detailUrl string) (*models.HoeInfo, error) {
+func (s *Scraper) ProcessDetailPage(detailUrl string) (*models.HoeInfo, error) {
 	url := s.BaseURL + detailUrl
 
 	id := utils.GetIDFromUrl(detailUrl)
 
 	// Wait until content element is visible
-	rodBrowser, page, root, err := browser.ConnectToPage(url)
+	rodBrowser, page, root, err := browser.ConnectToPage(url, 2*time.Minute)
 	if err != nil {
 		return nil, errutil.WrapError("connect to page", err, url)
 	}

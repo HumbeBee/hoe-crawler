@@ -1,20 +1,22 @@
 package gaito
 
 import (
+	"fmt"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/haovoanh28/gai-webscraper/internal/utils/browser"
 	"github.com/haovoanh28/gai-webscraper/internal/utils/errutil"
+	"time"
 )
 
-func (s *gaitoScraper) ProcessListPage() ([]string, error) {
+func (s *Scraper) ProcessListPage() ([]string, error) {
 	const (
 		itemThreshold = 30
 	)
 	url := s.BaseURL + "/gai-goi/khu-vuc/Hồ%20Chí%20Minh/Quận%207"
 
-	s.Logger.Info("Starting to load", url)
+	s.Logger.Info(fmt.Sprintf("Processing %s", url))
 
-	rodBrowser, page, root, err := browser.ConnectToPage(url)
+	rodBrowser, page, root, err := browser.ConnectToPage(url, 30*time.Second)
 	if err != nil {
 		return nil, errutil.WrapError("connect to page", err, url)
 	}

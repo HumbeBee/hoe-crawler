@@ -17,7 +17,6 @@ func NewLogger(minLevel LogLevel) *Logger {
 	}
 }
 
-// Internal logging method
 func (l *Logger) Log(level LogLevel, msg string, args ...interface{}) {
 	if level >= l.minLevel {
 		l.logger.Printf("["+level.String()+"] "+msg, args...)

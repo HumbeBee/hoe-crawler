@@ -4,12 +4,12 @@ import (
 	"github.com/haovoanh28/gai-webscraper/internal/definitions"
 )
 
-type gaitoScraper struct {
+type Scraper struct {
 	definitions.ScraperConfig
 }
 
-func NewScraper(config definitions.ScraperConfig) *gaitoScraper {
-	return &gaitoScraper{
+func NewScraper(config definitions.ScraperConfig) *Scraper {
+	return &Scraper{
 		config,
 	}
 }

@@ -33,7 +33,7 @@ func (HoeInfo) TableName() string {
 	return "hoes"
 }
 
-func (hoe *HoeInfo) Print() {
+func (hoe HoeInfo) Print() {
 	fmt.Printf("=========== Hoe %s ===========\n", hoe.OriginID)
 	fmt.Printf("Url: %s\n", hoe.Url)
 
@@ -52,7 +52,7 @@ func (hoe *HoeInfo) Print() {
 	fmt.Printf("Service: %s\n", hoe.Service)
 	fmt.Printf("Work Time: %s\n", hoe.WorkTime)
 	fmt.Printf("Duration: %s\n", hoe.Duration)
-	fmt.Print("Report count: ", len(hoe.Reports))
+	fmt.Printf("Report count: %d\n", len(hoe.Reports))
 
 	fmt.Println("==============================")
 	fmt.Print("\n\n")

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/haovoanh28/gai-webscraper/internal/utils/setuputil"
 )
 
@@ -15,6 +16,10 @@ func main() {
 	if len(urlList) == 0 {
 		logger.Warn("No items found (Maybe Cloudflare block ?)")
 	} else {
-		logger.Info("Found", len(urlList), "items")
+		logger.Info(fmt.Sprintf("Found %d items\n", len(urlList)))
+
+		for _, url := range urlList {
+			logger.Info(url)
+		}
 	}
 }

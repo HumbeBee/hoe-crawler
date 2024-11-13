@@ -19,5 +19,9 @@ func (dbo *DBO) Close() {
 	if err != nil {
 		panic(err)
 	}
-	sqlDB.Close()
+
+	err = sqlDB.Close()
+	if err != nil {
+		panic(err)
+	}
 }
