@@ -2,10 +2,11 @@ package gaito
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/haovoanh28/gai-webscraper/internal/utils/browser"
 	"github.com/haovoanh28/gai-webscraper/internal/utils/errutil"
-	"time"
 )
 
 func (s *scraper) ProcessListPage() ([]string, error) {
@@ -16,16 +17,15 @@ func (s *scraper) ProcessListPage() ([]string, error) {
 
 	s.Logger.Info(fmt.Sprintf("Processing %s", url))
 
-	rodBrowser, page, root, err := browser.ConnectToPage(url, 30*time.Second)
+	conn, err := browser.ConnectToPage(url, 30*time.Second)
 	if err != nil {
 		return nil, errutil.WrapError("connect to page", err, url)
 	}
-	defer rodBrowser.Close()
-	defer page.Close()
+	defer conn.Close()
 
 	var urlList []string
 	for {
-		items, err := browser.GetMultipleElementsWithRetry(root, listPageSelectors.Items)
+		items, err := browser.GetMultipleElementsWithRetry(conn.Root, listPageSelectors.Items)
 		if err != nil {
 			return nil, errutil.WrapError("get list items", err, url)
 		}
@@ -37,7 +37,7 @@ func (s *scraper) ProcessListPage() ([]string, error) {
 			break
 		}
 
-		loadMoreBtn, err := browser.GetElementWithRetry(root, listPageSelectors.LoadMoreBtn)
+		loadMoreBtn, err := browser.GetElementWithRetry(conn.Root, listPageSelectors.LoadMoreBtn)
 		if err != nil {
 			break
 		}
@@ -46,12 +46,12 @@ func (s *scraper) ProcessListPage() ([]string, error) {
 			return nil, errutil.WrapError("click load more button", err, url)
 		}
 
-		if err := page.WaitElementsMoreThan(listPageSelectors.Items, currentLength); err != nil {
+		if err := conn.Page.WaitElementsMoreThan(listPageSelectors.Items, currentLength); err != nil {
 			return nil, errutil.WrapError("wait more items", err, url)
 		}
 	}
 
-	elements, err := browser.GetMultipleElementsWithRetry(root, listPageSelectors.Items)
+	elements, err := browser.GetMultipleElementsWithRetry(conn.Root, listPageSelectors.Items)
 	if err != nil {
 		return nil, errutil.WrapError("get final list items", err, url)
 	}

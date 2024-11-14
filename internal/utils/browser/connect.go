@@ -9,33 +9,43 @@ import (
 	"github.com/go-rod/stealth"
 )
 
-func ConnectToPage(url string, timeout time.Duration) (*rod.Browser, *rod.Page, *rod.Element, error) {
+type BrowserConnection struct {
+	Browser *rod.Browser
+	Page    *rod.Page
+	Root    *rod.Element
+}
+
+func (c *BrowserConnection) Close() {
+	if c.Browser != nil {
+		c.Browser.Close()
+	}
+	if c.Page != nil {
+		c.Page.Close()
+	}
+}
+
+func ConnectToPage(url string, timeout time.Duration) (*BrowserConnection, error) {
 	rodBrowser := rod.New().Timeout(timeout)
 	if err := rodBrowser.Connect(); err != nil {
-		return nil, nil, nil, err
+		return nil, err
 	}
-
-	// page, err = rodBrowser.Page(proto.TargetCreateTarget{URL: url})
-	// if err != nil {
-	// 	return nil, nil, nil, err
-	// }
 
 	// stealth must be used because of Cloudflare
 	// But it only works sometimes
 	fmt.Printf("js: %x\n\n", md5.Sum([]byte(stealth.JS)))
 	page, err := stealth.Page(rodBrowser)
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, err
 	}
 
 	if err := page.Navigate(url); err != nil {
-		return nil, nil, nil, err
+		return nil, err
 	}
 
 	if err := page.WaitStable(time.Duration(30)); err != nil {
-		return nil, nil, nil, err
+		return nil, err
 	}
 
 	root := page.MustElement("html")
-	return rodBrowser, page, root, nil
+	return &BrowserConnection{Browser: rodBrowser, Page: page, Root: root}, nil
 }

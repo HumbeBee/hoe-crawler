@@ -17,14 +17,13 @@ func (s *scraper) ProcessDetailPage(detailUrl string) (*models.HoeInfo, error) {
 	id := utils.GetIDFromUrl(detailUrl)
 
 	// Wait until content element is visible
-	rodBrowser, page, root, err := browser.ConnectToPage(url, 2*time.Minute)
+	conn, err := browser.ConnectToPage(url, 2*time.Minute)
 	if err != nil {
 		return nil, errutil.WrapError("connect to page", err, url)
 	}
-	defer rodBrowser.Close()
-	defer page.Close()
+	defer conn.Close()
 
-	containerEle, err := browser.GetVisibleElement(root, detailPageSelectors.PageContainer)
+	containerEle, err := browser.GetVisibleElement(conn.Root, detailPageSelectors.PageContainer)
 	if err != nil {
 		return nil, errutil.WrapError("get container element", err, url)
 	}
@@ -67,7 +66,7 @@ func (s *scraper) ProcessDetailPage(detailUrl string) (*models.HoeInfo, error) {
 
 	// Get report urls
 	var reports []*models.HoeReport
-	reportTabEle, err := browser.GetVisibleElement(root, detailPageSelectors.ReportTab)
+	reportTabEle, err := browser.GetVisibleElement(conn.Root, detailPageSelectors.ReportTab)
 	if err != nil {
 		return nil, errutil.WrapError("get report tab element", err, url)
 	}
@@ -80,7 +79,7 @@ func (s *scraper) ProcessDetailPage(detailUrl string) (*models.HoeInfo, error) {
 		return nil, errutil.WrapError("wait report tab element visible", err, url)
 	}
 
-	reportTabContentEle, err := browser.GetVisibleElement(root, detailPageSelectors.ReportTabContent)
+	reportTabContentEle, err := browser.GetVisibleElement(conn.Root, detailPageSelectors.ReportTabContent)
 	if err != nil {
 		return nil, errutil.WrapError("get report tab content element", err, url)
 	}
@@ -101,7 +100,7 @@ func (s *scraper) ProcessDetailPage(detailUrl string) (*models.HoeInfo, error) {
 			})
 		}
 
-		goNextPageBtn, err := browser.GetVisibleElement(root, detailPageSelectors.ReportGoNextPageBtn)
+		goNextPageBtn, err := browser.GetVisibleElement(conn.Root, detailPageSelectors.ReportGoNextPageBtn)
 		if err != nil {
 			break
 		} else {
