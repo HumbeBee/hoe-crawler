@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod/lib/proto"
-	"github.com/haovoanh28/gai-webscraper/internal/utils/browser"
+	"github.com/haovoanh28/gai-webscraper/internal/infrastructure/browser"
 	"github.com/haovoanh28/gai-webscraper/internal/utils/errutil"
 )
 

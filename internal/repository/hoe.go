@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/haovoanh28/gai-webscraper/internal/db"
+	"github.com/haovoanh28/gai-webscraper/internal/infrastructure/database"
 	"github.com/haovoanh28/gai-webscraper/internal/models"
 )
 
@@ -10,10 +10,10 @@ type HoeRepository interface {
 }
 
 type hoeRepo struct {
-	dbo *db.DBO
+	dbo *database.DBO
 }
 
-func NewHoeRepository(dbo *db.DBO) HoeRepository {
+func NewHoeRepository(dbo *database.DBO) HoeRepository {
 	return &hoeRepo{dbo: dbo}
 }
 

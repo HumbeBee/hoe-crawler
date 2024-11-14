@@ -6,8 +6,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/haovoanh28/gai-webscraper/internal/db"
 	"github.com/haovoanh28/gai-webscraper/internal/definitions"
+	"github.com/haovoanh28/gai-webscraper/internal/infrastructure/database"
 	"github.com/haovoanh28/gai-webscraper/internal/interfaces"
 	"github.com/haovoanh28/gai-webscraper/internal/repository"
 	"github.com/haovoanh28/gai-webscraper/internal/scrapers"
@@ -56,8 +56,8 @@ func CreateAppContext() (*AppContext, error) {
 
 	scraper := scrapers.CreateScraper(baseConfig)
 
-	dbConfig := db.NewConfig()
-	dbo, err := db.GetDB(dbConfig)
+	dbConfig := database.NewConfig()
+	dbo, err := database.GetDB(dbConfig)
 	if err != nil {
 		return nil, errutil.WrapError("failed to connect to database", err, "")
 	}
