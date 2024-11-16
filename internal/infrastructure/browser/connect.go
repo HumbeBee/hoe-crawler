@@ -1,21 +1,18 @@
 package browser
 
 import (
-	"crypto/md5"
-	"fmt"
 	"time"
 
-	"github.com/go-rod/rod"
-	"github.com/go-rod/stealth"
+	"github.com/haovoanh28/gai-webscraper/internal/infrastructure/interfaces"
 )
 
-type BrowserConnection struct {
-	Browser *rod.Browser
-	Page    *rod.Page
-	Root    *rod.Element
+type Connection struct {
+	Browser interfaces.Browser
+	Page    interfaces.Page
+	Root    interfaces.Element
 }
 
-func (c *BrowserConnection) Close() {
+func (c *Connection) Close() {
 	if c.Browser != nil {
 		c.Browser.Close()
 	}
@@ -24,16 +21,13 @@ func (c *BrowserConnection) Close() {
 	}
 }
 
-func ConnectToPage(url string, timeout time.Duration) (*BrowserConnection, error) {
-	rodBrowser := rod.New().Timeout(timeout)
-	if err := rodBrowser.Connect(); err != nil {
+func ConnectToPage(url string, timeout time.Duration) (*Connection, error) {
+	browser := NewBrowser(RodDriver, timeout)
+	if err := browser.Connect(); err != nil {
 		return nil, err
 	}
 
-	// stealth must be used because of Cloudflare
-	// But it only works sometimes
-	fmt.Printf("js: %x\n\n", md5.Sum([]byte(stealth.JS)))
-	page, err := stealth.Page(rodBrowser)
+	page, err := browser.CreatePage()
 	if err != nil {
 		return nil, err
 	}
@@ -46,6 +40,12 @@ func ConnectToPage(url string, timeout time.Duration) (*BrowserConnection, error
 		return nil, err
 	}
 
-	root := page.MustElement("html")
-	return &BrowserConnection{Browser: rodBrowser, Page: page, Root: root}, nil
+	root := page.GetRootElement()
+	if err := root.WaitVisible(); err != nil {
+		page.Close()
+		browser.Close()
+		return nil, err
+	}
+
+	return &Connection{Browser: browser, Page: page, Root: root}, nil
 }
