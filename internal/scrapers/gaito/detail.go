@@ -1,8 +1,9 @@
 package gaito
 
 import (
-	"strings"
 	"time"
+
+	"github.com/haovoanh28/gai-webscraper/internal/transformer"
 
 	"github.com/haovoanh28/gai-webscraper/internal/infrastructure/browser"
 	"github.com/haovoanh28/gai-webscraper/internal/models"
@@ -32,29 +33,18 @@ func (s *detailPageScraper) getBasicInfo() (*models.HoeInfo, error) {
 		return nil, errutil.WrapError("get detail info tab element", err, s.url)
 	}
 
-	hoeInfo := models.HoeInfo{
+	hoeInfo := &models.HoeInfo{
 		OriginID: id,
 		Url:      s.url,
 	}
 
 	hoeInfo.Name = containerEle.MustFind(detailPageSelectors.Name).MustGetText()
-
 	hoeInfo.ImageUrl = containerEle.MustFind(detailPageSelectors.ImageUrl).MustGetAttribute("src")
-
-	price := detailInfoTabEle.MustFind(detailPageSelectors.Price).MustGetText()
-	// Ex: "300 k" => "300k"
-	hoeInfo.Price = strings.ReplaceAll(price, "\u00A0", "")
-	// Ex: "1.000k" => "1000k"
-	hoeInfo.Price = strings.ReplaceAll(hoeInfo.Price, ".", "")
-
-	// Ex: "0123.456.789" -> "0123456789"
-	phone := detailInfoTabEle.MustFind(detailPageSelectors.Phone).MustGetText()
-	hoeInfo.Phone = strings.ReplaceAll(phone, ".", "")
-
+	hoeInfo.Price = detailInfoTabEle.MustFind(detailPageSelectors.Price).MustGetText()
+	hoeInfo.Phone = detailInfoTabEle.MustFind(detailPageSelectors.Phone).MustGetText()
 	hoeInfo.Address = detailInfoTabEle.MustFind(detailPageSelectors.Address).MustGetText()
 	hoeInfo.Provider = detailInfoTabEle.MustFind(detailPageSelectors.Author).MustGetText()
 	hoeInfo.Status = detailInfoTabEle.MustFind(detailPageSelectors.Status).MustGetText()
-
 	hoeInfo.BirthYear = detailInfoTabEle.MustFind(detailPageSelectors.BirthYear).MustGetText()
 	hoeInfo.Height = detailInfoTabEle.MustFind(detailPageSelectors.Height).MustGetText()
 	hoeInfo.Weight = detailInfoTabEle.MustFind(detailPageSelectors.Weight).MustGetText()
@@ -63,7 +53,9 @@ func (s *detailPageScraper) getBasicInfo() (*models.HoeInfo, error) {
 	hoeInfo.Duration = detailInfoTabEle.MustFind(detailPageSelectors.Duration).MustGetText()
 	hoeInfo.WorkTime = detailInfoTabEle.MustFind(detailPageSelectors.WorkTime).MustGetText()
 
-	return &hoeInfo, nil
+	hoeInfo = transformer.TransformHoe(hoeInfo)
+
+	return hoeInfo, nil
 }
 
 func (s *detailPageScraper) getReportURLs() ([]*models.HoeReport, error) {

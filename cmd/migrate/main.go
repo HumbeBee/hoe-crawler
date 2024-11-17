@@ -1,12 +1,10 @@
 package main
 
-import (
-	"github.com/haovoanh28/gai-webscraper/internal/db"
-)
+import "github.com/haovoanh28/gai-webscraper/internal/infrastructure/database"
 
 func main() {
-	dbConfig := db.NewConfig()
-	dbo, err := db.GetDB(dbConfig)
+	dbConfig := database.NewConfig()
+	dbo, err := database.GetDB(dbConfig)
 	if err != nil {
 		panic(err)
 	}

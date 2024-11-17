@@ -6,27 +6,28 @@ import (
 )
 
 type HoeInfo struct {
-	ID        uint         `gorm:"primaryKey"`
-	OriginID  string       `gorm:"column:origin_id;unique"`
-	Url       string       `gorm:"column:url"`
-	Name      string       `gorm:"column:name"`
-	ImageUrl  string       `gorm:"column:image_url"`
-	Price     string       `gorm:"column:price"`
-	Phone     string       `gorm:"column:phone"`
-	Address   string       `gorm:"column:address"`
-	Provider  string       `gorm:"column:provider"`
-	Status    string       `gorm:"column:status"`
-	BirthYear string       `gorm:"column:birth_year"`
-	Height    string       `gorm:"column:height"`
-	Weight    string       `gorm:"column:weight"`
-	Country   string       `gorm:"column:country"`
-	Service   string       `gorm:"column:service"`
-	Duration  string       `gorm:"column:duration"`
-	WorkTime  string       `gorm:"column:work_time"`
-	Site      string       `gorm:"column:site"`
-	CreatedAt time.Time    `gorm:"column:created_at"`
-	UpdatedAt time.Time    `gorm:"column:updated_at"`
-	Reports   []*HoeReport `gorm:"foreignKey:HoeID;references:ID;constraint:OnDelete:CASCADE"`
+	ID               uint              `gorm:"primaryKey"`
+	OriginID         string            `gorm:"column:origin_id;unique"`
+	Site             string            `gorm:"column:site"`
+	Url              string            `gorm:"column:url"`
+	Name             string            `gorm:"column:name"`
+	ImageUrl         string            `gorm:"column:image_url"`
+	Price            string            `gorm:"column:price"`
+	Phone            string            `gorm:"column:phone"`
+	Address          string            `gorm:"column:address"`
+	Provider         string            `gorm:"column:provider"`
+	Status           string            `gorm:"column:status"`
+	BirthYear        string            `gorm:"column:birth_year"`
+	Height           string            `gorm:"column:height"`
+	Weight           string            `gorm:"column:weight"`
+	Country          string            `gorm:"column:country"`
+	Service          string            `gorm:"column:service"`
+	Duration         string            `gorm:"column:duration"`
+	WorkTime         string            `gorm:"column:work_time"`
+	CreatedAt        time.Time         `gorm:"column:created_at"`
+	UpdatedAt        time.Time         `gorm:"column:updated_at"`
+	Reports          []*HoeReport      `gorm:"foreignKey:HoeID;references:ID;"`
+	WorkingHistories []*WorkingHistory `gorm:"foreignKey:HoeID;references:ID;"`
 }
 
 func (HoeInfo) TableName() string {
