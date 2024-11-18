@@ -17,10 +17,12 @@ func seedSites(db *gorm.DB) error {
 	sites := []models.Site{
 		{
 			Name:      "gaito",
+			BaseURL:   "https://gaito.love",
 			IsExpired: false,
 		},
 		{
 			Name:      "gaigu",
+			BaseURL:   "https://gaigu31.tv",
 			IsExpired: false,
 		},
 	}
@@ -32,6 +34,11 @@ func seedSites(db *gorm.DB) error {
 			return result.Error
 		}
 	}
+
+	return nil
+}
+
+func seedCities(db *gorm.DB) error {
 
 	return nil
 }

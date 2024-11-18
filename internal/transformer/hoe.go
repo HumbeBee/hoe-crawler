@@ -3,12 +3,13 @@ package transformer
 import (
 	"strings"
 
+	"github.com/haovoanh28/gai-webscraper/internal/dto"
 	"github.com/haovoanh28/gai-webscraper/internal/models"
 )
 
-func TransformHoe(hoe *models.HoeInfo) *models.HoeInfo {
-	hoe.Price = transformPrice(hoe.Price)
-	hoe.Phone = transformPhone(hoe.Phone)
+func TransformHoe(rawInfo dto.RawHoeData) models.HoeInfo {
+	rawInfo.Price = transformPrice(rawInfo.Price)
+	rawInfo.Phone = transformPhone(rawInfo.Phone)
 
 	return hoe
 }

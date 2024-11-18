@@ -3,7 +3,7 @@ package gaito
 import (
 	"time"
 
-	"github.com/haovoanh28/gai-webscraper/internal/transformer"
+	"github.com/haovoanh28/gai-webscraper/internal/dto"
 
 	"github.com/haovoanh28/gai-webscraper/internal/infrastructure/browser"
 	"github.com/haovoanh28/gai-webscraper/internal/models"
@@ -33,29 +33,29 @@ func (s *detailPageScraper) getBasicInfo() (*models.HoeInfo, error) {
 		return nil, errutil.WrapError("get detail info tab element", err, s.url)
 	}
 
-	hoeInfo := &models.HoeInfo{
+	rawInfo := dto.RawHoeData{
 		OriginID: id,
 		Url:      s.url,
 	}
 
-	hoeInfo.Name = containerEle.MustFind(detailPageSelectors.Name).MustGetText()
-	hoeInfo.ImageUrl = containerEle.MustFind(detailPageSelectors.ImageUrl).MustGetAttribute("src")
-	hoeInfo.Price = detailInfoTabEle.MustFind(detailPageSelectors.Price).MustGetText()
-	hoeInfo.Phone = detailInfoTabEle.MustFind(detailPageSelectors.Phone).MustGetText()
-	hoeInfo.Address = detailInfoTabEle.MustFind(detailPageSelectors.Address).MustGetText()
-	hoeInfo.Provider = detailInfoTabEle.MustFind(detailPageSelectors.Author).MustGetText()
-	hoeInfo.Status = detailInfoTabEle.MustFind(detailPageSelectors.Status).MustGetText()
-	hoeInfo.BirthYear = detailInfoTabEle.MustFind(detailPageSelectors.BirthYear).MustGetText()
-	hoeInfo.Height = detailInfoTabEle.MustFind(detailPageSelectors.Height).MustGetText()
-	hoeInfo.Weight = detailInfoTabEle.MustFind(detailPageSelectors.Weight).MustGetText()
-	hoeInfo.Country = detailInfoTabEle.MustFind(detailPageSelectors.Country).MustGetText()
-	hoeInfo.Service = detailInfoTabEle.MustFind(detailPageSelectors.Service).MustGetText()
-	hoeInfo.Duration = detailInfoTabEle.MustFind(detailPageSelectors.Duration).MustGetText()
-	hoeInfo.WorkTime = detailInfoTabEle.MustFind(detailPageSelectors.WorkTime).MustGetText()
+	rawInfo.Name = containerEle.MustFind(detailPageSelectors.Name).MustGetText()
+	rawInfo.ImageUrl = containerEle.MustFind(detailPageSelectors.ImageUrl).MustGetAttribute("src")
+	rawInfo.Price = detailInfoTabEle.MustFind(detailPageSelectors.Price).MustGetText()
+	rawInfo.Phone = detailInfoTabEle.MustFind(detailPageSelectors.Phone).MustGetText()
+	rawInfo.Address = detailInfoTabEle.MustFind(detailPageSelectors.Address).MustGetText()
+	rawInfo.Provider = detailInfoTabEle.MustFind(detailPageSelectors.Author).MustGetText()
+	rawInfo.Status = detailInfoTabEle.MustFind(detailPageSelectors.Status).MustGetText()
+	rawInfo.BirthYear = detailInfoTabEle.MustFind(detailPageSelectors.BirthYear).MustGetText()
+	rawInfo.Height = detailInfoTabEle.MustFind(detailPageSelectors.Height).MustGetText()
+	rawInfo.Weight = detailInfoTabEle.MustFind(detailPageSelectors.Weight).MustGetText()
+	rawInfo.Country = detailInfoTabEle.MustFind(detailPageSelectors.Country).MustGetText()
+	rawInfo.Service = detailInfoTabEle.MustFind(detailPageSelectors.Service).MustGetText()
+	rawInfo.Duration = detailInfoTabEle.MustFind(detailPageSelectors.Duration).MustGetText()
+	rawInfo.WorkTime = detailInfoTabEle.MustFind(detailPageSelectors.WorkTime).MustGetText()
 
-	hoeInfo = transformer.TransformHoe(hoeInfo)
+	// rawInfo = transformer.TransformHoe(rawInfo)
 
-	return hoeInfo, nil
+	return nil, nil
 }
 
 func (s *detailPageScraper) getReportURLs() ([]*models.HoeReport, error) {

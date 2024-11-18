@@ -52,11 +52,11 @@ func (s *scraper) ProcessDetailPage(detailUrl string) (*models.HoeInfo, error) {
 	}
 
 	// Get report urls
-	reports, err := detailScraper.getReportURLs()
-	if err != nil {
-		return nil, errutil.WrapError("get report urls", err, url)
-	}
+	// reports, err := detailScraper.getReportURLs()
+	// if err != nil {
+	// 	return nil, errutil.WrapError("get report urls", err, url)
+	// }
 
-	hoeInfo.Reports = reports
+	// hoeInfo.Reports = reports
 	return hoeInfo, nil
 }

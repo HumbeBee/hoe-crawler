@@ -39,27 +39,30 @@ func CreateAppContext() (*AppContext, error) {
 	site := flag.String("site", "", "The site to scrape")
 	flag.Parse()
 
-	siteType := definitions.SiteType(*site)
-	baseURL, ok := definitions.SiteConfigs[siteType]
-	if !ok {
-		return nil, fmt.Errorf("unknown site: %s", *site)
+	logger := InitLogger()
+
+	db, err := database.InitDB()
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize database: %v", err)
 	}
 
-	logger := InitLogger()
+	siteRepo := repository.NewSiteRepository(db)
+	siteInfo, err := siteRepo.GetSiteByName(*site)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get site by name: %v", err)
+	}
+
 	baseConfig := definitions.ScraperConfig{
-		Site:              siteType,
-		BaseURL:           baseURL,
+		SiteID:            siteInfo.ID,
+		SiteName:          siteInfo.Name,
+		BaseURL:           siteInfo.BaseURL,
 		RequestsPerSecond: 1.0,
 		Logger:            logger,
 	}
 
 	scraper := scrapers.CreateScraper(baseConfig)
 
-	db, err := database.InitDB()
-	if err != nil {
-		return nil, err
-	}
-	hoeRepo := repository.NewHoeRepository(db)
+	hoeRepo := repository.NewHoeRepository(db, logger)
 	hoeService := service.NewHoeService(hoeRepo, logger)
 
 	return &AppContext{

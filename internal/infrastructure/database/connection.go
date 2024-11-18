@@ -9,12 +9,12 @@ import (
 
 func InitDB() (*gorm.DB, error) {
 	cfg := NewConfig()
-	dbo, err := GetDB(cfg)
+	db, err := GetDB(cfg)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %v", err)
 	}
 
-	return dbo, nil
+	return db, nil
 }
 
 func NewConfig() *DBConfig {
