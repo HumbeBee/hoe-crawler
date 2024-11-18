@@ -1,8 +1,10 @@
 package repository
 
 import (
-	"github.com/haovoanh28/gai-webscraper/internal/infrastructure/database"
+	"fmt"
+
 	"github.com/haovoanh28/gai-webscraper/internal/models"
+	"gorm.io/gorm"
 )
 
 type HoeRepository interface {
@@ -10,13 +12,28 @@ type HoeRepository interface {
 }
 
 type hoeRepo struct {
-	dbo *database.DBO
+	db *gorm.DB
 }
 
-func NewHoeRepository(dbo *database.DBO) HoeRepository {
-	return &hoeRepo{dbo: dbo}
+func NewHoeRepository(db *gorm.DB) HoeRepository {
+	return &hoeRepo{db: db}
 }
 
 func (r *hoeRepo) Save(hoe *models.HoeInfo) error {
-	return r.dbo.InsertHoe(hoe)
+	transaction := r.db.Begin()
+
+	if err := transaction.Create(hoe).Error; err != nil {
+		transaction.Rollback()
+		return err
+	}
+
+	if err := transaction.Commit().Error; err != nil {
+		transaction.Rollback()
+		return err
+	}
+
+	fmt.Println("Inserted")
+	hoe.Print()
+
+	return nil
 }

@@ -4,33 +4,22 @@ import (
 	"fmt"
 
 	"github.com/haovoanh28/gai-webscraper/internal/models"
+	"gorm.io/gorm"
 )
 
-func (dbo *DBO) Migrate() error {
-	err := dbo.db.AutoMigrate(&models.Site{})
-	if err != nil {
-		return fmt.Errorf("failed to migrate Site : %v", err)
+func Migrate(db *gorm.DB) error {
+	models := []interface{}{
+		&models.Site{},
+		&models.City{},
+		&models.Province{},
+		&models.HoeInfo{},
+		&models.HoeReport{},
 	}
 
-	err = dbo.db.AutoMigrate(&models.City{})
-	if err != nil {
-		return fmt.Errorf("failed to migrate City : %v", err)
+	for _, model := range models {
+		if err := db.AutoMigrate(model); err != nil {
+			return fmt.Errorf("failed to migrate %T: %v", model, err)
+		}
 	}
-
-	err = dbo.db.AutoMigrate(&models.Province{})
-	if err != nil {
-		return fmt.Errorf("failed to migrate Province : %v", err)
-	}
-
-	err = dbo.db.AutoMigrate(&models.HoeInfo{})
-	if err != nil {
-		return fmt.Errorf("failed to migrate HoeInfo : %v", err)
-	}
-
-	err = dbo.db.AutoMigrate(&models.HoeReport{})
-	if err != nil {
-		return fmt.Errorf("failed to migrate HoeReport : %v", err)
-	}
-
 	return nil
 }

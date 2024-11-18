@@ -1,16 +1,19 @@
 package database
 
-import "github.com/haovoanh28/gai-webscraper/internal/models"
+import (
+	"github.com/haovoanh28/gai-webscraper/internal/models"
+	"gorm.io/gorm"
+)
 
-func (dbo *DBO) SeedDefaultData() error {
-	if err := dbo.seedSites(); err != nil {
+func SeedDefaultData(db *gorm.DB) error {
+	if err := seedSites(db); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (dbo *DBO) seedSites() error {
+func seedSites(db *gorm.DB) error {
 	sites := []models.Site{
 		{
 			Name:      "gaito",
@@ -23,7 +26,7 @@ func (dbo *DBO) seedSites() error {
 	}
 
 	for _, site := range sites {
-		result := dbo.db.Where(models.Site{Name: site.Name}).
+		result := db.Where(models.Site{Name: site.Name}).
 			FirstOrCreate(&site)
 		if result.Error != nil {
 			return result.Error

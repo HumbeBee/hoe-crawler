@@ -55,11 +55,11 @@ func CreateAppContext() (*AppContext, error) {
 
 	scraper := scrapers.CreateScraper(baseConfig)
 
-	dbo, err := database.InitDB()
+	db, err := database.InitDB()
 	if err != nil {
 		return nil, err
 	}
-	hoeRepo := repository.NewHoeRepository(dbo)
+	hoeRepo := repository.NewHoeRepository(db)
 	hoeService := service.NewHoeService(hoeRepo, logger)
 
 	return &AppContext{

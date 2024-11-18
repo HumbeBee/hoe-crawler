@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitDB() (*DBO, error) {
+func InitDB() (*gorm.DB, error) {
 	cfg := NewConfig()
 	dbo, err := GetDB(cfg)
 	if err != nil {
@@ -32,23 +32,20 @@ func (c *DBConfig) BuildConnectionString() string {
 		c.User, c.Password, c.Host, c.Port, c.DBName)
 }
 
-func GetDB(cfg *DBConfig) (*DBO, error) {
+func GetDB(cfg *DBConfig) (*gorm.DB, error) {
 	db, err := gorm.Open(mysql.Open(cfg.BuildConnectionString()), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
 
-	return &DBO{db: db}, nil
+	return db, nil
 }
 
-func (dbo *DBO) Close() {
-	sqlDB, err := dbo.db.DB()
+func CloseDB(db *gorm.DB) error {
+	sqlDB, err := db.DB()
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	err = sqlDB.Close()
-	if err != nil {
-		panic(err)
-	}
+	return sqlDB.Close()
 }
