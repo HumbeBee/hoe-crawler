@@ -12,7 +12,6 @@ import (
 	"github.com/haovoanh28/gai-webscraper/internal/repository"
 	"github.com/haovoanh28/gai-webscraper/internal/scrapers"
 	"github.com/haovoanh28/gai-webscraper/internal/service"
-	"github.com/haovoanh28/gai-webscraper/internal/utils/errutil"
 	"github.com/haovoanh28/gai-webscraper/internal/utils/logutil"
 )
 
@@ -56,10 +55,9 @@ func CreateAppContext() (*AppContext, error) {
 
 	scraper := scrapers.CreateScraper(baseConfig)
 
-	dbConfig := database.NewConfig()
-	dbo, err := database.GetDB(dbConfig)
+	dbo, err := database.InitDB()
 	if err != nil {
-		return nil, errutil.WrapError("failed to connect to database", err, "")
+		return nil, err
 	}
 	hoeRepo := repository.NewHoeRepository(dbo)
 	hoeService := service.NewHoeService(hoeRepo, logger)

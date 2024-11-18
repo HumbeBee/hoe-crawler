@@ -6,5 +6,5 @@ type ScraperConfig struct {
 	Site              SiteType
 	BaseURL           string
 	RequestsPerSecond float64
-	Logger            *logutil.Logger
+	Logger            logutil.Logger
 }

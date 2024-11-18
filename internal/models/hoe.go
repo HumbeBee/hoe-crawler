@@ -8,7 +8,8 @@ import (
 type HoeInfo struct {
 	ID               uint              `gorm:"primaryKey"`
 	OriginID         string            `gorm:"column:origin_id;unique"`
-	Site             string            `gorm:"column:site"`
+	SiteID           uint              `gorm:"column:site_id"`
+	Site             Site              `gorm:"foreignKey:SiteID;references:ID;"`
 	Url              string            `gorm:"column:url"`
 	Name             string            `gorm:"column:name"`
 	ImageUrl         string            `gorm:"column:image_url"`
