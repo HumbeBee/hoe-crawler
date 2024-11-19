@@ -61,7 +61,6 @@ func CreateAppContext() (*AppContext, error) {
 	}
 
 	scraper := scrapers.CreateScraper(baseConfig)
-
 	hoeRepo := repository.NewHoeRepository(db, logger)
 	hoeService := service.NewHoeService(hoeRepo, logger)
 

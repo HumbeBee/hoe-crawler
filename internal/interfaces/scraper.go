@@ -1,8 +1,10 @@
 package interfaces
 
-import "github.com/haovoanh28/gai-webscraper/internal/models"
+import (
+	"github.com/haovoanh28/gai-webscraper/internal/dto"
+)
 
 type Scraper interface {
-	ProcessListPage() ([]string, error)
-	ProcessDetailPage(url string) (*models.HoeInfo, error)
+	GetDetailURLs() ([]string, error)
+	GetRawHoeData(url string) (*dto.RawHoeData, error)
 }

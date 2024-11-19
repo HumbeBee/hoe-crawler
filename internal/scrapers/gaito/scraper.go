@@ -20,7 +20,7 @@ func NewScraper(config definitions.ScraperConfig) *scraper {
 	}
 }
 
-func (s *scraper) ProcessListPage() ([]string, error) {
+func (s *scraper) GetDetailURLs() ([]string, error) {
 	url := s.BaseURL + "/gai-goi/khu-vuc/Hồ%20Chí%20Minh/Quận%207"
 
 	s.Logger.Info(fmt.Sprintf("Processing %s", url))
@@ -35,7 +35,7 @@ func (s *scraper) ProcessListPage() ([]string, error) {
 	return listScraper.getHoeURLs()
 }
 
-func (s *scraper) ProcessDetailPage(detailUrl string) (*models.HoeInfo, error) {
+func (s *scraper) GetRawHoeInfo(detailUrl string) (*models.HoeInfo, error) {
 	url := s.BaseURL + detailUrl
 
 	// Wait until content element is visible
