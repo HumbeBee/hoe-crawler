@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/haovoanh28/gai-webscraper/internal/definitions"
+	"github.com/haovoanh28/gai-webscraper/internal/dto"
 	"github.com/haovoanh28/gai-webscraper/internal/infrastructure/browser"
-	"github.com/haovoanh28/gai-webscraper/internal/models"
 	"github.com/haovoanh28/gai-webscraper/internal/utils/errutil"
 )
 
@@ -35,7 +35,7 @@ func (s *scraper) GetDetailURLs() ([]string, error) {
 	return listScraper.getHoeURLs()
 }
 
-func (s *scraper) GetRawHoeInfo(detailUrl string) (*models.HoeInfo, error) {
+func (s *scraper) GetRawHoeData(detailUrl string) (*dto.RawHoeData, error) {
 	url := s.BaseURL + detailUrl
 
 	// Wait until content element is visible

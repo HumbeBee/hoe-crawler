@@ -20,7 +20,7 @@ func newDetailPageScraper(conn *browser.Connection, url string) *detailPageScrap
 	return &detailPageScraper{conn: conn, url: url}
 }
 
-func (s *detailPageScraper) getBasicInfo() (*models.HoeInfo, error) {
+func (s *detailPageScraper) getBasicInfo() (*dto.RawHoeData, error) {
 	id := utils.GetIDFromUrl(s.url)
 
 	containerEle, err := s.conn.Root.Find(detailPageSelectors.PageContainer)
@@ -33,7 +33,7 @@ func (s *detailPageScraper) getBasicInfo() (*models.HoeInfo, error) {
 		return nil, errutil.WrapError("get detail info tab element", err, s.url)
 	}
 
-	rawInfo := dto.RawHoeData{
+	rawInfo := &dto.RawHoeData{
 		OriginID: id,
 		Url:      s.url,
 	}
@@ -53,7 +53,7 @@ func (s *detailPageScraper) getBasicInfo() (*models.HoeInfo, error) {
 	rawInfo.Duration = detailInfoTabEle.MustFind(detailPageSelectors.Duration).MustGetText()
 	rawInfo.WorkTime = detailInfoTabEle.MustFind(detailPageSelectors.WorkTime).MustGetText()
 
-	return nil, nil
+	return rawInfo, nil
 }
 
 func (s *detailPageScraper) getReportURLs() ([]*models.HoeReport, error) {
