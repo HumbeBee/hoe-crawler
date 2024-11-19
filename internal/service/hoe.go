@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+
 	"github.com/haovoanh28/gai-webscraper/internal/interfaces"
 	"github.com/haovoanh28/gai-webscraper/internal/repository"
 	"github.com/haovoanh28/gai-webscraper/internal/utils/logutil"
