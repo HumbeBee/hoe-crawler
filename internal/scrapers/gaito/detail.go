@@ -53,8 +53,6 @@ func (s *detailPageScraper) getBasicInfo() (*models.HoeInfo, error) {
 	rawInfo.Duration = detailInfoTabEle.MustFind(detailPageSelectors.Duration).MustGetText()
 	rawInfo.WorkTime = detailInfoTabEle.MustFind(detailPageSelectors.WorkTime).MustGetText()
 
-	// rawInfo = transformer.TransformHoe(rawInfo)
-
 	return nil, nil
 }
 

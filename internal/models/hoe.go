@@ -5,17 +5,10 @@ import (
 	"time"
 )
 
-type HoeStatus string
-
-const (
-	Active   HoeStatus = "active"
-	Inactive HoeStatus = "inactive"
-)
-
 type HoeInfo struct {
 	ID        uint      `gorm:"primaryKey"`
 	Name      string    `gorm:"column:name"`
-	Phone     string    `gorm:"column:phone;index"`
+	Phone     string    `gorm:"column:phone;index;unique"`
 	BirthYear string    `gorm:"column:birth_year"`
 	Height    string    `gorm:"column:height"`
 	Weight    string    `gorm:"column:weight"`
@@ -29,6 +22,15 @@ type HoeInfo struct {
 
 func (HoeInfo) TableName() string {
 	return "hoes"
+}
+
+func (h *HoeInfo) GetProfileBySite(siteID uint) *HoeProfile {
+	for _, profile := range h.Profiles {
+		if profile.SiteID == siteID {
+			return &profile
+		}
+	}
+	return nil
 }
 
 func (hoe HoeInfo) Print() {
