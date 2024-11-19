@@ -24,7 +24,7 @@ type HoeInfo struct {
 	UpdatedAt time.Time `gorm:"column:updated_at"`
 
 	// Site-specific profiles
-	Profiles []HoeProfile `gorm:"foreignKey:HoeID"`
+	Profiles []HoeProfile `gorm:"foreignKey:HoeID;references:ID"`
 }
 
 func (HoeInfo) TableName() string {
