@@ -64,6 +64,7 @@ func seedCities(db *gorm.DB) error {
 				{Name: "Quận 12", Code: "Q12"},
 				{Name: "Quận Bình Tân", Code: "BTN"},
 				{Name: "Quận Bình Thạnh", Code: "BTH"},
+				{Name: "Quận Bình Chánh", Code: "BCH"},
 				{Name: "Quận Gò Vấp", Code: "GV"},
 				{Name: "Quận Phú Nhuận", Code: "PN"},
 				{Name: "Quận Tân Bình", Code: "TB"},
