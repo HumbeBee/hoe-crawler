@@ -24,5 +24,5 @@ type HoeProfile struct {
 	UpdatedAt time.Time             `gorm:"column:updated_at"`
 
 	Site    Site        `gorm:"foreignKey:SiteID"`
-	Reports []HoeReport `gorm:"foreignKey:ProfileID"`
+	Reports []HoeReport `gorm:"foreignKey:HoeProfileID"`
 }

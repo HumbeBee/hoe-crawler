@@ -17,8 +17,8 @@ import (
 
 type AppContext struct {
 	Scraper    interfaces.Scraper
-	Logger     *logutil.Logger
 	HoeService service.HoeService
+	Logger     *logutil.Logger
 }
 
 func InitLogger() *logutil.Logger {
@@ -61,8 +61,10 @@ func CreateAppContext() (*AppContext, error) {
 	}
 
 	scraper := scrapers.CreateScraper(baseConfig)
+
 	hoeRepo := repository.NewHoeRepository(db, logger)
-	hoeService := service.NewHoeService(hoeRepo, logger, scraper)
+	workingHistoryRepo := repository.NewWorkingHistoryRepository(db, logger)
+	hoeService := service.NewHoeService(hoeRepo, workingHistoryRepo, logger, scraper)
 
 	return &AppContext{
 		Scraper:    scraper,

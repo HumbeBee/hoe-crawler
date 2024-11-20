@@ -11,4 +11,8 @@ func main() {
 	if err := database.Migrate(db); err != nil {
 		panic(err)
 	}
+
+	if err := database.SeedDefaultData(db); err != nil {
+		panic(err)
+	}
 }

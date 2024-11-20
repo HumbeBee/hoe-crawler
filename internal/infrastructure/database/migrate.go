@@ -22,5 +22,6 @@ func Migrate(db *gorm.DB) error {
 			return fmt.Errorf("failed to migrate %T: %v", model, err)
 		}
 	}
+
 	return nil
 }

@@ -15,14 +15,21 @@ type HoeService interface {
 }
 
 type hoeService struct {
-	scraper interfaces.Scraper
-	repo    repository.HoeRepository
-	logger  *logutil.Logger
-	mapper  MapperService
+	scraper                  interfaces.Scraper
+	hoeRepository            repository.HoeRepository
+	workingHistoryRepository repository.WorkingHistoryRepository
+	logger                   *logutil.Logger
+	mapper                   MapperService
 }
 
-func NewHoeService(repo repository.HoeRepository, logger *logutil.Logger, scraper interfaces.Scraper) HoeService {
-	return &hoeService{repo: repo, logger: logger, scraper: scraper, mapper: NewMapperService()}
+func NewHoeService(hoeRepo repository.HoeRepository, workingHistoryRepo repository.WorkingHistoryRepository, logger *logutil.Logger, scraper interfaces.Scraper) HoeService {
+	return &hoeService{
+		hoeRepository:            hoeRepo,
+		workingHistoryRepository: workingHistoryRepo,
+		logger:                   logger,
+		scraper:                  scraper,
+		mapper:                   NewMapperService(),
+	}
 }
 
 func (hs *hoeService) ProcessListPage() error {
