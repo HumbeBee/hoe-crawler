@@ -10,5 +10,8 @@ func main() {
 		panic(err)
 	}
 
-	appContext.HoeService.ProcessListPage()
+	err = appContext.HoeService.ProcessListPage()
+	if err != nil {
+		appContext.Logger.Fatal(err.Error())
+	}
 }

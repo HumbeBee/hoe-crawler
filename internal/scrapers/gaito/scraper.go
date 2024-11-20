@@ -7,7 +7,6 @@ import (
 	"github.com/haovoanh28/gai-webscraper/internal/definitions"
 	"github.com/haovoanh28/gai-webscraper/internal/dto"
 	"github.com/haovoanh28/gai-webscraper/internal/infrastructure/browser"
-	"github.com/haovoanh28/gai-webscraper/internal/utils/errutil"
 )
 
 type scraper struct {
@@ -27,7 +26,7 @@ func (s *scraper) GetDetailURLs() ([]string, error) {
 
 	conn, err := browser.ConnectToPage(url, 30*time.Second)
 	if err != nil {
-		return nil, errutil.WrapError("connect to page", err, url)
+		return nil, fmt.Errorf("connect to page %s: %w", url, err)
 	}
 	defer conn.Close()
 
@@ -41,14 +40,14 @@ func (s *scraper) GetRawHoeData(detailUrl string) (*dto.RawHoeData, error) {
 	// Wait until content element is visible
 	conn, err := browser.ConnectToPage(url, 2*time.Minute)
 	if err != nil {
-		return nil, errutil.WrapError("connect to page", err, url)
+		return nil, fmt.Errorf("connect to detail page %s: %w", url, err)
 	}
 	defer conn.Close()
 
 	detailScraper := newDetailPageScraper(conn, url)
 	hoeInfo, err := detailScraper.getBasicInfo()
 	if err != nil {
-		return nil, errutil.WrapError("get basic info", err, url)
+		return nil, fmt.Errorf("get basic info %s: %w", url, err)
 	}
 
 	// Get report urls

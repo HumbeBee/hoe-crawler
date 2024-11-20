@@ -1,4 +1,4 @@
-package mapper
+package service
 
 import (
 	"strings"
@@ -8,13 +8,23 @@ import (
 	"github.com/haovoanh28/gai-webscraper/internal/models"
 )
 
-func TransformHoe(rawInfo dto.RawHoeData) *models.HoeInfo {
-	rawInfo.Price = normalizePrice(rawInfo.Price)
-	rawInfo.Phone = normalizePhone(rawInfo.Phone)
+type MapperService interface {
+	TransformHoe(rawInfo dto.RawHoeData) *models.HoeInfo
+}
+
+type mapperService struct{}
+
+func NewMapperService() MapperService {
+	return &mapperService{}
+}
+
+func (s *mapperService) TransformHoe(rawInfo dto.RawHoeData) *models.HoeInfo {
+	rawInfo.Price = s.normalizePrice(rawInfo.Price)
+	rawInfo.Phone = s.normalizePhone(rawInfo.Phone)
 
 	return &models.HoeInfo{
 		Name:      strings.TrimSpace(rawInfo.Name),
-		Phone:     normalizePhone(rawInfo.Phone),
+		Phone:     rawInfo.Phone,
 		BirthYear: rawInfo.BirthYear,
 		Height:    rawInfo.Height,
 		Weight:    rawInfo.Weight,
@@ -22,14 +32,23 @@ func TransformHoe(rawInfo dto.RawHoeData) *models.HoeInfo {
 
 		Profiles: []models.HoeProfile{
 			{
-				SiteID: rawInfo.SiteID,
-				Status: mapStatus(rawInfo.Status),
+				SiteID:   rawInfo.SiteID,
+				OriginID: rawInfo.OriginID,
+				Url:      rawInfo.Url,
+				ImageUrl: rawInfo.ImageUrl,
+				Price:    rawInfo.Price,
+				Address:  rawInfo.Address,
+				Provider: rawInfo.Provider,
+				Status:   s.mapStatus(rawInfo.Status),
+				Service:  rawInfo.Service,
+				Duration: rawInfo.Duration,
+				WorkTime: rawInfo.WorkTime,
 			},
 		},
 	}
 }
 
-func normalizePrice(price string) string {
+func (s *mapperService) normalizePrice(price string) string {
 	// First clean up any special characters and spaces
 	price = strings.ReplaceAll(price, "\u00A0", "")
 	price = strings.ReplaceAll(price, ",", "")
@@ -45,12 +64,12 @@ func normalizePrice(price string) string {
 	return price
 }
 
-func normalizePhone(phone string) string {
+func (s *mapperService) normalizePhone(phone string) string {
 	phone = strings.ReplaceAll(phone, ".", "")
 	return phone
 }
 
-func mapStatus(status string) definitions.HoeStatus {
+func (s *mapperService) mapStatus(status string) definitions.HoeStatus {
 	status = strings.ToLower(strings.TrimSpace(status))
 	switch status {
 	case "đang rảnh", "online":

@@ -13,12 +13,8 @@ func main() {
 	// Example url
 	url := "/gai-goi/chi-tiet/56042/hot-girl-diep-anhmat-xinh-nguc-dep-bu-cu-dieu-luyen"
 
-	hoe, err := appContext.Scraper.GetRawHoeInfo(url)
+	err = appContext.HoeService.ProcessDetailPage(url)
 	if err != nil {
 		appContext.Logger.Fatal(err.Error())
-	}
-
-	if hoe != nil {
-		hoe.Print()
 	}
 }

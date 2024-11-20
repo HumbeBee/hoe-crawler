@@ -5,23 +5,30 @@ import (
 
 	"github.com/haovoanh28/gai-webscraper/internal/interfaces"
 	"github.com/haovoanh28/gai-webscraper/internal/repository"
+	"github.com/haovoanh28/gai-webscraper/internal/utils/errutil"
 	"github.com/haovoanh28/gai-webscraper/internal/utils/logutil"
 )
 
-type HoeService struct {
+type HoeService interface {
+	ProcessListPage() error
+	ProcessDetailPage(url string) error
+}
+
+type hoeService struct {
 	scraper interfaces.Scraper
 	repo    repository.HoeRepository
 	logger  *logutil.Logger
+	mapper  MapperService
 }
 
-func NewHoeService(repo repository.HoeRepository, logger *logutil.Logger, scraper interfaces.Scraper) *HoeService {
-	return &HoeService{repo: repo, logger: logger, scraper: scraper}
+func NewHoeService(repo repository.HoeRepository, logger *logutil.Logger, scraper interfaces.Scraper) HoeService {
+	return &hoeService{repo: repo, logger: logger, scraper: scraper, mapper: NewMapperService()}
 }
 
-func (hs *HoeService) ProcessListPage() {
+func (hs *hoeService) ProcessListPage() error {
 	detailURLs, err := hs.scraper.GetDetailURLs()
 	if err != nil {
-		hs.logger.Fatal("process list page", err.Error())
+		return errutil.WrapError("get detail urls", err, "no target")
 	}
 
 	if len(detailURLs) == 0 {
@@ -33,13 +40,18 @@ func (hs *HoeService) ProcessListPage() {
 			hs.logger.Info(url)
 		}
 	}
+
+	return nil
 }
 
-func (hs *HoeService) ProcessDetailPage() {
-	url := "/gai-goi/chi-tiet/56042/hot-girl-diep-anhmat-xinh-nguc-dep-bu-cu-dieu-luyen"
+func (hs *hoeService) ProcessDetailPage(url string) error {
+	url2 := "/gai-goi/chi-tiet/56042/hot-girl-diep-anhmat-xinh-nguc-dep-bu-cu-dieu-luyen"
 
-	hoe, err := hs.scraper.GetRawHoeData(url)
+	rawHoe, err := hs.scraper.GetRawHoeData(url2)
 	if err != nil {
-		hs.logger.Fatal(err.Error())
+		return errutil.WrapError("get raw hoe data", err, url)
 	}
+
+	// hoeInfo := .TransformHoe(rawHoe)
+	return nil
 }

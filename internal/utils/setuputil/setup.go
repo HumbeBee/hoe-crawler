@@ -18,7 +18,7 @@ import (
 type AppContext struct {
 	Scraper    interfaces.Scraper
 	Logger     *logutil.Logger
-	HoeService *service.HoeService
+	HoeService service.HoeService
 }
 
 func InitLogger() *logutil.Logger {
