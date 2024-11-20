@@ -75,7 +75,7 @@ func (s *mapperService) normalizePhone(phone string) string {
 func (s *mapperService) mapStatus(status string) definitions.HoeStatus {
 	status = strings.ToLower(strings.TrimSpace(status))
 	switch status {
-	case "đang rảnh", "online":
+	case "đang rảnh", "online", "hoạt động":
 		return definitions.HoeStatusActive
 	case "bận", "offline":
 		return definitions.HoeStatusInactive
