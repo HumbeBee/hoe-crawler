@@ -25,9 +25,9 @@ func (HoeInfo) TableName() string {
 }
 
 func (h *HoeInfo) GetProfileBySite(siteID uint) *HoeProfile {
-	for _, profile := range h.Profiles {
-		if profile.SiteID == siteID {
-			return &profile
+	for i := range h.Profiles {
+		if h.Profiles[i].SiteID == siteID {
+			return &h.Profiles[i]
 		}
 	}
 	return nil
