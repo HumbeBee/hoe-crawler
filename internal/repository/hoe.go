@@ -12,6 +12,7 @@ import (
 
 type HoeRepository interface {
 	Save(hoe *models.HoeInfo) error
+	GetHoeByPhone(phone string) (*models.HoeInfo, error)
 }
 
 type hoeRepo struct {
@@ -60,12 +61,13 @@ func (r *hoeRepo) Save(hoe *models.HoeInfo) error {
 
 func (r *hoeRepo) updateExistingHoe(tx *gorm.DB, existing *models.HoeInfo, new *models.HoeInfo) error {
 	// Update common info
-	if err := tx.Model(existing).Updates(map[string]interface{}{
-		"name":       new.Name,
-		"birth_year": new.BirthYear,
-		"height":     new.Height,
-		"weight":     new.Weight,
-		"country":    new.Country,
+	if err := tx.Model(existing).Updates(models.HoeInfo{
+		Name:          new.Name,
+		BirthYear:     new.BirthYear,
+		Height:        new.Height,
+		Weight:        new.Weight,
+		Country:       new.Country,
+		LastScrapedAt: time.Now(), // Always non-zero since it's current time
 	}).Error; err != nil {
 		return fmt.Errorf("failed to update hoe info: %v", err)
 	}
@@ -87,22 +89,29 @@ func (r *hoeRepo) updateExistingHoe(tx *gorm.DB, existing *models.HoeInfo, new *
 		return fmt.Errorf("database error: %v", err)
 	} else {
 		// Update existing profile
-		if err := tx.Model(&existingProfile).Updates(map[string]interface{}{
-			"origin_id":       newProfile.OriginID,
-			"url":             newProfile.Url,
-			"image_url":       newProfile.ImageUrl,
-			"price":           newProfile.Price,
-			"address":         newProfile.Address,
-			"provider":        newProfile.Provider,
-			"status":          newProfile.Status,
-			"service":         newProfile.Service,
-			"duration":        newProfile.Duration,
-			"work_time":       newProfile.WorkTime,
-			"last_scraped_at": time.Now(),
+		if err := tx.Model(&existingProfile).Updates(models.HoeProfile{
+			OriginID: newProfile.OriginID,
+			Url:      newProfile.Url,
+			ImageUrl: newProfile.ImageUrl,
+			Price:    newProfile.Price,
+			Address:  newProfile.Address,
+			Provider: newProfile.Provider,
+			Status:   newProfile.Status,
+			Service:  newProfile.Service,
+			Duration: newProfile.Duration,
+			WorkTime: newProfile.WorkTime,
 		}).Error; err != nil {
 			return fmt.Errorf("failed to update profile: %v", err)
 		}
 	}
 
 	return nil
+}
+
+func (r *hoeRepo) GetHoeByPhone(phone string) (*models.HoeInfo, error) {
+	var hoe models.HoeInfo
+	if err := r.db.Where("phone = ?", phone).First(&hoe).Error; err != nil {
+		return nil, err
+	}
+	return &hoe, nil
 }

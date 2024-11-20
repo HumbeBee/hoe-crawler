@@ -9,7 +9,7 @@ import (
 )
 
 type MapperService interface {
-	TransformHoe(rawInfo dto.RawHoeData) *models.HoeInfo
+	TransformHoe(rawInfo *dto.RawHoeData) *models.HoeInfo
 }
 
 type mapperService struct{}
@@ -18,7 +18,7 @@ func NewMapperService() MapperService {
 	return &mapperService{}
 }
 
-func (s *mapperService) TransformHoe(rawInfo dto.RawHoeData) *models.HoeInfo {
+func (s *mapperService) TransformHoe(rawInfo *dto.RawHoeData) *models.HoeInfo {
 	rawInfo.Price = s.normalizePrice(rawInfo.Price)
 	rawInfo.Phone = s.normalizePhone(rawInfo.Phone)
 
@@ -66,6 +66,9 @@ func (s *mapperService) normalizePrice(price string) string {
 
 func (s *mapperService) normalizePhone(phone string) string {
 	phone = strings.ReplaceAll(phone, ".", "")
+	phone = strings.ReplaceAll(phone, "-", "")
+	phone = strings.ReplaceAll(phone, " ", "")
+
 	return phone
 }
 

@@ -52,6 +52,8 @@ func (hs *hoeService) ProcessDetailPage(url string) error {
 		return errutil.WrapError("get raw hoe data", err, url)
 	}
 
-	// hoeInfo := .TransformHoe(rawHoe)
+	hoeInfo := hs.mapper.TransformHoe(rawHoe)
+	hoeInfo.Print()
+
 	return nil
 }

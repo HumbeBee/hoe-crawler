@@ -14,6 +14,7 @@ func Migrate(db *gorm.DB) error {
 		&models.Province{},
 		&models.HoeInfo{},
 		&models.HoeReport{},
+		&models.WorkingHistory{},
 	}
 
 	for _, model := range models {

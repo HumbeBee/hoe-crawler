@@ -6,18 +6,21 @@ import (
 )
 
 type HoeInfo struct {
-	ID        uint      `gorm:"primaryKey"`
-	Name      string    `gorm:"column:name"`
-	Phone     string    `gorm:"column:phone;index;unique"`
-	BirthYear string    `gorm:"column:birth_year"`
-	Height    string    `gorm:"column:height"`
-	Weight    string    `gorm:"column:weight"`
-	Country   string    `gorm:"column:country"`
-	CreatedAt time.Time `gorm:"column:created_at"`
-	UpdatedAt time.Time `gorm:"column:updated_at"`
+	ID            uint      `gorm:"primaryKey"`
+	Name          string    `gorm:"column:name"`
+	Phone         string    `gorm:"column:phone;index;unique"`
+	BirthYear     string    `gorm:"column:birth_year"`
+	Height        string    `gorm:"column:height"`
+	Weight        string    `gorm:"column:weight"`
+	Country       string    `gorm:"column:country"`
+	LastScrapedAt time.Time `gorm:"column:last_scraped_at"`
+	CreatedAt     time.Time `gorm:"column:created_at"`
+	UpdatedAt     time.Time `gorm:"column:updated_at"`
 
 	// Site-specific profiles
 	Profiles []HoeProfile `gorm:"foreignKey:HoeID;references:ID"`
+	// Working histories
+	WorkingHistories []WorkingHistory `gorm:"foreignKey:HoeID;references:ID"`
 }
 
 func (HoeInfo) TableName() string {
