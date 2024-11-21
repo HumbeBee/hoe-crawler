@@ -4,7 +4,7 @@ type City struct {
 	ID        uint       `gorm:"primaryKey"`
 	Name      string     `gorm:"column:name"`
 	Code      string     `gorm:"column:code"`
-	Provinces []Province `gorm:"foreignKey:CityID;references:ID;constraint:OnDelete:CASCADE"`
+	Districts []District `gorm:"foreignKey:CityID;references:ID;constraint:OnDelete:CASCADE"`
 }
 
 func (City) TableName() string {

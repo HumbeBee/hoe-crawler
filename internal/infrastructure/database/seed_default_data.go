@@ -49,7 +49,7 @@ func seedCities(db *gorm.DB) error {
 		{
 			Name: "Hồ Chí Minh",
 			Code: "HCM",
-			Provinces: []models.Province{
+			Provinces: []models.District{
 				{Name: "Quận 1", Code: "Q1"},
 				{Name: "Quận 2", Code: "Q2"},
 				{Name: "Quận 3", Code: "Q3"},
@@ -75,7 +75,7 @@ func seedCities(db *gorm.DB) error {
 		{
 			Name: "Hà Nội",
 			Code: "HN",
-			Provinces: []models.Province{
+			Provinces: []models.District{
 				{Name: "Quận Ba Đình", Code: "BD"},
 				{Name: "Quận Hoàn Kiếm", Code: "HK"},
 				{Name: "Quận Hai Bà Trưng", Code: "HBT"},
@@ -105,7 +105,7 @@ func seedCities(db *gorm.DB) error {
 			// City exists, check and create missing provinces
 			for _, province := range city.Provinces {
 				province.CityID = existingCity.ID
-				result := db.Where(models.Province{
+				result := db.Where(models.District{
 					Name:   province.Name,
 					CityID: existingCity.ID,
 				}).FirstOrCreate(&province)

@@ -11,7 +11,7 @@ func Migrate(db *gorm.DB) error {
 	models := []interface{}{
 		&models.Site{},
 		&models.City{},
-		&models.Province{},
+		&models.District{},
 		&models.HoeInfo{},
 		&models.HoeReport{},
 		&models.WorkingHistory{},
