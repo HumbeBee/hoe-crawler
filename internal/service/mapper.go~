@@ -86,6 +86,7 @@ func (s *mapperService) mapStatus(status string) definitions.HoeStatus {
 func (s *mapperService) parseAddress(address string) definitions.ParsedAddress {
 	// Should process
 
+
 	return definitions.ParsedAddress{
 		Street:   address,
 		District: "",

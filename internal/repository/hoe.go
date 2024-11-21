@@ -94,7 +94,6 @@ func (r *hoeRepo) updateExistingHoe(tx *gorm.DB, existing *models.HoeInfo, new *
 			Url:      newProfile.Url,
 			ImageUrl: newProfile.ImageUrl,
 			Price:    newProfile.Price,
-			Address:  newProfile.Address,
 			Provider: newProfile.Provider,
 			Status:   newProfile.Status,
 			Service:  newProfile.Service,

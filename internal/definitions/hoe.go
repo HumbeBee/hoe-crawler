@@ -7,6 +7,11 @@ import (
 
 type HoeStatus string
 
+type ParsedAddress struct {
+	Street   string
+	District string
+}
+
 const (
 	HoeStatusActive   HoeStatus = "active"
 	HoeStatusInactive HoeStatus = "inactive"

@@ -8,16 +8,17 @@ import (
 )
 
 func Migrate(db *gorm.DB) error {
-	models := []interface{}{
+	_models := []interface{}{
 		&models.Site{},
 		&models.City{},
 		&models.District{},
+		&models.Street{},
 		&models.HoeInfo{},
 		&models.HoeReport{},
 		&models.WorkingHistory{},
 	}
 
-	for _, model := range models {
+	for _, model := range _models {
 		if err := db.AutoMigrate(model); err != nil {
 			return fmt.Errorf("failed to migrate %T: %v", model, err)
 		}
