@@ -13,7 +13,6 @@ type HoeService interface {
 	ProcessListPage() error
 	ProcessDetailPage(url string) error
 }
-
 type HoeServiceConfig struct {
 	HoeRepo            repository.HoeRepository
 	WorkingHistoryRepo repository.WorkingHistoryRepository

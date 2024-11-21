@@ -63,8 +63,18 @@ func CreateAppContext() (*AppContext, error) {
 	scraper := scrapers.CreateScraper(baseConfig)
 
 	hoeRepo := repository.NewHoeRepository(db, logger)
+	locationRepo := repository.NewLocationRepository(db)
 	workingHistoryRepo := repository.NewWorkingHistoryRepository(db, logger)
-	hoeService := service.NewHoeService(hoeRepo, workingHistoryRepo, logger, scraper)
+
+	hoeServiceConfig := service.HoeServiceConfig{
+		HoeRepo:            hoeRepo,
+		WorkingHistoryRepo: workingHistoryRepo,
+		Logger:             logger,
+		Scraper:            scraper,
+		Mapper:             service.NewMapperService(),
+		ValidateService:    service.NewValidateService(locationRepo),
+	}
+	hoeService := service.NewHoeService(hoeServiceConfig)
 
 	return &AppContext{
 		Scraper:    scraper,
