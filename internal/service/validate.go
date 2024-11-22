@@ -32,7 +32,7 @@ func validateLocation(location string) error {
 	return nil
 }
 
-func (s *validateService) parseAddress(address string) definitions.ParsedAddress {
+func parseAddress(address string) definitions.ParsedAddress {
 	// Trim any leading/trailing whitespace
 	address = strings.TrimSpace(address)
 
