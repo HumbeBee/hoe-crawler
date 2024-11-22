@@ -9,6 +9,7 @@ import (
 )
 
 type ValidateService interface {
+	ValidateHoe(hoe *models.HoeInfo) error
 }
 
 type validateService struct {
@@ -23,7 +24,7 @@ func (s *validateService) ValidateHoe(hoe *models.HoeInfo) error {
 	return nil
 }
 
-func (s *validateService) ValidateLocation(location string) error {
+func validateLocation(location string) error {
 	if location == "" {
 		return errors.New("location cannot be empty")
 	}

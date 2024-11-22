@@ -73,5 +73,9 @@ func (hs *hoeService) ProcessDetailPage(url string) error {
 	hoeInfo := hs.mapper.TransformHoe(rawHoe)
 	hoeInfo.Print()
 
+	if err := hs.validateService.ValidateHoe(hoeInfo); err != nil {
+		return err
+	}
+
 	return nil
 }
