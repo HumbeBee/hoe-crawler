@@ -21,6 +21,7 @@ func NewValidateService(locationRepo repository.LocationRepository) ValidateServ
 }
 
 func (s *validateService) ValidateHoe(hoe *models.HoeInfo) error {
+	
 	return nil
 }
 

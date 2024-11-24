@@ -23,7 +23,7 @@ type HoeInfo struct {
 	WorkingHistories []WorkingHistory `gorm:"foreignKey:HoeID;references:ID"`
 }
 
-func (HoeInfo) TableName() string {
+func (*HoeInfo) TableName() string {
 	return "hoes"
 }
 
@@ -33,10 +33,15 @@ func (h *HoeInfo) GetProfileBySite(siteID uint) *HoeProfile {
 			return &h.Profiles[i]
 		}
 	}
+
 	return nil
 }
 
-func (hoe HoeInfo) Print() {
+func (h *HoeInfo) GetCurrentScrapingProfile() *HoeProfile {
+	return &h.Profiles[0]
+}
+
+func (h *HoeInfo) Print() {
 	// fmt.Printf("=========== Hoe %s ===========\n", hoe.Profiles[0])
 	// fmt.Printf("Url: %s\n", hoe.Url)
 

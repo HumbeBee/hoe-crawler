@@ -1,0 +1,17 @@
+version: '3.1'
+
+services:
+  mariadb:
+    image: mariadb:11.6-ubi
+    container_name: gai-scraper-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 020899
+      MYSQL_DATABASE: gai-scraper
+    ports:
+      - "3306:3306"
+    volumes:
+      - gai_scraper_mariadb_data:/var/lib/mysql
+
+volumes:
+  gai_scraper_mariadb_data:

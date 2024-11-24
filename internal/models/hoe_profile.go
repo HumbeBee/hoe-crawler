@@ -14,6 +14,7 @@ type HoeProfile struct {
 	Url       string                `gorm:"column:url"`
 	ImageUrl  string                `gorm:"column:image_url"`
 	Price     string                `gorm:"column:price"`
+	Address   string                `gorm:"column:address"`
 	Provider  string                `gorm:"column:provider"`
 	Status    definitions.HoeStatus `gorm:"column:status;type:enum('active','inactive','unknown')"`
 	Service   string                `gorm:"column:service"`
