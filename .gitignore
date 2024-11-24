@@ -22,3 +22,9 @@
 .DS_Store
 .DS_Store?
 ._*
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
