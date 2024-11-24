@@ -37,8 +37,14 @@ func (h *HoeInfo) GetProfileBySite(siteID uint) *HoeProfile {
 	return nil
 }
 
-func (h *HoeInfo) GetCurrentScrapingProfile() *HoeProfile {
-	return &h.Profiles[0]
+func (h *HoeInfo) GetCurrentScrapingProfile() (*HoeProfile, error) {
+	if len(h.Profiles) == 0 {
+		return nil, fmt.Errorf("hoe has no profile")
+	}
+
+	// Why Profiles[0] ?
+	// Because the first profile is the one that is currently being scraped
+	return &h.Profiles[0], nil
 }
 
 func (h *HoeInfo) Print() {

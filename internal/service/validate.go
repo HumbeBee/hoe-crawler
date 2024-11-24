@@ -21,7 +21,15 @@ func NewValidateService(locationRepo repository.LocationRepository) ValidateServ
 }
 
 func (s *validateService) ValidateHoe(hoe *models.HoeInfo) error {
-	
+	scrapingProfile, err := hoe.GetCurrentScrapingProfile()
+	if err != nil {
+		return err
+	}
+
+	if err := validateLocation(scrapingProfile.Area); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -30,10 +38,12 @@ func validateLocation(location string) error {
 		return errors.New("location cannot be empty")
 	}
 
+	parsedLocation := parseLocation(location)
+	
 	return nil
 }
 
-func parseAddress(address string) definitions.ParsedAddress {
+func parseLocation(location string) definitions.ParsedAddress {
 	// Trim any leading/trailing whitespace
 	address = strings.TrimSpace(address)
 
