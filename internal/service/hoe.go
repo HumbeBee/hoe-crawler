@@ -19,7 +19,7 @@ type HoeServiceConfig struct {
 	WorkingHistoryRepo repository.WorkingHistoryRepository
 	Logger             *logutil.Logger
 	Scraper            interfaces.Scraper
-	Mapper             MapperService
+	MapperService      MapperService
 	ValidateService    ValidateService
 }
 
@@ -28,7 +28,7 @@ type hoeService struct {
 	workingHistoryRepo repository.WorkingHistoryRepository
 	logger             *logutil.Logger
 	scraper            interfaces.Scraper
-	mapper             MapperService
+	mapperService      MapperService
 	validateService    ValidateService
 }
 
@@ -38,7 +38,7 @@ func NewHoeService(config HoeServiceConfig) HoeService {
 		workingHistoryRepo: config.WorkingHistoryRepo,
 		logger:             config.Logger,
 		scraper:            config.Scraper,
-		mapper:             config.Mapper,
+		mapperService:      config.MapperService,
 		validateService:    config.ValidateService,
 	}
 }
@@ -70,12 +70,14 @@ func (hs *hoeService) ProcessDetailPage(url string) error {
 		return errutil.WrapError("get raw hoe data", err, url)
 	}
 
-	hoeInfo := hs.mapper.TransformHoe(rawHoe)
+	hoeInfo := hs.mapperService.TransformHoe(rawHoe)
 	hoeInfo.Print()
 
 	if err := hs.validateService.ValidateHoe(hoeInfo); err != nil {
 		return err
 	}
+
+	hoeInfo.Print()
 
 	return nil
 }

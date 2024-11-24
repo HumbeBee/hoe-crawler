@@ -10,7 +10,7 @@ type RawHoeData struct {
 	ImageUrl  string
 	Price     string
 	Phone     string
-	Address   string
+	Area      string
 	Provider  string
 	Status    string
 	BirthYear string

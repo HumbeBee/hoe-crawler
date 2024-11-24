@@ -26,29 +26,32 @@ func (s *validateService) ValidateHoe(hoe *models.HoeInfo) error {
 		return err
 	}
 
-	if err := validateLocation(scrapingProfile.Area); err != nil {
+	if err := s.validateLocation(scrapingProfile.Area); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func validateLocation(location string) error {
+func (s *validateService) validateLocation(location string) error {
 	if location == "" {
 		return errors.New("location cannot be empty")
 	}
 
 	parsedLocation := parseLocation(location)
-	
+	if err := s.locationRepo.CheckValidLocation(parsedLocation.District); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func parseLocation(location string) definitions.ParsedAddress {
 	// Trim any leading/trailing whitespace
-	address = strings.TrimSpace(address)
+	location = strings.TrimSpace(location)
 
 	// Split the address into parts
-	parts := strings.Split(address, ",")
+	parts := strings.Split(location, ",")
 
 	parsed := definitions.ParsedAddress{
 		Street:   "",

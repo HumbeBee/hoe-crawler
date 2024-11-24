@@ -48,26 +48,34 @@ func (h *HoeInfo) GetCurrentScrapingProfile() (*HoeProfile, error) {
 }
 
 func (h *HoeInfo) Print() {
-	// fmt.Printf("=========== Hoe %s ===========\n", hoe.Profiles[0])
-	// fmt.Printf("Url: %s\n", hoe.Url)
+	fmt.Printf("=========== Hoe Info ===========\n")
+	fmt.Printf("Name: %s\n", h.Name)
+	fmt.Printf("Phone: %s\n", h.Phone)
+	fmt.Printf("Birth Year: %s\n", h.BirthYear)
+	fmt.Printf("Height: %s\n", h.Height)
+	fmt.Printf("Weight: %s\n", h.Weight)
+	fmt.Printf("Country: %s\n", h.Country)
+	fmt.Printf("Last Scraped At: %s\n", h.LastScrapedAt)
 
-	// // Print all fields in Main info
-	// fmt.Printf("Name: %s\n", hoe.Name)
-	// fmt.Printf("Image url: %s\n", hoe.ImageUrl)
-	// fmt.Printf("Price: %s\n", hoe.Price)
-	// fmt.Printf("Phone: %s\n", hoe.Phone)
-	// fmt.Printf("Address: %s\n", hoe.Address)
-	// fmt.Printf("Provider: %s\n", hoe.Provider)
-	// fmt.Printf("Status: %s\n", hoe.Status)
-	// fmt.Printf("Birth year: %s\n", hoe.BirthYear)
-	// fmt.Printf("Height: %s\n", hoe.Height)
-	// fmt.Printf("Weight: %s\n", hoe.Weight)
-	// fmt.Printf("From: %s\n", hoe.Country)
-	// fmt.Printf("Service: %s\n", hoe.Service)
-	// fmt.Printf("Work Time: %s\n", hoe.WorkTime)
-	// fmt.Printf("Duration: %s\n", hoe.Duration)
-	// fmt.Printf("Report count: %d\n", len(hoe.Reports))
+	if len(h.Profiles) > 0 {
+		fmt.Println("\n--- Latest Profile ---")
+		profile := h.Profiles[0]
+		fmt.Printf("Site: %s\n", profile.Site)
+		fmt.Printf("Original ID: %d\n", profile.OriginID)
+		fmt.Printf("URL: %s\n", profile.Url)
+		fmt.Printf("Image URL: %s\n", profile.ImageUrl)
+		fmt.Printf("Price: %s\n", profile.Price)
+		fmt.Printf("Area: %s\n", profile.Area)
+		fmt.Printf("Provider: %s\n", profile.Provider)
+		fmt.Printf("Status: %s\n", profile.Status)
+		fmt.Printf("Service: %s\n", profile.Service)
+		fmt.Printf("Duration: %s\n", profile.Duration)
+		fmt.Printf("Work Time: %s\n", profile.WorkTime)
+		fmt.Printf("Report Count: %d\n", len(profile.Reports))
+	}
 
-	// fmt.Println("==============================")
+	fmt.Printf("\nTotal Profiles: %d\n", len(h.Profiles))
+	fmt.Printf("Total Working Histories: %d\n", len(h.WorkingHistories))
+	fmt.Println("==============================")
 	fmt.Print("\n\n")
 }

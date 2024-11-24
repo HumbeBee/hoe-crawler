@@ -18,7 +18,7 @@ func NewLocationRepository(db *gorm.DB) LocationRepository {
 }
 
 func (r *locationRepo) CheckValidLocation(district string) error {
-	if err := r.db.Where("name = ? ", district).Or("short_name = ?").Or("code = ? ").First(&models.District{}).Error; err != nil {
+	if err := r.db.Where("name = ?", district).Or("short_name = ?", district).Or("code = ? ", district).First(&models.District{}).Error; err != nil {
 		return err
 	}
 
