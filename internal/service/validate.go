@@ -12,7 +12,7 @@ type validateService struct {
 	locationRepo repository.LocationRepository
 }
 
-func NewValidateService(locationRepo repository.LocationRepository) ValidateService {
+func NewValidateService(locationRepo repository.LocationRepository) definitions.ValidateService {
 	return &validateService{locationRepo: locationRepo}
 }
 
