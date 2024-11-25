@@ -9,17 +9,17 @@ import (
 	"github.com/haovoanh28/gai-webscraper/internal/infrastructure/browser"
 )
 
-type Scraper struct {
+type scraper struct {
 	definitions.ScraperConfig
 }
 
-func NewScraper(config definitions.ScraperConfig) *Scraper {
-	return &Scraper{
+func NewScraper(config definitions.ScraperConfig) *scraper {
+	return &scraper{
 		config,
 	}
 }
 
-func (s *Scraper) GetDetailURLs() ([]string, error) {
+func (s *scraper) GetDetailURLs() ([]string, error) {
 	url := s.BaseURL + "/gai-goi/khu-vuc/Hồ%20Chí%20Minh/Quận%207"
 
 	s.Logger.Info(fmt.Sprintf("Processing %s", url))
@@ -34,7 +34,7 @@ func (s *Scraper) GetDetailURLs() ([]string, error) {
 	return listScraper.getHoeURLs()
 }
 
-func (s *Scraper) GetRawHoeData(detailUrl string) (*dto.RawHoeData, error) {
+func (s *scraper) GetRawHoeData(detailUrl string) (*dto.RawHoeData, error) {
 	url := s.BaseURL + detailUrl
 
 	// Wait until content element is visible
@@ -44,7 +44,7 @@ func (s *Scraper) GetRawHoeData(detailUrl string) (*dto.RawHoeData, error) {
 	}
 	defer conn.Close()
 
-	detailScraper := newDetailPageScraper(conn, url)
+	detailScraper := newDetailPageScraper(conn, url, s.SiteID)
 	hoeInfo, err := detailScraper.getBasicInfo()
 	if err != nil {
 		return nil, fmt.Errorf("get basic info %s: %w", url, err)

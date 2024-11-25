@@ -18,12 +18,15 @@ const (
 	HoeStatusUnknown  HoeStatus = "unknown"
 )
 
-// For database serialization
+// Using value receiver for Value() as we only need to read the status
+// Using pointer receiver for Scan() as we need to modify the status
+// This mixed receiver pattern is recommended by GORM
+// Docs: https://gorm.io/docs/data_types.html
+
 func (s HoeStatus) Value() (driver.Value, error) {
 	return string(s), nil
 }
 
-// For database deserialization
 func (s *HoeStatus) Scan(value interface{}) error {
 	if value == nil {
 		*s = HoeStatusUnknown

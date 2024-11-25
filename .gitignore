@@ -28,3 +28,6 @@
 .env.local
 .env.development
 .env.production
+
+# repomix
+repomix-output.txt

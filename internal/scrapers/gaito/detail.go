@@ -12,12 +12,13 @@ import (
 )
 
 type detailPageScraper struct {
-	conn *browser.Connection
-	url  string
+	siteID uint
+	conn   *browser.Connection
+	url    string
 }
 
-func newDetailPageScraper(conn *browser.Connection, url string) *detailPageScraper {
-	return &detailPageScraper{conn: conn, url: url}
+func newDetailPageScraper(conn *browser.Connection, url string, siteID uint) *detailPageScraper {
+	return &detailPageScraper{conn: conn, url: url, siteID: siteID}
 }
 
 func (s *detailPageScraper) getBasicInfo() (*dto.RawHoeData, error) {
@@ -34,8 +35,9 @@ func (s *detailPageScraper) getBasicInfo() (*dto.RawHoeData, error) {
 	}
 
 	rawInfo := &dto.RawHoeData{
-		OriginID: id,
+		SiteID:   s.siteID,
 		Url:      s.url,
+		OriginID: id,
 	}
 
 	rawInfo.Name = containerEle.MustFind(detailPageSelectors.Name).MustGetText()
