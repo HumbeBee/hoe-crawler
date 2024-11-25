@@ -43,14 +43,14 @@ func CreateAppContext() (*AppContext, error) {
 
 	db, err := database.InitDB()
 	if err != nil {
-		return nil, fmt.Errorf("failed to initialize database: %v", err)
+		return nil, fmt.Errorf("failed to initialize database: %w", err)
 	}
 
 	siteRepo := repository.NewSiteRepository(db)
 	siteInfo, err := siteRepo.GetSiteByName(*site)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to get site by name: %v", err)
+		return nil, fmt.Errorf("failed to get site by name: %w", err)
 	}
 
 	baseConfig := definitions.ScraperConfig{
@@ -67,15 +67,17 @@ func CreateAppContext() (*AppContext, error) {
 	locationRepo := repository.NewLocationRepository(db)
 	workingHistoryRepo := repository.NewWorkingHistoryRepository(db, logger)
 
-	hoeServiceConfig := definitions.HoeServiceConfig{
-		HoeRepo:            hoeRepo,
-		WorkingHistoryRepo: workingHistoryRepo,
-		Logger:             logger,
-		Scraper:            scraper,
-		MapperService:      service.NewMapperService(),
-		ValidateService:    service.NewValidateService(locationRepo),
+	hoeService, err := service.NewHoeBuilder().
+		WithHoeRepo(hoeRepo).
+		WithWorkingHistoryRepo(workingHistoryRepo).
+		WithLocationRepo(locationRepo).
+		WithLogger(logger).
+		WithScraper(scraper).
+		Build()
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to create hoe service: %w", err)
 	}
-	hoeService := service.NewHoeService(hoeServiceConfig)
 
 	return &AppContext{
 		Scraper:    scraper,

@@ -24,17 +24,6 @@ type hoeService struct {
 	validateService    definitions.ValidateService
 }
 
-func NewHoeService(config definitions.HoeServiceConfig) HoeService {
-	return &hoeService{
-		hoeRepo:            config.HoeRepo,
-		workingHistoryRepo: config.WorkingHistoryRepo,
-		logger:             config.Logger,
-		scraper:            config.Scraper,
-		mapperService:      config.MapperService,
-		validateService:    config.ValidateService,
-	}
-}
-
 func (hs *hoeService) ProcessListPage() error {
 	detailURLs, err := hs.scraper.GetDetailURLs()
 	if err != nil {
