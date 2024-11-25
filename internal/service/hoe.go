@@ -51,14 +51,17 @@ func (hs *hoeService) ProcessDetailPage(url string) error {
 		return errutil.WrapError("get raw hoe data", err, url)
 	}
 
-	hoeInfo := hs.mapperService.TransformHoe(rawHoe)
-	hoeInfo.Print()
+	fmt.Printf("data %v\n", rawHoe)
 
-	if err := hs.validateService.ValidateHoe(hoeInfo); err != nil {
-		return err
-	}
-
-	hoeInfo.Print()
+	// raw data to domain models
+	//hoeInfo := hs.mapperService.TransformHoe(rawHoe)
+	//hoeInfo.Print()
+	//
+	//if err := hs.validateService.ValidateHoe(hoeInfo); err != nil {
+	//	return err
+	//}
+	//
+	//hoeInfo.Print()
 
 	return nil
 }

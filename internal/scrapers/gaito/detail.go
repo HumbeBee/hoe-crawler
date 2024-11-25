@@ -40,6 +40,8 @@ func (s *detailPageScraper) getBasicInfo() (*dto.RawHoeData, error) {
 		OriginID: id,
 	}
 
+	rawInfo.CityName = containerEle.MustFind(detailPageSelectors.CityName).MustGetText()
+	rawInfo.DistrictName = containerEle.MustFind(detailPageSelectors.DistrictName).MustGetText()
 	rawInfo.Name = containerEle.MustFind(detailPageSelectors.Name).MustGetText()
 	rawInfo.ImageUrl = containerEle.MustFind(detailPageSelectors.ImageUrl).MustGetAttribute("src")
 	rawInfo.Price = detailInfoTabEle.MustFind(detailPageSelectors.Price).MustGetText()

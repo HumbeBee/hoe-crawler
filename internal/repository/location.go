@@ -7,6 +7,8 @@ import (
 
 type LocationRepository interface {
 	CheckValidLocation(district string) error
+	GetCityIDFromText(name string) (uint, error)
+	GetDistrictIDFromText(name string) (uint, error)
 }
 
 type locationRepo struct {
