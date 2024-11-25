@@ -67,7 +67,7 @@ func CreateAppContext() (*AppContext, error) {
 	locationRepo := repository.NewLocationRepository(db)
 	workingHistoryRepo := repository.NewWorkingHistoryRepository(db, logger)
 
-	hoeServiceConfig := service.HoeServiceConfig{
+	hoeServiceConfig := definitions.HoeServiceConfig{
 		HoeRepo:            hoeRepo,
 		WorkingHistoryRepo: workingHistoryRepo,
 		Logger:             logger,

@@ -8,13 +8,9 @@ import (
 	"github.com/haovoanh28/gai-webscraper/internal/models"
 )
 
-type MapperService interface {
-	TransformHoe(rawInfo *dto.RawHoeData) *models.HoeInfo
-}
-
 type mapperService struct{}
 
-func NewMapperService() MapperService {
+func NewMapperService() definitions.MapperService {
 	return &mapperService{}
 }
 
@@ -72,14 +68,14 @@ func (s *mapperService) normalizePhone(phone string) string {
 	return phone
 }
 
-func (s *mapperService) mapStatus(status string) definitions.HoeStatus {
+func (s *mapperService) mapStatus(status string) models.HoeStatus {
 	status = strings.ToLower(strings.TrimSpace(status))
 	switch status {
 	case "đang rảnh", "online", "hoạt động":
-		return definitions.HoeStatusActive
+		return models.HoeStatusActive
 	case "bận", "offline":
-		return definitions.HoeStatusInactive
+		return models.HoeStatusInactive
 	default:
-		return definitions.HoeStatusUnknown
+		return models.HoeStatusUnknown
 	}
 }

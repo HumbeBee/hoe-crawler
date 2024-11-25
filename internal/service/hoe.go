@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"github.com/haovoanh28/gai-webscraper/internal/definitions"
 
 	"github.com/haovoanh28/gai-webscraper/internal/interfaces"
 	"github.com/haovoanh28/gai-webscraper/internal/repository"
@@ -14,25 +15,16 @@ type HoeService interface {
 	ProcessDetailPage(url string) error
 }
 
-type HoeServiceConfig struct {
-	HoeRepo            repository.HoeRepository
-	WorkingHistoryRepo repository.WorkingHistoryRepository
-	Logger             *logutil.Logger
-	Scraper            interfaces.Scraper
-	MapperService      MapperService
-	ValidateService    ValidateService
-}
-
 type hoeService struct {
 	hoeRepo            repository.HoeRepository
 	workingHistoryRepo repository.WorkingHistoryRepository
 	logger             *logutil.Logger
 	scraper            interfaces.Scraper
-	mapperService      MapperService
-	validateService    ValidateService
+	mapperService      definitions.MapperService
+	validateService    definitions.ValidateService
 }
 
-func NewHoeService(config HoeServiceConfig) HoeService {
+func NewHoeService(config definitions.HoeServiceConfig) HoeService {
 	return &hoeService{
 		hoeRepo:            config.HoeRepo,
 		workingHistoryRepo: config.WorkingHistoryRepo,

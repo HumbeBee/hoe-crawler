@@ -8,10 +8,6 @@ import (
 	"strings"
 )
 
-type ValidateService interface {
-	ValidateHoe(hoe *models.HoeInfo) error
-}
-
 type validateService struct {
 	locationRepo repository.LocationRepository
 }
