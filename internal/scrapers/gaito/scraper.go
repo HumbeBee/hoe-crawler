@@ -9,17 +9,17 @@ import (
 	"github.com/haovoanh28/gai-webscraper/internal/infrastructure/browser"
 )
 
-type scraper struct {
+type Scraper struct {
 	definitions.ScraperConfig
 }
 
-func NewScraper(config definitions.ScraperConfig) *scraper {
-	return &scraper{
+func NewScraper(config definitions.ScraperConfig) *Scraper {
+	return &Scraper{
 		config,
 	}
 }
 
-func (s *scraper) GetDetailURLs() ([]string, error) {
+func (s *Scraper) GetDetailURLs() ([]string, error) {
 	url := s.BaseURL + "/gai-goi/khu-vuc/Hồ%20Chí%20Minh/Quận%207"
 
 	s.Logger.Info(fmt.Sprintf("Processing %s", url))
@@ -34,7 +34,7 @@ func (s *scraper) GetDetailURLs() ([]string, error) {
 	return listScraper.getHoeURLs()
 }
 
-func (s *scraper) GetRawHoeData(detailUrl string) (*dto.RawHoeData, error) {
+func (s *Scraper) GetRawHoeData(detailUrl string) (*dto.RawHoeData, error) {
 	url := s.BaseURL + detailUrl
 
 	// Wait until content element is visible
