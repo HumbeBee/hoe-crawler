@@ -37,6 +37,7 @@ func (s *mapperService) TransformHoe(rawInfo *dto.RawHoeData) *models.HoeInfo {
 				Url:      rawInfo.Url,
 				ImageUrl: rawInfo.ImageUrl,
 				Price:    rawInfo.Price,
+				Area:     rawInfo.Area,
 				Provider: rawInfo.Provider,
 				Status:   s.mapStatus(rawInfo.Status),
 				Service:  rawInfo.Service,

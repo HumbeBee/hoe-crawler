@@ -36,7 +36,7 @@ func InitLogger() *logutil.Logger {
 
 func CreateAppContext() (*AppContext, error) {
 	// Get site from cmd options
-	site := flag.String("site", "", "The site to scrape")
+	site := flag.String("site", "gaito", "The site to scrape")
 	flag.Parse()
 
 	logger := InitLogger()
@@ -48,6 +48,7 @@ func CreateAppContext() (*AppContext, error) {
 
 	siteRepo := repository.NewSiteRepository(db)
 	siteInfo, err := siteRepo.GetSiteByName(*site)
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to get site by name: %v", err)
 	}
@@ -71,7 +72,7 @@ func CreateAppContext() (*AppContext, error) {
 		WorkingHistoryRepo: workingHistoryRepo,
 		Logger:             logger,
 		Scraper:            scraper,
-		Mapper:             service.NewMapperService(),
+		MapperService:      service.NewMapperService(),
 		ValidateService:    service.NewValidateService(locationRepo),
 	}
 	hoeService := service.NewHoeService(hoeServiceConfig)

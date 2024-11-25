@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"github.com/haovoanh28/gai-webscraper/internal/config"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -18,12 +19,14 @@ func InitDB() (*gorm.DB, error) {
 }
 
 func NewConfig() *DBConfig {
+	envConfig := config.GetEnvConfig()
+
 	return &DBConfig{
-		Host:     "127.0.0.1",
-		Port:     "3306",
-		User:     "hao",
-		Password: "020899",
-		DBName:   "gai-scraper",
+		Host:     envConfig.DBHost,
+		Port:     envConfig.DBPort,
+		User:     envConfig.DBUser,
+		Password: envConfig.DBPassword,
+		DBName:   envConfig.DBName,
 	}
 }
 

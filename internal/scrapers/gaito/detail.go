@@ -42,7 +42,7 @@ func (s *detailPageScraper) getBasicInfo() (*dto.RawHoeData, error) {
 	rawInfo.ImageUrl = containerEle.MustFind(detailPageSelectors.ImageUrl).MustGetAttribute("src")
 	rawInfo.Price = detailInfoTabEle.MustFind(detailPageSelectors.Price).MustGetText()
 	rawInfo.Phone = detailInfoTabEle.MustFind(detailPageSelectors.Phone).MustGetText()
-	rawInfo.Address = detailInfoTabEle.MustFind(detailPageSelectors.Address).MustGetText()
+	rawInfo.Area = detailInfoTabEle.MustFind(detailPageSelectors.Address).MustGetText()
 	rawInfo.Provider = detailInfoTabEle.MustFind(detailPageSelectors.Author).MustGetText()
 	rawInfo.Status = detailInfoTabEle.MustFind(detailPageSelectors.Status).MustGetText()
 	rawInfo.BirthYear = detailInfoTabEle.MustFind(detailPageSelectors.BirthYear).MustGetText()
