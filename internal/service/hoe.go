@@ -54,7 +54,15 @@ func (hs *hoeService) ProcessDetailPage(url string) error {
 
 	// From raw data
 	// => Get location data
-	cityID := hs.locationRepo.GetCityIDFromText(rawHoe.CityName)
+	cityID, err := hs.locationRepo.GetDistrictIDFromName(rawHoe.CityName)
+	if err != nil {
+		return errutil.WrapError("get city id", err, rawHoe.CityName)
+	}
+
+	districtID, err := hs.locationRepo.GetDistrictIDFromName(rawHoe.DistrictName)
+	if err != nil {
+		return errutil.WrapError("get district id", err, rawHoe.DistrictName)
+	}
 
 	fmt.Printf("data %v\n", rawHoe)
 
