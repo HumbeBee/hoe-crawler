@@ -38,7 +38,7 @@ func (r *locationRepo) GetCityIDFromName(name string) (uint, error) {
 
 func (r *locationRepo) GetDistrictIDFromName(name string) (uint, error) {
 	var district models.District
-	if err := r.db.Where("name = ?", name).First(&district).Error; err != nil {
+	if err := r.db.Where("name = ?", name).Or("short_name = ?", name).Or("code = ?", name).Or("eng_name = ?", name).Or("display_name = ?", name).Or("eng_name = ?", name+" district").First(&district).Error; err != nil {
 		return 0, err
 	}
 
