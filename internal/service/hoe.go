@@ -16,6 +16,7 @@ type HoeService interface {
 }
 
 type hoeService struct {
+	locationRepo       repository.LocationRepository
 	hoeRepo            repository.HoeRepository
 	workingHistoryRepo repository.WorkingHistoryRepository
 	logger             *logutil.Logger
@@ -50,6 +51,10 @@ func (hs *hoeService) ProcessDetailPage(url string) error {
 	if err != nil {
 		return errutil.WrapError("get raw hoe data", err, url)
 	}
+
+	// From raw data
+	// => Get location data
+	cityID := hs.locationRepo.GetCityIDFromText(rawHoe.CityName)
 
 	fmt.Printf("data %v\n", rawHoe)
 

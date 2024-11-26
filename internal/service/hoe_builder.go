@@ -73,11 +73,12 @@ func (b *HoeBuilder) Build() (HoeService, error) {
 	}
 
 	return &hoeService{
+		locationRepo:       b.locationRepo,
 		hoeRepo:            b.hoeRepo,
 		workingHistoryRepo: b.workingHistoryRepo,
 		logger:             b.logger,
 		scraper:            b.scraper,
 		mapperService:      NewMapperService(),
-		validateService:    NewValidateService(b.locationRepo),
+		validateService:    NewValidateService(),
 	}, nil
 }
