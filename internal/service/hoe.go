@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+
 	"github.com/haovoanh28/gai-webscraper/internal/definitions"
 
 	"github.com/haovoanh28/gai-webscraper/internal/interfaces"
@@ -52,13 +53,11 @@ func (hs *hoeService) ProcessDetailPage(url string) error {
 		return errutil.WrapError("get raw hoe data", err, url)
 	}
 
-	// From raw data
-	// => Get location data
-	cityID, err := hs.locationRepo.GetDistrictIDFromName(rawHoe.CityName)
+	// If we can get location from database, it mean the location is already valid
+	cityID, err := hs.locationRepo.GetCityIDFromName(rawHoe.CityName)
 	if err != nil {
 		return errutil.WrapError("get city id", err, rawHoe.CityName)
 	}
-
 	districtID, err := hs.locationRepo.GetDistrictIDFromName(rawHoe.DistrictName)
 	if err != nil {
 		return errutil.WrapError("get district id", err, rawHoe.DistrictName)

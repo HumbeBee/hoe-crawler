@@ -60,8 +60,8 @@ func (h *HoeInfo) Print() {
 	if len(h.Profiles) > 0 {
 		fmt.Println("\n--- Latest Profile ---")
 		profile := h.Profiles[0]
-		fmt.Printf("Site: %s\n", profile.Site)
-		fmt.Printf("Original ID: %d\n", profile.OriginID)
+		fmt.Printf("Site: %s\n", profile.Site.Name)
+		fmt.Printf("Original ID: %s\n", profile.OriginID)
 		fmt.Printf("URL: %s\n", profile.Url)
 		fmt.Printf("Image URL: %s\n", profile.ImageUrl)
 		fmt.Printf("Price: %s\n", profile.Price)
