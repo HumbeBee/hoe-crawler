@@ -3,7 +3,7 @@ package browser
 import (
 	"time"
 
-	"github.com/haovoanh28/gai-webscraper/internal/infrastructure/interfaces"
+	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/interfaces"
 )
 
 type Connection struct {

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/haovoanh28/gai-webscraper/internal/definitions"
-	"github.com/haovoanh28/gai-webscraper/internal/dto"
-	"github.com/haovoanh28/gai-webscraper/internal/infrastructure/browser"
+	"github.com/HumbeBee/hoe-crawler/internal/definitions"
+	"github.com/HumbeBee/hoe-crawler/internal/dto"
+	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/browser"
 )
 
 type scraper struct {

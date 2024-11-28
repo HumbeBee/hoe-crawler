@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/haovoanh28/gai-webscraper/internal/definitions"
-	"github.com/haovoanh28/gai-webscraper/internal/models"
+	"github.com/HumbeBee/hoe-crawler/internal/definitions"
+	"github.com/HumbeBee/hoe-crawler/internal/models"
 
 	"strings"
 )

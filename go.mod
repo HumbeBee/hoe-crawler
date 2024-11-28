@@ -1,4 +1,4 @@
-module github.com/haovoanh28/gai-webscraper
+module github.com/HumbeBee/hoe-crawler
 
 go 1.23
 

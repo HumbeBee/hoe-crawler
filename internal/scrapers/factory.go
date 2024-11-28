@@ -1,9 +1,9 @@
 package scrapers
 
 import (
-	"github.com/haovoanh28/gai-webscraper/internal/definitions"
-	"github.com/haovoanh28/gai-webscraper/internal/interfaces"
-	"github.com/haovoanh28/gai-webscraper/internal/scrapers/gaito"
+	"github.com/HumbeBee/hoe-crawler/internal/definitions"
+	"github.com/HumbeBee/hoe-crawler/internal/interfaces"
+	"github.com/HumbeBee/hoe-crawler/internal/scrapers/gaito"
 )
 
 func CreateScraper(baseConfig definitions.ScraperConfig) interfaces.Scraper {

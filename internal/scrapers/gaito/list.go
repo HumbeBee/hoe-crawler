@@ -1,8 +1,8 @@
 package gaito
 
 import (
-	"github.com/haovoanh28/gai-webscraper/internal/infrastructure/browser"
-	"github.com/haovoanh28/gai-webscraper/internal/utils/errutil"
+	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/browser"
+	"github.com/HumbeBee/hoe-crawler/internal/utils/errutil"
 )
 
 type listPageScraper struct {

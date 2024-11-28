@@ -5,9 +5,9 @@ package gaito
 // 	"strconv"
 
 // 	"github.com/go-rod/rod"
-// 	"github.com/haovoanh28/gai-webscraper/internal/models"
-// 	"github.com/haovoanh28/gai-webscraper/internal/utils"
-// 	"github.com/haovoanh28/gai-webscraper/internal/utils/browser"
+// 	"github.com/HumbeBee/hoe-crawler/internal/models"
+// 	"github.com/HumbeBee/hoe-crawler/internal/utils"
+// 	"github.com/HumbeBee/hoe-crawler/internal/utils/browser"
 // )
 
 // func ProcessReportPage(reportUrl string) models.HoeReportInfo {

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/haovoanh28/gai-webscraper/internal/models"
-	"github.com/haovoanh28/gai-webscraper/internal/utils/logutil"
+	"github.com/HumbeBee/hoe-crawler/internal/models"
+	"github.com/HumbeBee/hoe-crawler/internal/utils/logutil"
 	"gorm.io/gorm"
 )
 

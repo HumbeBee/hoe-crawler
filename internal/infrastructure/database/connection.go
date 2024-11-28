@@ -2,7 +2,8 @@ package database
 
 import (
 	"fmt"
-	"github.com/haovoanh28/gai-webscraper/internal/config"
+
+	"github.com/HumbeBee/hoe-crawler/internal/config"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

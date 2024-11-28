@@ -6,13 +6,13 @@ import (
 	"log"
 	"os"
 
-	"github.com/haovoanh28/gai-webscraper/internal/definitions"
-	"github.com/haovoanh28/gai-webscraper/internal/infrastructure/database"
-	"github.com/haovoanh28/gai-webscraper/internal/interfaces"
-	"github.com/haovoanh28/gai-webscraper/internal/repository"
-	"github.com/haovoanh28/gai-webscraper/internal/scrapers"
-	"github.com/haovoanh28/gai-webscraper/internal/service"
-	"github.com/haovoanh28/gai-webscraper/internal/utils/logutil"
+	"github.com/HumbeBee/hoe-crawler/internal/definitions"
+	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/database"
+	"github.com/HumbeBee/hoe-crawler/internal/interfaces"
+	"github.com/HumbeBee/hoe-crawler/internal/repository"
+	"github.com/HumbeBee/hoe-crawler/internal/scrapers"
+	"github.com/HumbeBee/hoe-crawler/internal/service"
+	"github.com/HumbeBee/hoe-crawler/internal/utils/logutil"
 )
 
 type AppContext struct {

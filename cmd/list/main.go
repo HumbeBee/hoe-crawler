@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/haovoanh28/gai-webscraper/internal/utils/setuputil"
+	"github.com/HumbeBee/hoe-crawler/internal/utils/setuputil"
 )
 
 func main() {

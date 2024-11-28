@@ -3,8 +3,8 @@ package roddriver
 import (
 	"time"
 
+	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/interfaces"
 	"github.com/go-rod/rod"
-	"github.com/haovoanh28/gai-webscraper/internal/infrastructure/interfaces"
 )
 
 type rodPage struct {

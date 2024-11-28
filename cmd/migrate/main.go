@@ -1,6 +1,6 @@
 package main
 
-import "github.com/haovoanh28/gai-webscraper/internal/infrastructure/database"
+import "github.com/HumbeBee/hoe-crawler/internal/infrastructure/database"
 
 func main() {
 	db, err := database.InitDB()

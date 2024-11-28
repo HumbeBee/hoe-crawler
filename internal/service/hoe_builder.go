@@ -3,9 +3,9 @@ package service
 import (
 	"errors"
 
-	"github.com/haovoanh28/gai-webscraper/internal/interfaces"
-	"github.com/haovoanh28/gai-webscraper/internal/repository"
-	"github.com/haovoanh28/gai-webscraper/internal/utils/logutil"
+	"github.com/HumbeBee/hoe-crawler/internal/interfaces"
+	"github.com/HumbeBee/hoe-crawler/internal/repository"
+	"github.com/HumbeBee/hoe-crawler/internal/utils/logutil"
 )
 
 type HoeBuilder struct {

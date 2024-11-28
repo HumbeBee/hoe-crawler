@@ -3,9 +3,9 @@ package roddriver
 import (
 	"strings"
 
+	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/interfaces"
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/proto"
-	"github.com/haovoanh28/gai-webscraper/internal/infrastructure/interfaces"
 )
 
 type rodElement struct {

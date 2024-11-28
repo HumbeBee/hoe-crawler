@@ -3,7 +3,7 @@ package database
 import (
 	"fmt"
 
-	"github.com/haovoanh28/gai-webscraper/internal/models"
+	"github.com/HumbeBee/hoe-crawler/internal/models"
 	"gorm.io/gorm"
 )
 

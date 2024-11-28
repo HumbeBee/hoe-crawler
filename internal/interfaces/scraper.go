@@ -1,7 +1,7 @@
 package interfaces
 
 import (
-	"github.com/haovoanh28/gai-webscraper/internal/dto"
+	"github.com/HumbeBee/hoe-crawler/internal/dto"
 )
 
 type Scraper interface {
