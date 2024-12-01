@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/HumbeBee/hoe-crawler/internal/definitions"
+	"github.com/HumbeBee/hoe-crawler/internal/models"
 
 	"github.com/HumbeBee/hoe-crawler/internal/interfaces"
 	"github.com/HumbeBee/hoe-crawler/internal/repository"
@@ -63,11 +64,22 @@ func (hs *hoeService) ProcessDetailPage(url string) error {
 		return errutil.WrapError("get district id", err, rawHoe.DistrictName)
 	}
 
-	fmt.Printf("data %v\n", rawHoe)
-
 	// raw data to domain models
-	//hoeInfo := hs.mapperService.TransformHoe(rawHoe)
-	//hoeInfo.Print()
+	hoeInfo := hs.mapperService.TransformHoe(rawHoe)
+
+	isNewLocation, err := hs.workingHistoryRepo.CheckIsNewLocation(cityID, districtID)
+	if err != nil {
+		return errutil.WrapError("check is new location", err, rawHoe.CityName)
+	}
+	if isNewLocation {
+		// Create new working history
+		hoeInfo.WorkingHistories = append(hoeInfo.WorkingHistories, models.WorkingHistory{
+			CityID:     cityID,
+			DistrictID: districtID,
+		})
+	}
+
+	hoeInfo.Print()
 	//
 	//if err := hs.validateService.ValidateHoe(hoeInfo); err != nil {
 	//	return err

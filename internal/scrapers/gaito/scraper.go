@@ -38,7 +38,7 @@ func (s *scraper) GetRawHoeData(detailUrl string) (*dto.RawHoeData, error) {
 	url := s.BaseURL + detailUrl
 
 	// Wait until content element is visible
-	conn, err := browser.ConnectToPage(url, 30*time.Minute)
+	conn, err := browser.ConnectToPage(url, 5*time.Minute)
 	if err != nil {
 		return nil, fmt.Errorf("connect to detail page %s: %w", url, err)
 	}
