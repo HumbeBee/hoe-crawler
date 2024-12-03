@@ -4,8 +4,9 @@ import "time"
 
 type Browser interface {
 	Connect() error
-	Close()
+	BypassCloudflare(url string) error
 	CreatePage() (Page, error)
+	Close()
 }
 
 type Page interface {

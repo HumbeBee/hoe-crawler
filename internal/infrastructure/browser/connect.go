@@ -27,6 +27,11 @@ func ConnectToPage(url string, timeout time.Duration) (*Connection, error) {
 		return nil, err
 	}
 
+	err := browser.BypassCloudflare(url)
+	if err != nil {
+		return nil, err
+	}
+
 	page, err := browser.CreatePage()
 	if err != nil {
 		return nil, err
