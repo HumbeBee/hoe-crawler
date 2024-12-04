@@ -1,7 +1,7 @@
 services:
   mariadb:
     image: mariadb:11.6-ubi
-    container_name: gai-scraper-db
+    container_name: hoe-crawler-db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -11,7 +11,7 @@ services:
     ports:
       - "${DB_PORT}:3306"
     volumes:
-      - gai_scraper_mariadb_data:/var/lib/mysql
+      - hoe_crawler_mariadb_data:/var/lib/mysql
 
 volumes:
-  gai_scraper_mariadb_data:
+  hoe_crawler_mariadb_data:
