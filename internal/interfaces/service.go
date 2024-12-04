@@ -1,4 +1,4 @@
-package definitions
+package interfaces
 
 import (
 	"github.com/HumbeBee/hoe-crawler/internal/dto"

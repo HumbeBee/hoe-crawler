@@ -3,7 +3,6 @@ package service
 import (
 	"fmt"
 
-	"github.com/HumbeBee/hoe-crawler/internal/definitions"
 	"github.com/HumbeBee/hoe-crawler/internal/models"
 
 	"github.com/HumbeBee/hoe-crawler/internal/interfaces"
@@ -23,8 +22,8 @@ type hoeService struct {
 	workingHistoryRepo repository.WorkingHistoryRepository
 	logger             *logutil.Logger
 	scraper            interfaces.Scraper
-	mapperService      definitions.MapperService
-	validateService    definitions.ValidateService
+	mapperService      interfaces.MapperService
+	validateService    interfaces.ValidateService
 }
 
 func (hs *hoeService) ProcessListPage() error {

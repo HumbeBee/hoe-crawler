@@ -3,14 +3,14 @@ package service
 import (
 	"strings"
 
-	"github.com/HumbeBee/hoe-crawler/internal/definitions"
 	"github.com/HumbeBee/hoe-crawler/internal/dto"
+	"github.com/HumbeBee/hoe-crawler/internal/interfaces"
 	"github.com/HumbeBee/hoe-crawler/internal/models"
 )
 
 type mapperService struct{}
 
-func NewMapperService() definitions.MapperService {
+func NewMapperService() interfaces.MapperService {
 	return &mapperService{}
 }
 

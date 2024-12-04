@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
 	"regexp"
 	"strings"
@@ -24,8 +25,15 @@ func GetIDFromUrl(url string) string {
 	return ""
 }
 
-func HandleError(err error, operation string, fieldName string) {
+func FormatJSON(data interface{}) string {
+	pretty, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
-		panic(fmt.Errorf(`failed to %s "%s": %v`, operation, fieldName, err))
+		return fmt.Sprintf("Error formatting: %v", err)
 	}
+
+	return string(pretty)
+}
+
+func PrintJSON(data interface{}) {
+	fmt.Println(FormatJSON(data))
 }

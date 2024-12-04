@@ -13,6 +13,10 @@ type Connection struct {
 }
 
 func (c *Connection) Close() {
+	if c == nil {
+		return
+	}
+
 	if c.Browser != nil {
 		c.Browser.Close()
 	}

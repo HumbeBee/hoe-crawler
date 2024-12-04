@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/HumbeBee/hoe-crawler/internal/definitions"
+	"github.com/HumbeBee/hoe-crawler/internal/interfaces"
 	"github.com/HumbeBee/hoe-crawler/internal/models"
 
 	"strings"
@@ -10,7 +11,7 @@ import (
 type validateService struct {
 }
 
-func NewValidateService() definitions.ValidateService {
+func NewValidateService() interfaces.ValidateService {
 	return &validateService{}
 }
 
