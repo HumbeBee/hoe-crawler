@@ -5,7 +5,6 @@ import "time"
 type WorkingHistory struct {
 	ID         uint       `gorm:"primaryKey"`
 	HoeID      uint       `gorm:"column:hoe_id;index"`
-	StartDate  time.Time  `gorm:"column:start_date"`
 	EndDate    *time.Time `gorm:"column:end_date"`
 	CityID     uint       `gorm:"column:city_id;index"`
 	DistrictID uint       `gorm:"column:district_id;index"`

@@ -53,7 +53,7 @@ func (hs *hoeService) ProcessDetailPage(url string) error {
 		return errutil.WrapError("get raw hoe data", err, url)
 	}
 
-	// If we can get location from database, it mean the location is already valid
+	// If we can get location from database, it means the location is already valid
 	cityID, err := hs.locationRepo.GetCityIDFromName(rawHoe.CityName)
 	if err != nil {
 		return errutil.WrapError("get city id", err, rawHoe.CityName)
@@ -66,13 +66,14 @@ func (hs *hoeService) ProcessDetailPage(url string) error {
 	// raw data to domain models
 	hoeInfo := hs.mapperService.TransformHoe(rawHoe)
 
-	isNewLocation, err := hs.workingHistoryRepo.CheckIsNewLocation(cityID, districtID)
+	isNewLocation, err := hs.workingHistoryRepo.CheckIsNewLocation(hoeInfo.ID, cityID, districtID)
 	if err != nil {
 		return errutil.WrapError("check is new location", err, rawHoe.CityName)
 	}
 	if isNewLocation {
 		// Create new working history
 		hoeInfo.WorkingHistories = append(hoeInfo.WorkingHistories, models.WorkingHistory{
+			HoeID:      hoeInfo.ID,
 			CityID:     cityID,
 			DistrictID: districtID,
 		})

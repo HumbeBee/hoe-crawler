@@ -74,6 +74,16 @@ func (h *HoeInfo) Print() {
 		fmt.Printf("Report Count: %d\n", len(profile.Reports))
 	}
 
+	if len(h.WorkingHistories) > 0 {
+		fmt.Println("\n--- Working Histories ---")
+		for _, history := range h.WorkingHistories {
+			fmt.Printf("End Date: %s\n", history.EndDate)
+			fmt.Printf("City: %d\n", history.CityID)
+			fmt.Printf("District: %d\n", history.DistrictID)
+			fmt.Println("-------------------------")
+		}
+	}
+
 	fmt.Printf("\nTotal Profiles: %d\n", len(h.Profiles))
 	fmt.Printf("Total Working Histories: %d\n", len(h.WorkingHistories))
 	fmt.Println("==============================")
