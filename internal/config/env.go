@@ -13,6 +13,7 @@ type EnvConfig struct {
 	DBUser     string `env:"DB_USER"`
 	DBPassword string `env:"DB_PASSWORD"`
 	DBName     string `env:"DB_NAME"`
+	LOGLEVEL   string `env:"LOG_LEVEL"`
 }
 
 var (
@@ -32,6 +33,7 @@ func GetEnvConfig() *EnvConfig {
 			DBUser:     os.Getenv("DB_USER"),
 			DBPassword: os.Getenv("DB_PASSWORD"),
 			DBName:     os.Getenv("DB_NAME"),
+			LOGLEVEL:   os.Getenv("LOG_LEVEL"),
 		}
 	})
 	return envConfig

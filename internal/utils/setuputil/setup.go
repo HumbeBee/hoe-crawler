@@ -3,9 +3,7 @@ package setuputil
 import (
 	"flag"
 	"fmt"
-	"log"
-	"os"
-
+	"github.com/HumbeBee/hoe-crawler/internal/config"
 	"github.com/HumbeBee/hoe-crawler/internal/definitions"
 	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/database"
 	"github.com/HumbeBee/hoe-crawler/internal/interfaces"
@@ -13,6 +11,7 @@ import (
 	"github.com/HumbeBee/hoe-crawler/internal/scrapers"
 	"github.com/HumbeBee/hoe-crawler/internal/service"
 	"github.com/HumbeBee/hoe-crawler/internal/utils/logutil"
+	"log"
 )
 
 type AppContext struct {
@@ -24,7 +23,8 @@ type AppContext struct {
 func InitLogger() *logutil.Logger {
 	log.SetFlags(log.LstdFlags)
 
-	logLevelStr := os.Getenv("LOG_LEVEL")
+	envConfig := config.GetEnvConfig()
+	logLevelStr := envConfig.LOGLEVEL
 	logLevel, err := logutil.ParseLogLevel(logLevelStr)
 	if err != nil {
 		log.Printf("Invalid log level '%s', defaulting to INFO", logLevelStr)
