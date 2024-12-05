@@ -24,7 +24,7 @@ func (s *scraper) GetDetailURLs() ([]string, error) {
 
 	s.Logger.Info(fmt.Sprintf("Processing %s", url))
 
-	conn, err := browser.ConnectToPage(url, 30*time.Second)
+	conn, err := browser.ConnectToPage(url, 5*time.Minute)
 	if err != nil {
 		return nil, fmt.Errorf("connect to page %s: %w", url, err)
 	}
