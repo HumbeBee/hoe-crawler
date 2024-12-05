@@ -2,17 +2,18 @@ package roddriver
 
 import (
 	"fmt"
+	"github.com/HumbeBee/hoe-crawler/internal/definitions"
 	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/cloudflare"
 	"github.com/HumbeBee/hoe-crawler/internal/utils"
 	"github.com/go-rod/rod/lib/proto"
 )
 
-func (b *rodBrowser) BypassCloudflare(url string) (string, error) {
+func (rb *rodBrowser) BypassCloudflare(url string) (*definitions.BypassResult, error) {
 	cloudflareBypasser := cloudflare.NewBypasser("yoori")
 
 	rawResponse, err := cloudflareBypasser.RequestToBypasser(url)
 	if err != nil {
-		return "", fmt.Errorf("failed to request to bypasser: %v", err)
+		return nil, fmt.Errorf("failed to request to bypasser: %v", err)
 	}
 
 	fmt.Println("Raw response:")
@@ -20,7 +21,7 @@ func (b *rodBrowser) BypassCloudflare(url string) (string, error) {
 
 	result, err := cloudflareBypasser.ParseResponse(rawResponse)
 	if err != nil {
-		return "", fmt.Errorf("failed to parse response: %v", err)
+		return nil, fmt.Errorf("failed to parse response: %v", err)
 	}
 
 	fmt.Println("Parsed response:")
@@ -34,7 +35,6 @@ func (b *rodBrowser) BypassCloudflare(url string) (string, error) {
 				Domain: cookie.Domain,
 				Path:   cookie.Path,
 				Secure: cookie.Secure,
-				//Expires: cookie.Expires
 			}
 		}
 
@@ -47,11 +47,11 @@ func (b *rodBrowser) BypassCloudflare(url string) (string, error) {
 			fmt.Printf("Setting cookie: %+v\n", cookie)
 		}
 
-		err = b.browser.SetCookies(uniqueCookies)
+		err = rb.browser.SetCookies(uniqueCookies)
 		if err != nil {
-			return "", fmt.Errorf("failed to set cookies: %v", err)
+			return nil, fmt.Errorf("failed to set cookies: %v", err)
 		}
 	}
 
-	return result.UserAgent, nil
+	return result, nil
 }

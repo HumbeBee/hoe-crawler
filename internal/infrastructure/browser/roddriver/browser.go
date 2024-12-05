@@ -1,6 +1,7 @@
 package roddriver
 
 import (
+	"github.com/go-rod/rod/lib/proto"
 	"time"
 
 	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/interfaces"
@@ -24,11 +25,15 @@ func (rb *rodBrowser) Close() {
 	rb.browser.Close()
 }
 
-func (rb *rodBrowser) CreatePage() (interfaces.Page, error) {
+func (rb *rodBrowser) CreatePage(userAgent string) (interfaces.Page, error) {
 	page, err := stealth.Page(rb.browser)
 	if err != nil {
 		return nil, err
 	}
+
+	err = page.SetUserAgent(&proto.NetworkSetUserAgentOverride{
+		UserAgent: userAgent,
+	})
 
 	return &rodPage{page: page}, nil
 }

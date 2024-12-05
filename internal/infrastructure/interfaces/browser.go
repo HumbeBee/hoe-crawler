@@ -1,16 +1,18 @@
 package interfaces
 
-import "time"
+import (
+	"github.com/HumbeBee/hoe-crawler/internal/definitions"
+	"time"
+)
 
 type Browser interface {
 	Connect() error
-	BypassCloudflare(url string) (string, error)
-	CreatePage() (Page, error)
+	BypassCloudflare(url string) (*definitions.BypassResult, error)
+	CreatePage(userAgent string) (Page, error)
 	Close()
 }
 
 type Page interface {
-	SetUserAgent(userAgent string) error
 	Navigate(url string) error
 	WaitStable(timeout time.Duration) error
 	WaitElementsMoreThan(selector string, count int) error

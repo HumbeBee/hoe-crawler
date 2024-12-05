@@ -31,12 +31,12 @@ func ConnectToPage(url string, timeout time.Duration) (*Connection, error) {
 		return nil, err
 	}
 
-	userAgent, err := browser.BypassCloudflare(url)
+	bypassResult, err := browser.BypassCloudflare(url)
 	if err != nil {
 		return nil, err
 	}
 
-	page, err := browser.CreatePage()
+	page, err := browser.CreatePage(bypassResult.UserAgent)
 	if err != nil {
 		return nil, err
 	}
