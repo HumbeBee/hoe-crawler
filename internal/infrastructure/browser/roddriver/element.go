@@ -12,7 +12,7 @@ type rodElement struct {
 	element *rod.Element
 }
 
-// *Return rodElement, if later uses another library, consider using a factory pattern
+// Consider using a factory pattern to return rodElement, especially if switching libraries later
 func NewElement(element *rod.Element) interfaces.Element {
 	return &rodElement{element: element}
 }

@@ -1,5 +1,7 @@
 package cloudflare
 
+// Github: https://github.com/yoori/flare-bypasser
+
 import (
 	"bytes"
 	"encoding/json"
