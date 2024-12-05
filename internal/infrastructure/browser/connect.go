@@ -31,7 +31,7 @@ func ConnectToPage(url string, timeout time.Duration) (*Connection, error) {
 		return nil, err
 	}
 
-	err := browser.BypassCloudflare(url)
+	userAgent, err := browser.BypassCloudflare(url)
 	if err != nil {
 		return nil, err
 	}

@@ -4,12 +4,13 @@ import "time"
 
 type Browser interface {
 	Connect() error
-	BypassCloudflare(url string) error
+	BypassCloudflare(url string) (string, error)
 	CreatePage() (Page, error)
 	Close()
 }
 
 type Page interface {
+	SetUserAgent(userAgent string) error
 	Navigate(url string) error
 	WaitStable(timeout time.Duration) error
 	WaitElementsMoreThan(selector string, count int) error

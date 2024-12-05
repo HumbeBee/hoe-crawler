@@ -7,12 +7,12 @@ import (
 	"github.com/go-rod/rod/lib/proto"
 )
 
-func (b *rodBrowser) BypassCloudflare(url string) error {
+func (b *rodBrowser) BypassCloudflare(url string) (string, error) {
 	cloudflareBypasser := cloudflare.NewBypasser("yoori")
 
 	rawResponse, err := cloudflareBypasser.RequestToBypasser(url)
 	if err != nil {
-		return fmt.Errorf("failed to request to bypasser: %v", err)
+		return "", fmt.Errorf("failed to request to bypasser: %v", err)
 	}
 
 	fmt.Println("Raw response:")
@@ -20,17 +20,21 @@ func (b *rodBrowser) BypassCloudflare(url string) error {
 
 	result, err := cloudflareBypasser.ParseResponse(rawResponse)
 	if err != nil {
-		return fmt.Errorf("failed to parse response: %v", err)
+		return "", fmt.Errorf("failed to parse response: %v", err)
 	}
 
 	fmt.Println("Parsed response:")
 	utils.PrintJSON(result)
-	if result.Success && result.IsChallengeDetected {
+	if result.Success {
 		cookieMap := make(map[string]*proto.NetworkCookieParam)
 		for _, cookie := range result.Cookies {
 			cookieMap[cookie.Name] = &proto.NetworkCookieParam{
-				Name:  cookie.Name,
-				Value: cookie.Value,
+				Name:   cookie.Name,
+				Value:  cookie.Value,
+				Domain: cookie.Domain,
+				Path:   cookie.Path,
+				Secure: cookie.Secure,
+				//Expires: cookie.Expires
 			}
 		}
 
@@ -45,9 +49,9 @@ func (b *rodBrowser) BypassCloudflare(url string) error {
 
 		err = b.browser.SetCookies(uniqueCookies)
 		if err != nil {
-			return fmt.Errorf("failed to set cookies: %v", err)
+			return "", fmt.Errorf("failed to set cookies: %v", err)
 		}
 	}
 
-	return nil
+	return result.UserAgent, nil
 }
