@@ -1,19 +1,20 @@
 #!/bin/bash
 
-# Exit on error. Append "|| true" if you expect an error.
+# Exit configs
 set -e
-
-# Exit on error in pipe
 set -o pipefail
-
-# Exit on undefined variable
 set -u
 
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+NC='\033[0m'
+
+# Constants
+SERVICES_DIR="$HOME/.local/share/hoe-crawler"
+REPO_URL="https://github.com/yoori/flare-bypasser.git"
+PROJECT_ROOT=$(pwd) # Store project root at the start
 
 # Log functions
 log() {
@@ -29,16 +30,23 @@ warning() {
     echo -e "${YELLOW}[!]${NC} $1"
 }
 
+# Cleanup function for failed bypass setup
+cleanup() {
+    if [ -d "$SERVICES_DIR/flare-bypasser" ]; then
+        log "Cleaning up failed installation..."
+        rm -rf "$SERVICES_DIR/flare-bypasser"
+    fi
+}
+
+# Trap signals for cleanup
+trap cleanup ERR INT TERM
+
 # Check required commands
 check_requirements() {
     log "Checking requirements..."
 
     if ! command -v docker &> /dev/null; then
         error "Docker is required but not installed."
-    fi
-
-    if ! command -v docker-compose &> /dev/null; then
-        error "Docker Compose is required but not installed."
     fi
 
     if ! command -v git &> /dev/null; then
@@ -52,39 +60,39 @@ check_requirements() {
 
 # Setup Cloudflare bypass service
 setup_bypass() {
-    # Create services directory
-    SERVICES_DIR="$HOME/.local/share/hoe-crawler"
     mkdir -p "$SERVICES_DIR" || error "Failed to create services directory"
 
     log "Setting up Cloudflare bypass service in $SERVICES_DIR"
-
-    # Change to services directory
-    cd "$SERVICES_DIR" || error "Failed to change directory to $SERVICES_DIR"
+    cd "$SERVICES_DIR" || error "Failed to change directory"
 
     if [ ! -d "flare-bypasser" ]; then
         log "Cloning Cloudflare bypass repo..."
-        git clone https://github.com/yoori/flare-bypasser.git || error "Failed to clone bypass repo"
-        cd flare-bypasser || error "Failed to enter flare-bypasser directory"
+        if ! git clone "$REPO_URL" 2>&1; then
+            error "Failed to clone bypass repo"
+        fi
+        cd flare-bypasser || error "Failed to enter directory"
 
-        log "Building Docker image for bypass service..."
+        log "Building Docker image..."
         if ! docker build -t flare-bypasser .; then
-            error "Failed to build bypass service Docker image"
+            cd "$PROJECT_ROOT" || true
+            cleanup
+            error "Failed to build image"
         fi
     else
-        warning "flare-bypasser directory already exists, checking service..."
-        cd flare-bypasser || error "Failed to enter existing flare-bypasser directory"
+        warning "flare-bypasser directory exists, checking image..."
+        cd flare-bypasser || error "Failed to enter directory"
 
-        # Check if image exists
         if ! docker image inspect flare-bypasser &> /dev/null; then
-            log "Bypass service image not found, rebuilding..."
+            log "Image not found, rebuilding..."
             if ! docker build -t flare-bypasser .; then
-                error "Failed to build bypass service Docker image"
+                cd "$PROJECT_ROOT" || true
+                cleanup
+                error "Failed to build image"
             fi
         fi
     fi
 
-    # Return to original directory
-    cd - > /dev/null || error "Failed to return to project directory"
+    cd "$PROJECT_ROOT" || error "Failed to return to project root"
 }
 
 # Start all required services
@@ -93,21 +101,21 @@ start_services() {
 
     # Start Cloudflare bypass service
     log "Starting Cloudflare bypass service..."
-    cd "$HOME/.local/share/hoe-crawler/flare-bypasser" || error "Failed to change to bypass service directory"
-    if ! docker-compose up -d; then
+    cd "$HOME/.local/share/hoe-crawler/flare-bypasser" || error "Failed to change directory"
+
+    if ! docker compose up -d; then
+        warning "Docker compose failed, cleaning up..."
+        cd "$PROJECT_ROOT" || true
+        cleanup
         error "Failed to start bypass service"
     fi
-    cd - > /dev/null || error "Failed to return to project directory"
 
-    # Start database
+    # Start database from project root
+    cd "$PROJECT_ROOT" || error "Failed to return to project root"
     log "Starting MariaDB..."
-    if ! docker-compose up -d; then
+    if ! docker compose up -d; then
         error "Failed to start database service"
     fi
-
-    # Wait and verify services
-    log "Waiting for services to be ready..."
-    sleep 10
 
     log "All services are up and running"
 }

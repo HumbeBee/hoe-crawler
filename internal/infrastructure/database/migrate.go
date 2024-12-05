@@ -16,6 +16,7 @@ func Migrate(db *gorm.DB) error {
 		&models.HoeInfo{},
 		&models.HoeReport{},
 		&models.WorkingHistory{},
+		&models.FailedURL{},
 	}
 
 	for _, model := range _models {
