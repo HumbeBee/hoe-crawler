@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/HumbeBee/hoe-crawler/internal/definitions"
 	"github.com/HumbeBee/hoe-crawler/internal/interfaces"
 	"github.com/HumbeBee/hoe-crawler/internal/models"
@@ -16,6 +17,18 @@ func NewValidateService() interfaces.ValidateService {
 }
 
 func (s *validateService) ValidateHoe(hoe *models.HoeInfo) error {
+	if hoe.Phone == "" {
+		return fmt.Errorf("phone number is required")
+	}
+
+	if len(hoe.Profiles) == 0 {
+		return fmt.Errorf("hoe must have at least one profile")
+	}
+
+	profile := hoe.Profiles[0]
+	if profile.SiteID == 0 {
+		return fmt.Errorf("profile must have site ID")
+	}
 
 	return nil
 }

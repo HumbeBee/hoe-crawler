@@ -53,7 +53,7 @@ func (r *hoeRepo) Save(hoe *models.HoeInfo) error {
 		}
 
 		r.logger.Info(fmt.Sprintf("Updated existing hoe: %s with profile from %s",
-			hoe.Name, hoe.Profiles[0].Site.Name))
+			hoe.Name, hoe.Profiles[0].SiteID))
 	}
 
 	return tx.Commit().Error

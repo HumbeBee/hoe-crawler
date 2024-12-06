@@ -2,6 +2,7 @@ package service
 
 import (
 	"strings"
+	"time"
 
 	"github.com/HumbeBee/hoe-crawler/internal/dto"
 	"github.com/HumbeBee/hoe-crawler/internal/interfaces"
@@ -19,12 +20,13 @@ func (s *mapperService) TransformHoe(rawInfo *dto.RawHoeData) *models.HoeInfo {
 	rawInfo.Phone = s.normalizePhone(rawInfo.Phone)
 
 	hoeInfo := &models.HoeInfo{
-		Name:      strings.TrimSpace(rawInfo.Name),
-		Phone:     rawInfo.Phone,
-		BirthYear: rawInfo.BirthYear,
-		Height:    rawInfo.Height,
-		Weight:    rawInfo.Weight,
-		Country:   rawInfo.Country,
+		Name:          strings.TrimSpace(rawInfo.Name),
+		Phone:         rawInfo.Phone,
+		BirthYear:     rawInfo.BirthYear,
+		Height:        rawInfo.Height,
+		Weight:        rawInfo.Weight,
+		Country:       rawInfo.Country,
+		LastScrapedAt: time.Now(),
 
 		Profiles: []models.HoeProfile{
 			{
