@@ -11,11 +11,6 @@ import (
 	"github.com/HumbeBee/hoe-crawler/internal/utils/logutil"
 )
 
-type HoeService interface {
-	ProcessListPage() error
-	ProcessDetailPage(url string) error
-}
-
 type hoeService struct {
 	locationRepo       repository.LocationRepository
 	hoeRepo            repository.HoeRepository

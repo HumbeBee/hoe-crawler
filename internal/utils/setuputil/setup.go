@@ -15,9 +15,10 @@ import (
 )
 
 type AppContext struct {
-	Scraper    interfaces.Scraper
-	HoeService service.HoeService
-	Logger     *logutil.Logger
+	Logger           *logutil.Logger
+	Scraper          interfaces.Scraper
+	HoeService       interfaces.HoeService
+	FailedUrlService interfaces.FailedURLService
 }
 
 func InitLogger() *logutil.Logger {
@@ -79,9 +80,13 @@ func CreateAppContext() (*AppContext, error) {
 		return nil, fmt.Errorf("failed to create hoe service: %w", err)
 	}
 
+	failedUrlRepo := repository.NewFailedURLRepository(db)
+	failedURLService := service.NewFailedUrlService(siteInfo.ID, failedUrlRepo)
+
 	return &AppContext{
-		Scraper:    scraper,
-		Logger:     logger,
-		HoeService: hoeService,
+		Scraper:          scraper,
+		Logger:           logger,
+		HoeService:       hoeService,
+		FailedUrlService: failedURLService,
 	}, nil
 }
