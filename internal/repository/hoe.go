@@ -38,8 +38,8 @@ func (r *hoeRepo) Save(hoe *models.HoeInfo) error {
 			return fmt.Errorf("failed to create new hoe: %v", err)
 		}
 
-		r.logger.Info(fmt.Sprintf("Created new hoe: %s with profile from %s",
-			hoe.Name, hoe.Profiles[0].Site.Name))
+		r.logger.Info(fmt.Sprintf("Created new hoe: %s with profile from %d",
+			hoe.Name, hoe.Profiles[0].SiteID))
 
 	} else if err != nil {
 		tx.Rollback()

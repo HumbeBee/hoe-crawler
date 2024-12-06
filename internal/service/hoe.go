@@ -80,10 +80,15 @@ func (hs *hoeService) ProcessDetailPage(url string) error {
 	}
 
 	hoeInfo.Print()
-	//
-	//if err := hs.validateService.ValidateHoe(hoeInfo); err != nil {
-	//	return err
-	//}
+
+	if err := hs.validateService.ValidateHoe(hoeInfo); err != nil {
+		return err
+	}
+
+	if err = hs.hoeRepo.Save(hoeInfo); err != nil {
+		return err
+	}
+
 	//
 	//hoeInfo.Print()
 
