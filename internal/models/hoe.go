@@ -60,7 +60,7 @@ func (h *HoeInfo) Print() {
 	if len(h.Profiles) > 0 {
 		fmt.Println("\n--- Latest Profile ---")
 		profile := h.Profiles[0]
-		fmt.Printf("Site: %s\n", profile.Site.Name)
+		fmt.Printf("Site: %d\n", profile.SiteID)
 		fmt.Printf("Original ID: %s\n", profile.OriginID)
 		fmt.Printf("URL: %s\n", profile.Url)
 		fmt.Printf("Image URL: %s\n", profile.ImageUrl)
@@ -84,8 +84,16 @@ func (h *HoeInfo) Print() {
 		}
 	}
 
+	if len(h.Profiles[0].Reports) > 0 {
+		fmt.Println("\n--- Reports ---")
+		for _, report := range h.Profiles[0].Reports {
+			fmt.Printf("Report URL: %s\n", report.ReportURL)
+		}
+	}
+
 	fmt.Printf("\nTotal Profiles: %d\n", len(h.Profiles))
 	fmt.Printf("Total Working Histories: %d\n", len(h.WorkingHistories))
+	fmt.Printf("Total Reports: %d\n", len(h.Profiles[0].Reports))
 	fmt.Println("==============================")
 	fmt.Print("\n\n")
 }

@@ -6,7 +6,6 @@ import (
 	"github.com/HumbeBee/hoe-crawler/internal/dto"
 
 	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/browser"
-	"github.com/HumbeBee/hoe-crawler/internal/models"
 	"github.com/HumbeBee/hoe-crawler/internal/utils"
 	"github.com/HumbeBee/hoe-crawler/internal/utils/errutil"
 )
@@ -60,8 +59,8 @@ func (s *detailPageScraper) getBasicInfo() (*dto.RawHoeData, error) {
 	return rawInfo, nil
 }
 
-func (s *detailPageScraper) getReportURLs() ([]*models.HoeReport, error) {
-	var reports []*models.HoeReport
+func (s *detailPageScraper) getReportURLs() ([]string, error) {
+	var reports []string
 	reportTabEle, err := s.conn.Root.Find(detailPageSelectors.ReportTab)
 	if err != nil {
 		return nil, errutil.WrapError("get report tab element", err, s.url)
@@ -93,9 +92,7 @@ func (s *detailPageScraper) getReportURLs() ([]*models.HoeReport, error) {
 			if err != nil {
 				return nil, errutil.WrapError("get report url", err, s.url)
 			}
-			reports = append(reports, &models.HoeReport{
-				ReportURL: reportUrl,
-			})
+			reports = append(reports, reportUrl)
 		}
 
 		goNextPageBtn, err := s.conn.Root.Find(detailPageSelectors.ReportGoNextPageBtn)

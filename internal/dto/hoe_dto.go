@@ -22,4 +22,8 @@ type RawHoeData struct {
 	Service      string
 	Duration     string
 	WorkTime     string
+	Reports      []string
+}
+
+type RawHoeReport struct {
 }

@@ -18,7 +18,7 @@ func (s *mapperService) TransformHoe(rawInfo *dto.RawHoeData) *models.HoeInfo {
 	rawInfo.Price = s.normalizePrice(rawInfo.Price)
 	rawInfo.Phone = s.normalizePhone(rawInfo.Phone)
 
-	return &models.HoeInfo{
+	hoeInfo := &models.HoeInfo{
 		Name:      strings.TrimSpace(rawInfo.Name),
 		Phone:     rawInfo.Phone,
 		BirthYear: rawInfo.BirthYear,
@@ -42,6 +42,19 @@ func (s *mapperService) TransformHoe(rawInfo *dto.RawHoeData) *models.HoeInfo {
 			},
 		},
 	}
+
+	var hoeReports []models.HoeReport
+	for _, report := range rawInfo.Reports {
+		hoeReports = append(hoeReports, models.HoeReport{
+			// HoeProfileID: gorm will handle this
+			ReportURL: report,
+		})
+	}
+
+	// Assign mapped reports to hoeInfo
+	hoeInfo.Profiles[0].Reports = hoeReports
+
+	return hoeInfo
 }
 
 func (s *mapperService) normalizePrice(price string) string {
