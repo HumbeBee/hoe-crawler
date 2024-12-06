@@ -60,9 +60,16 @@ func (s *HoeStatus) Scan(value interface{}) error {
 		return nil
 	}
 
-	str, ok := value.(string)
-	if !ok {
-		return fmt.Errorf("invalid status value: %v", value)
+	// MySQL ENUM values can be returned as either string or []byte
+	// Need to handle both cases to avoid panic when scanning
+	var str string
+	switch v := value.(type) {
+	case string:
+		str = v
+	case []byte:
+		str = string(v) // Convert []byte to string for ENUM values from DB
+	default:
+		return fmt.Errorf("invalid status value type: %T", value)
 	}
 
 	*s = HoeStatus(str)
