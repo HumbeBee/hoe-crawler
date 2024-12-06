@@ -31,7 +31,7 @@ git pull || error "Failed to pull latest code"
 
 # Rebuild service
 log "Rebuilding service..."
-docker-compose down -v || error "Failed to stop existing containers"
-docker-compose up -d || error "Failed to start new containers"
+docker compose down -v || error "Failed to stop existing containers"
+docker compose up -d || error "Failed to start new containers"
 
 log "Service updated successfully!"
