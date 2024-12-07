@@ -1,12 +1,14 @@
 package repository
 
 import (
+	"errors"
 	"github.com/HumbeBee/hoe-crawler/internal/models"
 	"gorm.io/gorm"
 )
 
 type FailedURLRepository interface {
 	GetFailedURLs() ([]string, error)
+	FindFailedURL(url string, sideID uint) (*models.FailedURL, error)
 	Save(failedURL *models.FailedURL) error
 }
 
@@ -30,12 +32,20 @@ func (fu *failedURLRepo) GetFailedURLs() ([]string, error) {
 }
 
 func (fu *failedURLRepo) Save(failedURL *models.FailedURL) error {
-	tx := fu.db.Begin()
+	return fu.db.Create(failedURL).Error
+}
 
-	if err := tx.Create(failedURL).Error; err != nil {
-		tx.Rollback()
-		return err
+func (fu *failedURLRepo) FindFailedURL(url string, siteID uint) (*models.FailedURL, error) {
+	var failedURL models.FailedURL
+	err := fu.db.Where("url = ? AND site_id = ?", url, siteID).First(&failedURL).Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+
+		return nil, err
 	}
 
-	return tx.Commit().Error
+	return &failedURL, nil
 }
