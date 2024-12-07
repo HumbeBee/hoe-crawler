@@ -7,7 +7,7 @@ import (
 )
 
 type FailedURLRepository interface {
-	GetFailedURLs() ([]string, error)
+	GetFailedURLs() ([]*models.FailedURL, error)
 	FindFailedURL(url string, sideID uint) (*models.FailedURL, error)
 	Save(failedURL *models.FailedURL) error
 }
@@ -20,10 +20,10 @@ func NewFailedURLRepository(db *gorm.DB) FailedURLRepository {
 	return &failedURLRepo{db: db}
 }
 
-func (fu *failedURLRepo) GetFailedURLs() ([]string, error) {
+func (fu *failedURLRepo) GetFailedURLs() ([]*models.FailedURL, error) {
 	const LIMIT = 20
 
-	var failedURLs []string
+	var failedURLs []*models.FailedURL
 	if err := fu.db.Limit(LIMIT).Find(&failedURLs).Error; err != nil {
 		return nil, err
 	}

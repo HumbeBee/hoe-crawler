@@ -15,6 +15,6 @@ func main() {
 
 	err = appContext.HoeService.ProcessDetailPage(url)
 	if err != nil {
-		appContext.FailedUrlService.HandleFailedURL(url, err)
+		appContext.FailedUrlService.TrackFailedURL(url, err)
 	}
 }

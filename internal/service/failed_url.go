@@ -18,7 +18,7 @@ func NewFailedUrlService(siteID uint, repo repository.FailedURLRepository, logge
 	return &failedURLService{siteID: siteID, repo: repo, logger: logger}
 }
 
-func (f failedURLService) HandleFailedURL(url string, err error) {
+func (f failedURLService) TrackFailedURL(url string, err error) {
 	var errorText string
 	if err.Error() != "" {
 		errorText = err.Error()
@@ -26,9 +26,7 @@ func (f failedURLService) HandleFailedURL(url string, err error) {
 		errorText = "unknown error"
 	}
 
-	f.logger.Error(fmt.Sprintf(
-		"failed to process url - %s, siteID: %d, error: %v",
-		url, f.siteID, err))
+	f.logger.Error(fmt.Sprintf("failed to process url - %s, siteID: %d, error: %v", url, f.siteID, err))
 
 	failedUrl, err := f.repo.FindFailedURL(url, f.siteID)
 	if err != nil {
@@ -60,4 +58,17 @@ func (f failedURLService) HandleFailedURL(url string, err error) {
 			"failed to create failed url - url: %s, siteID: %d, error: %v",
 			url, f.siteID, err))
 	}
+}
+
+func (f failedURLService) RetryFailedURLs() error {
+	failedUrls, err := f.repo.GetFailedURLs()
+	if err != nil {
+		return fmt.Errorf("failed to get failed urls: %w", err)
+	}
+
+	for _, url := range failedUrls {
+		fmt.Printf("Retrying url: %s, siteID: %d\n", url.URL, url.SiteID)
+	}
+
+	return nil
 }

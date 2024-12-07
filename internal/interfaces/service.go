@@ -19,5 +19,6 @@ type ValidateService interface {
 }
 
 type FailedURLService interface {
-	HandleFailedURL(url string, err error)
+	TrackFailedURL(url string, err error)
+	RetryFailedURLs() error
 }
