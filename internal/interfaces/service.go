@@ -19,5 +19,5 @@ type ValidateService interface {
 }
 
 type FailedURLService interface {
-	HandleFailedURL(url string, siteID uint, err error) error
+	HandleFailedURL(url string, err error)
 }

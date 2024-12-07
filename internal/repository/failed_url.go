@@ -32,7 +32,7 @@ func (fu *failedURLRepo) GetFailedURLs() ([]string, error) {
 }
 
 func (fu *failedURLRepo) Save(failedURL *models.FailedURL) error {
-	return fu.db.Create(failedURL).Error
+	return fu.db.Save(failedURL).Error
 }
 
 func (fu *failedURLRepo) FindFailedURL(url string, siteID uint) (*models.FailedURL, error) {

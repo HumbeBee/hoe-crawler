@@ -67,7 +67,7 @@ func (b *HoeBuilder) validate() error {
 	return nil
 }
 
-func (b *HoeBuilder) Build() (HoeService, error) {
+func (b *HoeBuilder) Build() (interfaces.HoeService, error) {
 	if err := b.validate(); err != nil {
 		return nil, err
 	}

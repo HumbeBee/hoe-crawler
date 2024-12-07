@@ -9,7 +9,7 @@ type FailedURL struct {
 	RetryCount uint      `gorm:"column:retry_count"`
 	LastError  string    `gorm:"column:last_error;type:text"`
 	LastTry    time.Time `gorm:"column:last_try"`
-	CreatedAt  string    `gorm:"column:created_at"`
+	CreatedAt  time.Time `gorm:"column:created_at"`
 	UpdatedAt  time.Time `gorm:"column:updated_at;autoUpdateTime"`
 
 	Site Site `gorm:"foreignKey:SiteID"`

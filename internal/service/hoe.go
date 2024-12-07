@@ -24,7 +24,7 @@ type hoeService struct {
 func (hs *hoeService) ProcessListPage() error {
 	detailURLs, err := hs.scraper.GetDetailURLs()
 	if err != nil {
-		return errutil.WrapError("get detail urls", err, "no target")
+		return errutil.WrapError("get detail urls", err)
 	}
 
 	if len(detailURLs) == 0 {
@@ -41,21 +41,21 @@ func (hs *hoeService) ProcessListPage() error {
 }
 
 func (hs *hoeService) ProcessDetailPage(url string) error {
-	url2 := "/gai-goi/chi-tiet/56042/hot-girl-diep-anhmat-xinh-nguc-dep-bu-cu-dieu-luyen"
+	//url2 := "/gai-goi/chi-tiet/56042/hot-girl-diep-anhmat-xinh-nguc-dep-bu-cu-dieu-luyen"
 
-	rawHoe, err := hs.scraper.GetRawHoeData(url2)
+	rawHoe, err := hs.scraper.GetRawHoeData(url)
 	if err != nil {
-		return errutil.WrapError("get raw hoe data", err, url)
+		return errutil.WrapError("get raw hoe data", err)
 	}
 
 	// If we can get location from database, it means the location is already valid
 	cityID, err := hs.locationRepo.GetCityIDFromName(rawHoe.CityName)
 	if err != nil {
-		return errutil.WrapError("get city id", err, rawHoe.CityName)
+		return errutil.WrapError("get city id", err)
 	}
 	districtID, err := hs.locationRepo.GetDistrictIDFromName(rawHoe.DistrictName)
 	if err != nil {
-		return errutil.WrapError("get district id", err, rawHoe.DistrictName)
+		return errutil.WrapError("get district id", err)
 	}
 
 	// raw data to domain models
@@ -63,7 +63,7 @@ func (hs *hoeService) ProcessDetailPage(url string) error {
 
 	isNewLocation, err := hs.workingHistoryRepo.CheckIsNewLocation(hoeInfo.ID, cityID, districtID)
 	if err != nil {
-		return errutil.WrapError("check is new location", err, rawHoe.CityName)
+		return errutil.WrapError("check is new location", err)
 	}
 	if isNewLocation {
 		// Create new working history

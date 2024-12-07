@@ -22,7 +22,7 @@ func (s *listPageScraper) getHoeURLs() ([]string, error) {
 	for {
 		items, err := s.conn.Root.FindAll(listPageSelectors.Items)
 		if err != nil {
-			return nil, errutil.WrapError("get list items", err, s.url)
+			return nil, errutil.WrapError("get list items", err)
 		}
 
 		// currentLength >= itemThreshold: enough items
@@ -38,17 +38,17 @@ func (s *listPageScraper) getHoeURLs() ([]string, error) {
 		}
 
 		if err := loadMoreBtn.Click(); err != nil {
-			return nil, errutil.WrapError("click load more button", err, s.url)
+			return nil, errutil.WrapError("click load more button", err)
 		}
 
 		if err := s.conn.Page.WaitElementsMoreThan(listPageSelectors.Items, currentLength); err != nil {
-			return nil, errutil.WrapError("wait more items", err, s.url)
+			return nil, errutil.WrapError("wait more items", err)
 		}
 	}
 
 	elements, err := s.conn.Root.FindAll(listPageSelectors.Items)
 	if err != nil {
-		return nil, errutil.WrapError("get final list items", err, s.url)
+		return nil, errutil.WrapError("get final list items", err)
 	}
 
 	for _, elem := range elements {

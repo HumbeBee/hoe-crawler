@@ -10,6 +10,7 @@ func CreateScraper(baseConfig definitions.ScraperConfig) interfaces.Scraper {
 	switch baseConfig.SiteName {
 	case "gaito":
 		return gaito.NewScraper(baseConfig)
+	// TODO: Implement gaigu later
 	case "gaigu":
 		return gaito.NewScraper(baseConfig)
 	default:

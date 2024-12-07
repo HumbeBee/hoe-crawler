@@ -48,13 +48,13 @@ func (s *scraper) GetRawHoeData(detailUrl string) (*dto.RawHoeData, error) {
 	detailScraper := newDetailPageScraper(conn, url, s.SiteID)
 	hoeInfo, err := detailScraper.getBasicInfo()
 	if err != nil {
-		return nil, fmt.Errorf("get basic info %s: %w", url, err)
+		return nil, fmt.Errorf("get basic info: %w", err)
 	}
 
 	// Get report urls
 	reports, err := detailScraper.getReportURLs()
 	if err != nil {
-		return nil, errutil.WrapError("get report urls", err, url)
+		return nil, errutil.WrapError("get report urls", err)
 	}
 
 	hoeInfo.Reports = reports

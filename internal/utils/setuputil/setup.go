@@ -81,7 +81,7 @@ func CreateAppContext() (*AppContext, error) {
 	}
 
 	failedUrlRepo := repository.NewFailedURLRepository(db)
-	failedURLService := service.NewFailedUrlService(siteInfo.ID, failedUrlRepo)
+	failedURLService := service.NewFailedUrlService(siteInfo.ID, failedUrlRepo, logger)
 
 	return &AppContext{
 		Scraper:          scraper,

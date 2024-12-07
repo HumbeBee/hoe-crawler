@@ -11,10 +11,10 @@ func main() {
 	}
 
 	// Example url
-	url := "/gai-goi/chi-tiet/56042/hot-girl-diep-anhmat-xinh-nguc-dep-bu-cu-dieu-luyen"
+	url := "/gai-goi/chi-tietz/56042/hot-girl-diep-anhmat-xinh-nguc-dep-bu-cu-dieu-luyen"
 
 	err = appContext.HoeService.ProcessDetailPage(url)
 	if err != nil {
-		appContext.Logger.Fatal(err.Error())
+		appContext.FailedUrlService.HandleFailedURL(url, err)
 	}
 }
