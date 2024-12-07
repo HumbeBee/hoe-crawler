@@ -1,8 +1,8 @@
 package gaito
 
 import (
+	"fmt"
 	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/browser"
-	"github.com/HumbeBee/hoe-crawler/internal/utils/errutil"
 )
 
 type listPageScraper struct {
@@ -22,7 +22,7 @@ func (s *listPageScraper) getHoeURLs() ([]string, error) {
 	for {
 		items, err := s.conn.Root.FindAll(listPageSelectors.Items)
 		if err != nil {
-			return nil, errutil.WrapError("get list items", err)
+			return nil, fmt.Errorf("get list items: %w", err)
 		}
 
 		// currentLength >= itemThreshold: enough items
@@ -38,17 +38,17 @@ func (s *listPageScraper) getHoeURLs() ([]string, error) {
 		}
 
 		if err := loadMoreBtn.Click(); err != nil {
-			return nil, errutil.WrapError("click load more button", err)
+			return nil, fmt.Errorf("click load more button: %w", err)
 		}
 
 		if err := s.conn.Page.WaitElementsMoreThan(listPageSelectors.Items, currentLength); err != nil {
-			return nil, errutil.WrapError("wait more items", err)
+			return nil, fmt.Errorf("wait more items: %w", err)
 		}
 	}
 
 	elements, err := s.conn.Root.FindAll(listPageSelectors.Items)
 	if err != nil {
-		return nil, errutil.WrapError("get final list items", err)
+		return nil, fmt.Errorf("get final list items: %w", err)
 	}
 
 	for _, elem := range elements {

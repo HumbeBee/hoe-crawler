@@ -2,7 +2,6 @@ package gaito
 
 import (
 	"fmt"
-	"github.com/HumbeBee/hoe-crawler/internal/utils/errutil"
 	"time"
 
 	"github.com/HumbeBee/hoe-crawler/internal/definitions"
@@ -54,7 +53,7 @@ func (s *scraper) GetRawHoeData(detailUrl string) (*dto.RawHoeData, error) {
 	// Get report urls
 	reports, err := detailScraper.getReportURLs()
 	if err != nil {
-		return nil, errutil.WrapError("get report urls", err)
+		return nil, fmt.Errorf("get report urls: %w", err)
 	}
 
 	hoeInfo.Reports = reports

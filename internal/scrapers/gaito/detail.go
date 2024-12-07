@@ -1,13 +1,13 @@
 package gaito
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/HumbeBee/hoe-crawler/internal/dto"
 
 	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/browser"
 	"github.com/HumbeBee/hoe-crawler/internal/utils"
-	"github.com/HumbeBee/hoe-crawler/internal/utils/errutil"
 )
 
 type detailPageScraper struct {
@@ -25,12 +25,12 @@ func (s *detailPageScraper) getBasicInfo() (*dto.RawHoeData, error) {
 
 	containerEle, err := s.conn.Root.Find(detailPageSelectors.PageContainer)
 	if err != nil {
-		return nil, errutil.WrapError("get container element", err)
+		return nil, fmt.Errorf("get container element: %w", err)
 	}
 
 	detailInfoTabEle, err := containerEle.Find(detailPageSelectors.DetailInfoTab)
 	if err != nil {
-		return nil, errutil.WrapError("get detail info tab element", err)
+		return nil, fmt.Errorf("get detail info tab element: %w", err)
 	}
 
 	rawInfo := &dto.RawHoeData{
@@ -63,34 +63,34 @@ func (s *detailPageScraper) getReportURLs() ([]string, error) {
 	var reports []string
 	reportTabEle, err := s.conn.Root.Find(detailPageSelectors.ReportTab)
 	if err != nil {
-		return nil, errutil.WrapError("get report tab element", err)
+		return nil, fmt.Errorf("get report tab element: %w", err)
 	}
 
 	if err := reportTabEle.Click(); err != nil {
-		return nil, errutil.WrapError("click report tab element", err)
+		return nil, fmt.Errorf("click report tab element: %w", err)
 	}
 
 	if err := reportTabEle.WaitVisible(); err != nil {
-		return nil, errutil.WrapError("wait report tab element visible", err)
+		return nil, fmt.Errorf("wait report tab element visible: %w", err)
 	}
 
 	reportTabContentEle, err := s.conn.Root.Find(detailPageSelectors.ReportTabContent)
 	if err != nil {
-		return nil, errutil.WrapError("get report tab content element", err)
+		return nil, fmt.Errorf("get report tab content element: %w", err)
 	}
 
 	for {
 		// reportsEle, err := browser.GetMultipleElementsWithRetry(reportTabContentEle, detailPageSelectors.ReportList)
 		reportsEle, err := reportTabContentEle.FindAll(detailPageSelectors.ReportList)
 		if err != nil {
-			return nil, errutil.WrapError("get report elements", err)
+			return nil, fmt.Errorf("get report elements: %w", err)
 		}
 
 		for _, reportEle := range reportsEle {
 			// reportUrl, err := browser.GetElementAttribute(reportEle, detailPageSelectors.ReportViewMoreBtn, "href")
 			reportUrl, err := reportEle.MustFind(detailPageSelectors.ReportViewMoreBtn).GetAttribute("href")
 			if err != nil {
-				return nil, errutil.WrapError("get report url", err)
+				return nil, fmt.Errorf("get report url: %w", err)
 			}
 			reports = append(reports, reportUrl)
 		}
@@ -101,7 +101,7 @@ func (s *detailPageScraper) getReportURLs() ([]string, error) {
 		} else {
 			// Click go next page button
 			if err := goNextPageBtn.Click(); err != nil {
-				return nil, errutil.WrapError("click go next page button", err)
+				return nil, fmt.Errorf("click go next page button: %w", err)
 			}
 
 			time.Sleep(1 * time.Second)
