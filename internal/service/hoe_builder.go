@@ -2,13 +2,12 @@ package service
 
 import (
 	"errors"
-
 	"github.com/HumbeBee/hoe-crawler/internal/interfaces"
 	"github.com/HumbeBee/hoe-crawler/internal/repository"
 	"github.com/HumbeBee/hoe-crawler/internal/utils/logutil"
 )
 
-type HoeBuilder struct {
+type hoeBuilder struct {
 	hoeRepo            repository.HoeRepository
 	workingHistoryRepo repository.WorkingHistoryRepository
 	locationRepo       repository.LocationRepository
@@ -16,36 +15,53 @@ type HoeBuilder struct {
 	scraper            interfaces.Scraper
 }
 
-func NewHoeBuilder() *HoeBuilder {
-	return &HoeBuilder{}
+func NewHoeBuilder() *hoeBuilder {
+	return &hoeBuilder{}
 }
 
-func (b *HoeBuilder) WithHoeRepo(hoeRepo repository.HoeRepository) *HoeBuilder {
+func (b *hoeBuilder) WithHoeRepo(hoeRepo repository.HoeRepository) *hoeBuilder {
 	b.hoeRepo = hoeRepo
 	return b
 }
 
-func (b *HoeBuilder) WithWorkingHistoryRepo(workingHistoryRepo repository.WorkingHistoryRepository) *HoeBuilder {
+func (b *hoeBuilder) WithWorkingHistoryRepo(workingHistoryRepo repository.WorkingHistoryRepository) *hoeBuilder {
 	b.workingHistoryRepo = workingHistoryRepo
 	return b
 }
 
-func (b *HoeBuilder) WithLocationRepo(locationRepo repository.LocationRepository) *HoeBuilder {
+func (b *hoeBuilder) WithLocationRepo(locationRepo repository.LocationRepository) *hoeBuilder {
 	b.locationRepo = locationRepo
 	return b
 }
 
-func (b *HoeBuilder) WithLogger(logger *logutil.Logger) *HoeBuilder {
+func (b *hoeBuilder) WithLogger(logger *logutil.Logger) *hoeBuilder {
 	b.logger = logger
 	return b
 }
 
-func (b *HoeBuilder) WithScraper(scraper interfaces.Scraper) *HoeBuilder {
+func (b *hoeBuilder) WithScraper(scraper interfaces.Scraper) *hoeBuilder {
 	b.scraper = scraper
 	return b
 }
 
-func (b *HoeBuilder) validate() error {
+func (b *hoeBuilder) Build() (interfaces.HoeService, error) {
+	if err := b.validate(); err != nil {
+		return nil, err
+	}
+
+	return &hoeService{
+		locationRepo:       b.locationRepo,
+		hoeRepo:            b.hoeRepo,
+		workingHistoryRepo: b.workingHistoryRepo,
+		logger:             b.logger,
+		scraper:            b.scraper,
+		mapperService:      NewMapperService(),
+		validateService:    NewValidateService(),
+	}, nil
+}
+
+// ================================================================
+func (b *hoeBuilder) validate() error {
 	if b.hoeRepo == nil {
 		return errors.New("hoeRepo is required")
 	}
@@ -65,20 +81,4 @@ func (b *HoeBuilder) validate() error {
 	}
 
 	return nil
-}
-
-func (b *HoeBuilder) Build() (interfaces.HoeService, error) {
-	if err := b.validate(); err != nil {
-		return nil, err
-	}
-
-	return &hoeService{
-		locationRepo:       b.locationRepo,
-		hoeRepo:            b.hoeRepo,
-		workingHistoryRepo: b.workingHistoryRepo,
-		logger:             b.logger,
-		scraper:            b.scraper,
-		mapperService:      NewMapperService(),
-		validateService:    NewValidateService(),
-	}, nil
 }

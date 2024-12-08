@@ -7,6 +7,7 @@ import (
 
 type SiteRepository interface {
 	GetSiteByName(name string) (*models.Site, error)
+	GetSiteByID(id uint) (*models.Site, error)
 }
 
 type siteRepo struct {
@@ -20,6 +21,15 @@ func NewSiteRepository(db *gorm.DB) SiteRepository {
 func (r *siteRepo) GetSiteByName(name string) (*models.Site, error) {
 	var site models.Site
 	if err := r.db.Model(&models.Site{}).Where("name = ?", name).First(&site).Error; err != nil {
+		return nil, err
+	}
+
+	return &site, nil
+}
+
+func (r *siteRepo) GetSiteByID(id uint) (*models.Site, error) {
+	var site models.Site
+	if err := r.db.Model(&models.Site{}).Where("id = ?", id).First(&site).Error; err != nil {
 		return nil, err
 	}
 

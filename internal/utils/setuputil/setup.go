@@ -75,13 +75,20 @@ func CreateAppContext() (*AppContext, error) {
 		WithLogger(logger).
 		WithScraper(scraper).
 		Build()
-
 	if err != nil {
-		return nil, fmt.Errorf("failed to create hoe service: %w", err)
+		return nil, fmt.Errorf("failed to create hoe failedURLService: %w", err)
 	}
 
-	failedUrlRepo := repository.NewFailedURLRepository(db)
-	failedURLService := service.NewFailedUrlService(siteInfo.ID, failedUrlRepo, logger)
+	failedURLRepo := repository.NewFailedURLRepository(db)
+	failedURLService, err := service.NewFailedURLBuilder().
+		WithSiteID(siteInfo.ID).
+		WithLogger(logger).
+		WithFailedURLRepo(failedURLRepo).
+		WithSiteRepo(siteRepo).
+		Build()
+	if err != nil {
+		return nil, fmt.Errorf("failed to create failedURLService: %w", err)
+	}
 
 	return &AppContext{
 		Scraper:          scraper,
