@@ -70,6 +70,13 @@ func (f *failedURLService) RetryFailedURLs() error {
 
 	for _, url := range failedUrls {
 		fullURL := fmt.Sprintf("%s%s", siteInfo.BaseURL, url.URL)
+		switch url.Type {
+		case models.FailedTypeList:
+		case models.FailedTypeDetail:
+		case models.FailedTypeReport:
+		case models.FailedTypeUnknown:
+		default:
+		}
 		fmt.Printf("Retrying url: %s\n", fullURL)
 	}
 
