@@ -20,7 +20,7 @@ type FailedURL struct {
 	URL        string     `gorm:"column:url"`
 	SiteID     uint       `gorm:"column:site_id"`
 	RetryCount uint       `gorm:"column:retry_count"`
-	Type       FailedType `gorm:"column:type"`
+	Type       FailedType `gorm:"column:type;type:enum('list','detail','report','unknown')"`
 	LastError  string     `gorm:"column:last_error;type:text"`
 	LastTry    time.Time  `gorm:"column:last_try"`
 	CreatedAt  time.Time  `gorm:"column:created_at"`

@@ -19,6 +19,6 @@ type ValidateService interface {
 }
 
 type FailedURLService interface {
-	TrackFailedURL(url string, err error)
+	TrackFailedURL(failedType models.FailedType, url string, err error)
 	RetryFailedURLs() error
 }

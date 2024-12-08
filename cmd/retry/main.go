@@ -1,4 +1,4 @@
-package retry
+package main
 
 import "github.com/HumbeBee/hoe-crawler/internal/utils/setuputil"
 

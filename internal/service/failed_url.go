@@ -18,7 +18,7 @@ func NewFailedUrlService(siteID uint, repo repository.FailedURLRepository, logge
 	return &failedURLService{siteID: siteID, repo: repo, logger: logger}
 }
 
-func (f failedURLService) TrackFailedURL(url string, err error) {
+func (f failedURLService) TrackFailedURL(failedType models.FailedType, url string, err error) {
 	var errorText string
 	if err.Error() != "" {
 		errorText = err.Error()
@@ -49,6 +49,7 @@ func (f failedURLService) TrackFailedURL(url string, err error) {
 	}
 
 	if err := f.repo.Save(&models.FailedURL{
+		Type:       failedType,
 		URL:        url,
 		SiteID:     f.siteID,
 		RetryCount: 0,

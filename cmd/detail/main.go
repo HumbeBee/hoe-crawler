@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/HumbeBee/hoe-crawler/internal/models"
 	"github.com/HumbeBee/hoe-crawler/internal/utils/setuputil"
 )
 
@@ -11,10 +12,10 @@ func main() {
 	}
 
 	// Example url
-	url := "/gai-goi/chi-tietz/56042/hot-girl-diep-anhmat-xinh-nguc-dep-bu-cu-dieu-luyen"
+	url := "/gai-goi/chi-tietk/56042/hot-girl-diep-anhmat-xinh-nguc-dep-bu-cu-dieu-luyen"
 
 	err = appContext.HoeService.ProcessDetailPage(url)
 	if err != nil {
-		appContext.FailedUrlService.TrackFailedURL(url, err)
+		appContext.FailedUrlService.TrackFailedURL(models.FailedTypeDetail, url, err)
 	}
 }
