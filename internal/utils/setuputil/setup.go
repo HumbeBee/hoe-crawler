@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/HumbeBee/hoe-crawler/internal/config"
 	"github.com/HumbeBee/hoe-crawler/internal/definitions"
+	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/browser"
 	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/database"
 	"github.com/HumbeBee/hoe-crawler/internal/interfaces"
 	"github.com/HumbeBee/hoe-crawler/internal/repository"
@@ -12,6 +13,7 @@ import (
 	"github.com/HumbeBee/hoe-crawler/internal/service"
 	"github.com/HumbeBee/hoe-crawler/internal/utils/logutil"
 	"log"
+	"time"
 )
 
 type AppContext struct {
@@ -49,12 +51,11 @@ func CreateAppContext() (*AppContext, error) {
 
 	siteRepo := repository.NewSiteRepository(db)
 	siteInfo, err := siteRepo.GetSiteByName(*site)
-
 	if err != nil {
 		return nil, fmt.Errorf("failed to get site by name: %w", err)
 	}
 
-	baseConfig := definitions.ScraperConfig{
+	baseScraperConfig := definitions.ScraperConfig{
 		SiteID:            siteInfo.ID,
 		SiteName:          siteInfo.Name,
 		BaseURL:           siteInfo.BaseURL,
@@ -62,11 +63,13 @@ func CreateAppContext() (*AppContext, error) {
 		Logger:            logger,
 	}
 
-	scraper := scrapers.CreateScraper(baseConfig)
+	scraper := scrapers.CreateScraper(baseScraperConfig)
 
 	hoeRepo := repository.NewHoeRepository(db, logger)
 	locationRepo := repository.NewLocationRepository(db)
 	workingHistoryRepo := repository.NewWorkingHistoryRepository(db, logger)
+
+	browserRateLimiter := browser.NewBrowserRateLimiter(1 * time.Second)
 
 	hoeService, err := service.NewHoeBuilder().
 		WithHoeRepo(hoeRepo).
@@ -83,6 +86,7 @@ func CreateAppContext() (*AppContext, error) {
 	failedURLService, err := service.NewFailedURLBuilder().
 		WithSiteID(siteInfo.ID).
 		WithLogger(logger).
+		WithBrowserRateLimiter(browserRateLimiter).
 		WithFailedURLRepo(failedURLRepo).
 		WithSiteRepo(siteRepo).
 		Build()

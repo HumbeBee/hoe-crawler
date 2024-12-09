@@ -2,16 +2,18 @@ package service
 
 import (
 	"errors"
+	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/browser"
 	"github.com/HumbeBee/hoe-crawler/internal/interfaces"
 	"github.com/HumbeBee/hoe-crawler/internal/repository"
 	"github.com/HumbeBee/hoe-crawler/internal/utils/logutil"
 )
 
 type hoeBuilder struct {
+	logger             *logutil.Logger
+	browserRateLimiter *browser.RateLimiter
 	hoeRepo            repository.HoeRepository
 	workingHistoryRepo repository.WorkingHistoryRepository
 	locationRepo       repository.LocationRepository
-	logger             *logutil.Logger
 	scraper            interfaces.Scraper
 }
 
@@ -39,6 +41,11 @@ func (b *hoeBuilder) WithLogger(logger *logutil.Logger) *hoeBuilder {
 	return b
 }
 
+func (b *hoeBuilder) WithBrowserRateLimiter(browserRateLimiter *browser.RateLimiter) *hoeBuilder {
+	b.browserRateLimiter = browserRateLimiter
+	return b
+}
+
 func (b *hoeBuilder) WithScraper(scraper interfaces.Scraper) *hoeBuilder {
 	b.scraper = scraper
 	return b
@@ -50,10 +57,11 @@ func (b *hoeBuilder) Build() (interfaces.HoeService, error) {
 	}
 
 	return &hoeService{
+		logger:             b.logger,
+		browserRateLimiter: b.browserRateLimiter,
 		locationRepo:       b.locationRepo,
 		hoeRepo:            b.hoeRepo,
 		workingHistoryRepo: b.workingHistoryRepo,
-		logger:             b.logger,
 		scraper:            b.scraper,
 		mapperService:      NewMapperService(),
 		validateService:    NewValidateService(),
@@ -64,6 +72,9 @@ func (b *hoeBuilder) Build() (interfaces.HoeService, error) {
 func (b *hoeBuilder) validate() error {
 	if b.hoeRepo == nil {
 		return errors.New("hoeRepo is required")
+	}
+	if b.browserRateLimiter == nil {
+		return errors.New("browserRateLimiter is required")
 	}
 	if b.workingHistoryRepo == nil {
 		return errors.New("workingHistoryRepo is required")

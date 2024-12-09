@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/HumbeBee/hoe-crawler/internal/dto"
+	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/browser"
 
 	"github.com/HumbeBee/hoe-crawler/internal/models"
 
@@ -13,10 +14,11 @@ import (
 )
 
 type hoeService struct {
+	logger             *logutil.Logger
+	browserRateLimiter *browser.RateLimiter
 	locationRepo       repository.LocationRepository
 	hoeRepo            repository.HoeRepository
 	workingHistoryRepo repository.WorkingHistoryRepository
-	logger             *logutil.Logger
 	scraper            interfaces.Scraper
 	mapperService      interfaces.MapperService
 	validateService    interfaces.ValidateService

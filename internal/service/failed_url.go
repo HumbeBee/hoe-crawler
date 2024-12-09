@@ -2,16 +2,18 @@ package service
 
 import (
 	"fmt"
+	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/browser"
 	"github.com/HumbeBee/hoe-crawler/internal/models"
 	"github.com/HumbeBee/hoe-crawler/internal/repository"
 	"github.com/HumbeBee/hoe-crawler/internal/utils/logutil"
 )
 
 type failedURLService struct {
-	siteID        uint
-	logger        *logutil.Logger
-	failedURLRepo repository.FailedURLRepository
-	siteRepo      repository.SiteRepository
+	siteID             uint
+	logger             *logutil.Logger
+	browserRateLimiter *browser.RateLimiter
+	failedURLRepo      repository.FailedURLRepository
+	siteRepo           repository.SiteRepository
 }
 
 func (f *failedURLService) TrackFailedURL(failedType models.FailedType, url string, err error) {

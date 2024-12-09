@@ -2,16 +2,18 @@ package service
 
 import (
 	"errors"
+	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/browser"
 	"github.com/HumbeBee/hoe-crawler/internal/interfaces"
 	"github.com/HumbeBee/hoe-crawler/internal/repository"
 	"github.com/HumbeBee/hoe-crawler/internal/utils/logutil"
 )
 
 type failedURLBuilder struct {
-	siteID        uint
-	logger        *logutil.Logger
-	failedURLRepo repository.FailedURLRepository
-	siteRepo      repository.SiteRepository
+	siteID             uint
+	logger             *logutil.Logger
+	browserRateLimiter *browser.RateLimiter
+	failedURLRepo      repository.FailedURLRepository
+	siteRepo           repository.SiteRepository
 }
 
 func NewFailedURLBuilder() *failedURLBuilder {
@@ -38,16 +40,22 @@ func (b *failedURLBuilder) WithSiteRepo(siteRepo repository.SiteRepository) *fai
 	return b
 }
 
+func (b *failedURLBuilder) WithBrowserRateLimiter(browserRateLimiter *browser.RateLimiter) *failedURLBuilder {
+	b.browserRateLimiter = browserRateLimiter
+	return b
+}
+
 func (b *failedURLBuilder) Build() (interfaces.FailedURLService, error) {
 	if err := b.validate(); err != nil {
 		return nil, err
 	}
 
 	return &failedURLService{
-		siteID:        b.siteID,
-		failedURLRepo: b.failedURLRepo,
-		logger:        b.logger,
-		siteRepo:      b.siteRepo,
+		siteID:             b.siteID,
+		failedURLRepo:      b.failedURLRepo,
+		logger:             b.logger,
+		siteRepo:           b.siteRepo,
+		browserRateLimiter: b.browserRateLimiter,
 	}, nil
 }
 
@@ -55,6 +63,9 @@ func (b *failedURLBuilder) Build() (interfaces.FailedURLService, error) {
 func (b *failedURLBuilder) validate() error {
 	if b.siteID == 0 {
 		return errors.New("siteID is required")
+	}
+	if b.browserRateLimiter == nil {
+		return errors.New("browserRateLimiter is required")
 	}
 	if b.failedURLRepo == nil {
 		return errors.New("failedURLRepo is required")

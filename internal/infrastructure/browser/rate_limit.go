@@ -7,8 +7,7 @@ type RateLimiter struct {
 	ticker   *time.Ticker
 }
 
-func NewRateLimiter(requestsPerSecond float64) *RateLimiter {
-	interval := time.Duration(1000/requestsPerSecond) * time.Millisecond
+func NewBrowserRateLimiter(interval time.Duration) *RateLimiter {
 	return &RateLimiter{
 		interval: interval,
 		ticker:   time.NewTicker(interval),
@@ -17,4 +16,8 @@ func NewRateLimiter(requestsPerSecond float64) *RateLimiter {
 
 func (r *RateLimiter) Wait() {
 	<-r.ticker.C
+}
+
+func (r *RateLimiter) UpdateInterval(interval time.Duration) {
+	r.interval = interval
 }
