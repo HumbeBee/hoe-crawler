@@ -8,6 +8,8 @@ import (
 type HoeService interface {
 	ProcessListPage() error
 	ProcessDetailPage(url string) error
+	GetRawHoeData(url string) (*dto.RawHoeData, error)
+	ProcessRawHoeData(rawHoeData *dto.RawHoeData) error
 }
 
 type MapperService interface {

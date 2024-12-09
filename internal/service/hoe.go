@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"github.com/HumbeBee/hoe-crawler/internal/dto"
 
 	"github.com/HumbeBee/hoe-crawler/internal/models"
 
@@ -41,25 +42,31 @@ func (hs *hoeService) ProcessListPage() error {
 }
 
 func (hs *hoeService) ProcessDetailPage(url string) error {
-	//url2 := "/gai-goi/chi-tiet/56042/hot-girl-diep-anhmat-xinh-nguc-dep-bu-cu-dieu-luyen"
-
-	rawHoe, err := hs.scraper.GetRawHoeData(url)
+	rawHoeData, err := hs.GetRawHoeData(url)
 	if err != nil {
 		return fmt.Errorf("get raw hoe data: %v", err)
 	}
 
+	return hs.ProcessRawHoeData(rawHoeData)
+}
+
+func (hs *hoeService) GetRawHoeData(url string) (*dto.RawHoeData, error) {
+	return hs.scraper.GetRawHoeData(url)
+}
+
+func (hs *hoeService) ProcessRawHoeData(rawHoeData *dto.RawHoeData) error {
 	// If we can get location from database, it means the location is already valid
-	cityID, err := hs.locationRepo.GetCityIDFromName(rawHoe.CityName)
+	cityID, err := hs.locationRepo.GetCityIDFromName(rawHoeData.CityName)
 	if err != nil {
 		return fmt.Errorf("get city id: %v", err)
 	}
-	districtID, err := hs.locationRepo.GetDistrictIDFromName(rawHoe.DistrictName)
+	districtID, err := hs.locationRepo.GetDistrictIDFromName(rawHoeData.DistrictName)
 	if err != nil {
 		return fmt.Errorf("get district id: %v", err)
 	}
 
 	// raw data to domain models
-	hoeInfo := hs.mapperService.TransformHoe(rawHoe)
+	hoeInfo := hs.mapperService.TransformHoe(rawHoeData)
 
 	isNewLocation, err := hs.workingHistoryRepo.CheckIsNewLocation(hoeInfo.ID, cityID, districtID)
 	if err != nil {
@@ -74,8 +81,6 @@ func (hs *hoeService) ProcessDetailPage(url string) error {
 		})
 	}
 
-	hoeInfo.Print()
-
 	if err := hs.validateService.ValidateHoe(hoeInfo); err != nil {
 		return err
 	}
@@ -84,8 +89,7 @@ func (hs *hoeService) ProcessDetailPage(url string) error {
 		return err
 	}
 
-	//
-	//hoeInfo.Print()
+	hoeInfo.Print()
 
 	return nil
 }
