@@ -10,6 +10,7 @@ type FailedURLRepository interface {
 	GetFailedURLs() ([]*models.FailedURL, error)
 	FindFailedURL(url string, sideID uint) (*models.FailedURL, error)
 	Save(failedURL *models.FailedURL) error
+	Delete(failedURL *models.FailedURL) error
 }
 
 type failedURLRepo struct {
@@ -48,4 +49,8 @@ func (fu *failedURLRepo) FindFailedURL(url string, siteID uint) (*models.FailedU
 	}
 
 	return &failedURL, nil
+}
+
+func (fu *failedURLRepo) Delete(failedURL *models.FailedURL) error {
+	return fu.db.Delete(failedURL).Error
 }

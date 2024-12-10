@@ -14,6 +14,7 @@ type failedURLBuilder struct {
 	browserRateLimiter *browser.RateLimiter
 	failedURLRepo      repository.FailedURLRepository
 	siteRepo           repository.SiteRepository
+	hoeService         interfaces.HoeService
 }
 
 func NewFailedURLBuilder() *failedURLBuilder {
@@ -45,6 +46,11 @@ func (b *failedURLBuilder) WithBrowserRateLimiter(browserRateLimiter *browser.Ra
 	return b
 }
 
+func (b *failedURLBuilder) WithHoeService(hoeService interfaces.HoeService) *failedURLBuilder {
+	b.hoeService = hoeService
+	return b
+}
+
 func (b *failedURLBuilder) Build() (interfaces.FailedURLService, error) {
 	if err := b.validate(); err != nil {
 		return nil, err
@@ -72,6 +78,9 @@ func (b *failedURLBuilder) validate() error {
 	}
 	if b.siteRepo == nil {
 		return errors.New("siteRepo is required")
+	}
+	if b.hoeService == nil {
+		return errors.New("hoeService is required")
 	}
 
 	// Set defaults for optional stuff

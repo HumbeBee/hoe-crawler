@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/browser"
+	"github.com/HumbeBee/hoe-crawler/internal/interfaces"
 	"github.com/HumbeBee/hoe-crawler/internal/models"
 	"github.com/HumbeBee/hoe-crawler/internal/repository"
 	"github.com/HumbeBee/hoe-crawler/internal/utils/logutil"
@@ -14,6 +15,7 @@ type failedURLService struct {
 	browserRateLimiter *browser.RateLimiter
 	failedURLRepo      repository.FailedURLRepository
 	siteRepo           repository.SiteRepository
+	hoeService         interfaces.HoeService
 }
 
 func (f *failedURLService) TrackFailedURL(failedType models.FailedType, url string, err error) {
@@ -71,15 +73,26 @@ func (f *failedURLService) RetryFailedURLs() error {
 	}
 
 	for _, url := range failedUrls {
+		f.browserRateLimiter.Wait()
+
 		fullURL := fmt.Sprintf("%s%s", siteInfo.BaseURL, url.URL)
+
 		switch url.Type {
 		case models.FailedTypeList:
 		case models.FailedTypeDetail:
+			if err := f.hoeService.ProcessDetailPage(fullURL); err != nil {
+				f.TrackFailedURL(models.FailedTypeDetail, fullURL, err)
+				return err
+			}
 		case models.FailedTypeReport:
 		case models.FailedTypeUnknown:
 		default:
+			f.TrackFailedURL(models.FailedTypeUnknown, fullURL, fmt.Errorf("unknown failed type: %s", url.Type))
 		}
-		fmt.Printf("Retrying url: %s\n", fullURL)
+
+		if err := f.failedURLRepo.Delete(url); err != nil {
+			return fmt.Errorf("failed to delete failed url: %w", err)
+		}
 	}
 
 	return nil
