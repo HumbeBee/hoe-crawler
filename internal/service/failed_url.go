@@ -67,15 +67,16 @@ func (f *failedURLService) RetryFailedURLs() error {
 		return fmt.Errorf("failed to get failed urls: %w", err)
 	}
 
-	siteInfo, err := f.siteRepo.GetSiteByID(f.siteID)
-	if err != nil {
-		return fmt.Errorf("failed to get site info: %w", err)
-	}
+	//siteInfo, err := f.siteRepo.GetSiteByID(f.siteID)
+	//if err != nil {
+	//	return fmt.Errorf("failed to get site info: %w", err)
+	//}
 
 	for _, url := range failedUrls {
 		f.browserRateLimiter.Wait()
 
-		fullURL := fmt.Sprintf("%s%s", siteInfo.BaseURL, url.URL)
+		//fullURL := fmt.Sprintf("%s%s", siteInfo.BaseURL, url.URL)
+		fullURL := url.URL
 
 		switch url.Type {
 		case models.FailedTypeList:

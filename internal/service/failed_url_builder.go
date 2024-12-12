@@ -62,6 +62,7 @@ func (b *failedURLBuilder) Build() (interfaces.FailedURLService, error) {
 		logger:             b.logger,
 		siteRepo:           b.siteRepo,
 		browserRateLimiter: b.browserRateLimiter,
+		hoeService:         b.hoeService,
 	}, nil
 }
 

@@ -69,17 +69,18 @@ func CreateAppContext() (*AppContext, error) {
 	locationRepo := repository.NewLocationRepository(db)
 	workingHistoryRepo := repository.NewWorkingHistoryRepository(db, logger)
 
-	browserRateLimiter := browser.NewBrowserRateLimiter(3 * time.Second)
+	browserRateLimiter := browser.NewBrowserRateLimiter(6 * time.Second)
 
 	hoeService, err := service.NewHoeBuilder().
 		WithHoeRepo(hoeRepo).
 		WithWorkingHistoryRepo(workingHistoryRepo).
+		WithBrowserRateLimiter(browserRateLimiter).
 		WithLocationRepo(locationRepo).
 		WithLogger(logger).
 		WithScraper(scraper).
 		Build()
 	if err != nil {
-		return nil, fmt.Errorf("failed to create hoe failedURLService: %w", err)
+		return nil, fmt.Errorf("failed to create hoe hoeService: %w", err)
 	}
 
 	failedURLRepo := repository.NewFailedURLRepository(db)
