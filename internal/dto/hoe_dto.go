@@ -1,9 +1,10 @@
 package dto
 
 type RawHoeData struct {
-	SiteID   uint
-	OriginID string
-	Url      string
+	SiteID      uint
+	OriginID    string
+	Url         string
+	RelativeURL string
 
 	// All scraped fields without transformation
 	CityName     string

@@ -19,32 +19,31 @@ func NewScraper(config definitions.ScraperConfig) *scraper {
 	}
 }
 
-func (s *scraper) GetDetailURLs() ([]string, error) {
-	url := s.BaseURL + "/gai-goi/khu-vuc/Hồ%20Chí%20Minh/Quận%207"
+func (s *scraper) GetDetailURLs(baseURL string, relativeURL string) ([]string, error) {
+	fullURL := baseURL + relativeURL
+	s.Logger.Info(fmt.Sprintf("Processing %s", fullURL))
 
-	s.Logger.Info(fmt.Sprintf("Processing %s", url))
-
-	conn, err := browser.ConnectToPage(url, 5*time.Minute)
+	conn, err := browser.ConnectToPage(fullURL, 5*time.Minute)
 	if err != nil {
-		return nil, fmt.Errorf("connect to page %s: %w", url, err)
+		return nil, fmt.Errorf("connect to page %s: %w", fullURL, err)
 	}
 	defer conn.Close()
 
-	listScraper := newListPageScraper(conn, url)
+	listScraper := newListPageScraper(conn, fullURL)
 	return listScraper.getHoeURLs()
 }
 
-func (s *scraper) GetRawHoeData(detailUrl string) (*dto.RawHoeData, error) {
-	url := s.BaseURL + detailUrl
+func (s *scraper) GetRawHoeData(baseURL string, relativeURL string) (*dto.RawHoeData, error) {
+	fullURL := baseURL + relativeURL
 
 	// Wait until content element is visible
-	conn, err := browser.ConnectToPage(url, 5*time.Minute)
+	conn, err := browser.ConnectToPage(fullURL, 5*time.Minute)
 	if err != nil {
-		return nil, fmt.Errorf("connect to detail page %s: %w", url, err)
+		return nil, fmt.Errorf("connect to detail page %s: %w", fullURL, err)
 	}
 	defer conn.Close()
 
-	detailScraper := newDetailPageScraper(conn, url, s.SiteID)
+	detailScraper := newDetailPageScraper(conn, relativeURL, s.SiteID)
 	hoeInfo, err := detailScraper.getBasicInfo()
 	if err != nil {
 		return nil, fmt.Errorf("get basic info: %w", err)

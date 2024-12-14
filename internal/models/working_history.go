@@ -11,7 +11,7 @@ type WorkingHistory struct {
 	CreatedAt  time.Time  `gorm:"column:created_at"`
 	UpdatedAt  time.Time  `gorm:"column:updated_at"`
 
-	Hoe      HoeInfo  `gorm:"foreignKey:HoeID;"`
+	Hoe      HoeInfo  `gorm:"foreignKey:HoeID;constraint:OnDelete:CASCADE"`
 	City     City     `gorm:"foreignKey:CityID;references:ID;constraint:OnDelete:CASCADE"`
 	District District `gorm:"foreignKey:DistrictID;references:ID;constraint:OnDelete:CASCADE"`
 }

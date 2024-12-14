@@ -12,9 +12,9 @@ func main() {
 	}
 
 	// Example url
-	url := "/gai-goi/chi-tietk/56042/hot-girl-diep-anhmat-xinh-nguc-dep-bu-cu-dieu-luyen"
+	url := "/gai-goi/chi-tiet/63863/reup-hot-girl-huong-ly-mat-xinh-goi-tinh-body-dep-nhin-rat-sexy"
 
-	err = appContext.HoeService.ProcessDetailPage(url)
+	err = appContext.HoeService.ProcessDetailPage(appContext.SiteInfo.BaseURL, url)
 	if err != nil {
 		appContext.FailedUrlService.TrackFailedURL(models.FailedTypeDetail, url, err)
 	}

@@ -24,8 +24,8 @@ type hoeService struct {
 	validateService    interfaces.ValidateService
 }
 
-func (hs *hoeService) ProcessListPage() error {
-	detailURLs, err := hs.scraper.GetDetailURLs()
+func (hs *hoeService) ProcessListPage(baseURL string, relativeURL string) error {
+	detailURLs, err := hs.scraper.GetDetailURLs(baseURL, relativeURL)
 	if err != nil {
 		return errutil.WrapError("get detail urls", err)
 	}
@@ -43,8 +43,8 @@ func (hs *hoeService) ProcessListPage() error {
 	return nil
 }
 
-func (hs *hoeService) ProcessDetailPage(url string) error {
-	rawHoeData, err := hs.GetRawHoeData(url)
+func (hs *hoeService) ProcessDetailPage(baseURL string, relativeURL string) error {
+	rawHoeData, err := hs.GetRawHoeData(baseURL, relativeURL)
 	if err != nil {
 		return fmt.Errorf("get raw hoe data: %v", err)
 	}
@@ -52,8 +52,8 @@ func (hs *hoeService) ProcessDetailPage(url string) error {
 	return hs.ProcessRawHoeData(rawHoeData)
 }
 
-func (hs *hoeService) GetRawHoeData(url string) (*dto.RawHoeData, error) {
-	return hs.scraper.GetRawHoeData(url)
+func (hs *hoeService) GetRawHoeData(baseURL string, relativeURL string) (*dto.RawHoeData, error) {
+	return hs.scraper.GetRawHoeData(baseURL, relativeURL)
 }
 
 func (hs *hoeService) ProcessRawHoeData(rawHoeData *dto.RawHoeData) error {

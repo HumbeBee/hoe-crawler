@@ -9,7 +9,7 @@ type HoeReport struct {
 	CreatedAt    time.Time `gorm:"column:created_at"`
 	UpdatedAt    time.Time `gorm:"column:updated_at"`
 
-	Profile HoeProfile `gorm:"foreignKey:HoeProfileID"`
+	Profile HoeProfile `gorm:"foreignKey:HoeProfileID;constraint:OnDelete:CASCADE"`
 }
 
 func (HoeReport) TableName() string {

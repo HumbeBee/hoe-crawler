@@ -8,6 +8,7 @@ import (
 	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/browser"
 	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/database"
 	"github.com/HumbeBee/hoe-crawler/internal/interfaces"
+	"github.com/HumbeBee/hoe-crawler/internal/models"
 	"github.com/HumbeBee/hoe-crawler/internal/repository"
 	"github.com/HumbeBee/hoe-crawler/internal/scrapers"
 	"github.com/HumbeBee/hoe-crawler/internal/service"
@@ -17,6 +18,7 @@ import (
 )
 
 type AppContext struct {
+	SiteInfo         *models.Site
 	Logger           *logutil.Logger
 	Scraper          interfaces.Scraper
 	HoeService       interfaces.HoeService
@@ -58,7 +60,6 @@ func CreateAppContext() (*AppContext, error) {
 	baseScraperConfig := definitions.ScraperConfig{
 		SiteID:            siteInfo.ID,
 		SiteName:          siteInfo.Name,
-		BaseURL:           siteInfo.BaseURL,
 		RequestsPerSecond: 1.0,
 		Logger:            logger,
 	}
@@ -78,6 +79,7 @@ func CreateAppContext() (*AppContext, error) {
 		WithLocationRepo(locationRepo).
 		WithLogger(logger).
 		WithScraper(scraper).
+		WithSiteInfo(siteInfo).
 		Build()
 	if err != nil {
 		return nil, fmt.Errorf("failed to create hoe hoeService: %w", err)
@@ -97,6 +99,7 @@ func CreateAppContext() (*AppContext, error) {
 	}
 
 	return &AppContext{
+		SiteInfo:         siteInfo,
 		Scraper:          scraper,
 		Logger:           logger,
 		HoeService:       hoeService,

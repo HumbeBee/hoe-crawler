@@ -4,11 +4,13 @@ import (
 	"errors"
 	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/browser"
 	"github.com/HumbeBee/hoe-crawler/internal/interfaces"
+	"github.com/HumbeBee/hoe-crawler/internal/models"
 	"github.com/HumbeBee/hoe-crawler/internal/repository"
 	"github.com/HumbeBee/hoe-crawler/internal/utils/logutil"
 )
 
 type hoeBuilder struct {
+	siteInfo           *models.Site
 	logger             *logutil.Logger
 	browserRateLimiter *browser.RateLimiter
 	hoeRepo            repository.HoeRepository
@@ -51,6 +53,11 @@ func (b *hoeBuilder) WithScraper(scraper interfaces.Scraper) *hoeBuilder {
 	return b
 }
 
+func (b *hoeBuilder) WithSiteInfo(siteInfo *models.Site) *hoeBuilder {
+	b.siteInfo = siteInfo
+	return b
+}
+
 func (b *hoeBuilder) Build() (interfaces.HoeService, error) {
 	if err := b.validate(); err != nil {
 		return nil, err
@@ -84,6 +91,9 @@ func (b *hoeBuilder) validate() error {
 	}
 	if b.scraper == nil {
 		return errors.New("scraper is required")
+	}
+	if b.siteInfo == nil {
+		return errors.New("siteInfo is required")
 	}
 
 	// Set defaults for optional stuff

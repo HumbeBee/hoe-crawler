@@ -6,9 +6,9 @@ import (
 )
 
 type HoeService interface {
-	ProcessListPage() error
-	ProcessDetailPage(url string) error
-	GetRawHoeData(url string) (*dto.RawHoeData, error)
+	ProcessListPage(baseURL string, relativeURL string) error
+	ProcessDetailPage(baseURL string, relativeURL string) error
+	GetRawHoeData(baseURL string, relativeURL string) (*dto.RawHoeData, error)
 	ProcessRawHoeData(rawHoeData *dto.RawHoeData) error
 }
 

@@ -7,7 +7,6 @@ import (
 type ScraperConfig struct {
 	SiteID            uint
 	SiteName          string
-	BaseURL           string
 	RequestsPerSecond float64
 	Logger            *logutil.Logger
 }

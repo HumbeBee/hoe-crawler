@@ -36,8 +36,8 @@ type HoeProfile struct {
 	CreatedAt time.Time `gorm:"column:created_at"`
 	UpdatedAt time.Time `gorm:"column:updated_at"`
 
-	Hoe     HoeInfo     `gorm:"foreignKey:HoeID"`
-	Site    Site        `gorm:"foreignKey:SiteID"`
+	Hoe     HoeInfo     `gorm:"foreignKey:HoeID;constraint:OnDelete:CASCADE"`
+	Site    Site        `gorm:"foreignKey:SiteID;constraint:OnDelete:CASCADE"`
 	Reports []HoeReport `gorm:"foreignKey:HoeProfileID"`
 }
 

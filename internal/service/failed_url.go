@@ -67,10 +67,10 @@ func (f *failedURLService) RetryFailedURLs() error {
 		return fmt.Errorf("failed to get failed urls: %w", err)
 	}
 
-	//siteInfo, err := f.siteRepo.GetSiteByID(f.siteID)
-	//if err != nil {
-	//	return fmt.Errorf("failed to get site info: %w", err)
-	//}
+	siteInfo, err := f.siteRepo.GetSiteByID(f.siteID)
+	if err != nil {
+		return fmt.Errorf("failed to get site info: %w", err)
+	}
 
 	for _, url := range failedUrls {
 		f.browserRateLimiter.Wait()
@@ -81,7 +81,7 @@ func (f *failedURLService) RetryFailedURLs() error {
 		switch url.Type {
 		case models.FailedTypeList:
 		case models.FailedTypeDetail:
-			if err := f.hoeService.ProcessDetailPage(fullURL); err != nil {
+			if err := f.hoeService.ProcessDetailPage(siteInfo.BaseURL, url.URL); err != nil {
 				f.TrackFailedURL(models.FailedTypeDetail, fullURL, err)
 				return err
 			}

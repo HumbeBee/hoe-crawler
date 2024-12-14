@@ -5,6 +5,6 @@ import (
 )
 
 type Scraper interface {
-	GetDetailURLs() ([]string, error)
-	GetRawHoeData(url string) (*dto.RawHoeData, error)
+	GetDetailURLs(baseURL string, relativeURL string) ([]string, error)
+	GetRawHoeData(baseURL string, relativeURL string) (*dto.RawHoeData, error)
 }
