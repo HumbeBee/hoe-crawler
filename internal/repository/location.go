@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"github.com/HumbeBee/hoe-crawler/internal/models"
 	"gorm.io/gorm"
 )
@@ -20,8 +21,13 @@ func NewLocationRepository(db *gorm.DB) LocationRepository {
 }
 
 func (r *locationRepo) CheckValidLocation(district string) error {
-	if err := r.db.Where("name = ?", district).Or("short_name = ?", district).Or("code = ? ", district).First(&models.District{}).Error; err != nil {
+	var count int64
+	err := r.db.Model(&models.District{}).Where("name = ? OR short_name = ? OR code = ? OR eng_name = ? OR display_name = ?", district, district, district, district, district).Count(&count).Error
+	if err != nil {
 		return err
+	}
+	if count == 0 {
+		return errors.New("invalid location")
 	}
 
 	return nil
@@ -29,8 +35,15 @@ func (r *locationRepo) CheckValidLocation(district string) error {
 
 func (r *locationRepo) GetCityIDFromName(name string) (uint, error) {
 	var city models.City
-	if err := r.db.Where("name = ?", name).Or("short_name = ?", name).Or("code = ?", name).Or("eng_name = ?", name).Or("display_name = ?", name).Or("eng_name = ?", name+" city").First(&city).Error; err != nil {
-		return 0, err
+	err := r.db.Where("display_name = ? OR code = ?", name, name).First(&city).Error
+	if err == nil {
+		return city.ID, nil
+	}
+
+	var cityAlias models.CityAlias
+	err = r.db.Where("alias = ?", name).First(&cityAlias).Error
+	if err == nil {
+		return cityAlias.CityID, nil
 	}
 
 	return city.ID, nil

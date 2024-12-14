@@ -51,10 +51,8 @@ func seedSites(db *gorm.DB) error {
 func seedCities(db *gorm.DB) error {
 	cities := []models.City{
 		{
-			Name:        "Hồ Chí Minh",
+			DisplayName: "Hồ Chí Minh",
 			Code:        "HCM",
-			DisplayName: "Thành phố Hồ Chí Minh",
-			EngName:     "Ho Chi Minh City",
 			Districts: []models.District{
 				{Name: "Quận 1", ShortName: "Q1", Code: "Q1", DisplayName: "Quận 1", EngName: "District 1"},
 				{Name: "Quận 2", ShortName: "Q2", Code: "Q2", DisplayName: "Quận 2", EngName: "District 2"},
@@ -81,12 +79,16 @@ func seedCities(db *gorm.DB) error {
 				{Name: "Huyện Hóc Môn", ShortName: "HM", Code: "HM", DisplayName: "Huyện Hóc Môn", EngName: "Hoc Mon District"},
 				{Name: "Huyện Nhà Bè", ShortName: "NB", Code: "NB", DisplayName: "Huyện Nhà Bè", EngName: "Nha Be District"},
 			},
+			Aliases: []models.CityAlias{
+				{Alias: "Ho Chi Minh City"},
+				{Alias: "Sài Gòn"},
+				{Alias: "Thành phố Sài Gòn"},
+				{Alias: "Thành phố Hồ Chí Minh"},
+			},
 		},
 		{
-			Name:        "Hà Nội",
 			Code:        "HN",
-			DisplayName: "Thành phố Hà Nội",
-			EngName:     "Hanoi",
+			DisplayName: "Hà Nội",
 			Districts: []models.District{
 				{Name: "Ba Đình", ShortName: "BD", Code: "BD", DisplayName: "Quận Ba Đình", EngName: "Ba Dinh District"},
 				{Name: "Hoàn Kiếm", ShortName: "HK", Code: "HK", DisplayName: "Quận Hoàn Kiếm", EngName: "Hoan Kiem District"},
@@ -119,17 +121,22 @@ func seedCities(db *gorm.DB) error {
 				{Name: "Ứng Hòa", ShortName: "UH", Code: "UH", DisplayName: "Huyện Ứng Hòa", EngName: "Ung Hoa District"},
 				{Name: "Mỹ Đức", ShortName: "MD", Code: "MD", DisplayName: "Huyện Mỹ Đức", EngName: "My Duc District"},
 			},
+			Aliases: []models.CityAlias{
+				{Alias: "Ha Noi City"},
+				{Alias: "Hanoi City"},
+				{Alias: "Hanoi"},
+				{Alias: "Hà Nội"},
+			},
 		},
 	}
-
 	for _, city := range cities {
 		var existingCity models.City
-		result := db.Where(models.City{Name: city.Name}).First(&existingCity)
+		result := db.Where(models.City{DisplayName: city.DisplayName}).First(&existingCity)
 
 		if result.Error != nil {
 			// City doesn't exist, create new city with provinces
 			if err := db.Create(&city).Error; err != nil {
-				return fmt.Errorf("failed to create city %s: %v", city.Name, err)
+				return fmt.Errorf("failed to create city %s: %v", city.DisplayName, err)
 			}
 		} else {
 			// City exists, check and create missing provinces
