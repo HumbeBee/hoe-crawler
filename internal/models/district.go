@@ -9,8 +9,8 @@ type District struct {
 	Code        string `gorm:"column:code;index"`
 	CityID      uint   `gorm:"column:city_id;index"`
 
-	City    City     `gorm:"foreignKey:CityID;"`
-	Streets []Street `gorm:"foreignKey:DistrictID;references:ID;constraint:OnDelete:CASCADE"`
+	City    City     `gorm:"foreignKey:CityID;constraint:OnDelete:CASCADE"`
+	Streets []Street `gorm:"foreignKey:DistrictID;references:ID;"`
 }
 
 func (District) TableName() string {
