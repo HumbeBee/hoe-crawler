@@ -25,6 +25,8 @@ type Element interface {
 	FindAll(selector string) ([]Element, error)
 	GetText() (string, error)
 	GetAttribute(name string) (string, error)
+	FindAndGetText(selector string) (string, error)
+	FindAndGetAttribute(selector, attr string) (string, error)
 	Click() error
 	WaitVisible() error
 	MustFind(selector string) Element

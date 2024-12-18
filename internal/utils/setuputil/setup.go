@@ -70,7 +70,7 @@ func CreateAppContext() (*AppContext, error) {
 	locationRepo := repository.NewLocationRepository(db)
 	workingHistoryRepo := repository.NewWorkingHistoryRepository(db, logger)
 
-	browserRateLimiter := browser.NewBrowserRateLimiter(6 * time.Second)
+	browserRateLimiter := browser.NewBrowserRateLimiter(30 * time.Second)
 
 	hoeService, err := service.NewHoeBuilder().
 		WithHoeRepo(hoeRepo).

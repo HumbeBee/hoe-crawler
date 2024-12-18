@@ -74,21 +74,20 @@ func (f *failedURLService) RetryFailedURLs() error {
 
 	for _, url := range failedUrls {
 		f.browserRateLimiter.Wait()
-
-		//fullURL := fmt.Sprintf("%s%s", siteInfo.BaseURL, url.URL)
-		fullURL := url.URL
+		f.logger.Info(fmt.Sprintf("Processing failed url: %s", url.URL))
 
 		switch url.Type {
 		case models.FailedTypeList:
 		case models.FailedTypeDetail:
 			if err := f.hoeService.ProcessDetailPage(siteInfo.BaseURL, url.URL); err != nil {
-				f.TrackFailedURL(models.FailedTypeDetail, fullURL, err)
-				return err
+				f.TrackFailedURL(models.FailedTypeDetail, url.URL, err)
+				continue
 			}
 		case models.FailedTypeReport:
 		case models.FailedTypeUnknown:
 		default:
-			f.TrackFailedURL(models.FailedTypeUnknown, fullURL, fmt.Errorf("unknown failed type: %s", url.Type))
+			f.TrackFailedURL(models.FailedTypeUnknown, url.URL, fmt.Errorf("unknown failed type: %s", url.Type))
+			continue
 		}
 
 		if err := f.failedURLRepo.Delete(url); err != nil {

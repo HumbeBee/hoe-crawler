@@ -39,22 +39,85 @@ func (s *detailPageScraper) getBasicInfo() (*dto.RawHoeData, error) {
 		OriginID: id,
 	}
 
-	rawInfo.CityName = containerEle.MustFind(detailPageSelectors.CityName).MustGetText()
-	rawInfo.DistrictName = containerEle.MustFind(detailPageSelectors.DistrictName).MustGetText()
-	rawInfo.Name = containerEle.MustFind(detailPageSelectors.Name).MustGetText()
-	rawInfo.ImageUrl = containerEle.MustFind(detailPageSelectors.ImageUrl).MustGetAttribute("src")
-	rawInfo.Price = detailInfoTabEle.MustFind(detailPageSelectors.Price).MustGetText()
-	rawInfo.Phone = detailInfoTabEle.MustFind(detailPageSelectors.Phone).MustGetText()
-	rawInfo.Area = detailInfoTabEle.MustFind(detailPageSelectors.Address).MustGetText()
-	rawInfo.Provider = detailInfoTabEle.MustFind(detailPageSelectors.Author).MustGetText()
-	rawInfo.Status = detailInfoTabEle.MustFind(detailPageSelectors.Status).MustGetText()
-	rawInfo.BirthYear = detailInfoTabEle.MustFind(detailPageSelectors.BirthYear).MustGetText()
-	rawInfo.Height = detailInfoTabEle.MustFind(detailPageSelectors.Height).MustGetText()
-	rawInfo.Weight = detailInfoTabEle.MustFind(detailPageSelectors.Weight).MustGetText()
-	rawInfo.Country = detailInfoTabEle.MustFind(detailPageSelectors.Country).MustGetText()
-	rawInfo.Service = detailInfoTabEle.MustFind(detailPageSelectors.Service).MustGetText()
-	rawInfo.Duration = detailInfoTabEle.MustFind(detailPageSelectors.Duration).MustGetText()
-	rawInfo.WorkTime = detailInfoTabEle.MustFind(detailPageSelectors.WorkTime).MustGetText()
+	rawInfo.CityName, err = containerEle.FindAndGetText(detailPageSelectors.CityName)
+	if err != nil {
+		return nil, fmt.Errorf("get city name: %w", err)
+	}
+
+	rawInfo.DistrictName, err = containerEle.FindAndGetText(detailPageSelectors.DistrictName)
+	if err != nil {
+		return nil, fmt.Errorf("get district name: %w", err)
+	}
+
+	rawInfo.Name, err = containerEle.FindAndGetText(detailPageSelectors.Name)
+	if err != nil {
+		return nil, fmt.Errorf("get name: %w", err)
+	}
+
+	rawInfo.ImageUrl, err = containerEle.FindAndGetAttribute(detailPageSelectors.ImageUrl, "src")
+	if err != nil {
+		return nil, fmt.Errorf("get image URL: %w", err)
+	}
+
+	rawInfo.Price, err = detailInfoTabEle.FindAndGetText(detailPageSelectors.Price)
+	if err != nil {
+		return nil, fmt.Errorf("get price: %w", err)
+	}
+
+	rawInfo.Phone, err = detailInfoTabEle.FindAndGetText(detailPageSelectors.Phone)
+	if err != nil {
+		return nil, fmt.Errorf("get phone: %w", err)
+	}
+
+	rawInfo.Area, err = detailInfoTabEle.FindAndGetText(detailPageSelectors.Address)
+	if err != nil {
+		return nil, fmt.Errorf("get area: %w", err)
+	}
+
+	rawInfo.Provider, err = detailInfoTabEle.FindAndGetText(detailPageSelectors.Author)
+	if err != nil {
+		return nil, fmt.Errorf("get provider: %w", err)
+	}
+
+	rawInfo.Status, err = detailInfoTabEle.FindAndGetText(detailPageSelectors.Status)
+	if err != nil {
+		return nil, fmt.Errorf("get status: %w", err)
+	}
+
+	rawInfo.BirthYear, err = detailInfoTabEle.FindAndGetText(detailPageSelectors.BirthYear)
+	if err != nil {
+		return nil, fmt.Errorf("get birth year: %w", err)
+	}
+
+	rawInfo.Height, err = detailInfoTabEle.FindAndGetText(detailPageSelectors.Height)
+	if err != nil {
+		return nil, fmt.Errorf("get height: %w", err)
+	}
+
+	rawInfo.Weight, err = detailInfoTabEle.FindAndGetText(detailPageSelectors.Weight)
+	if err != nil {
+		return nil, fmt.Errorf("get weight: %w", err)
+	}
+
+	rawInfo.Country, err = detailInfoTabEle.FindAndGetText(detailPageSelectors.Country)
+	if err != nil {
+		return nil, fmt.Errorf("get country: %w", err)
+	}
+
+	rawInfo.Service, err = detailInfoTabEle.FindAndGetText(detailPageSelectors.Service)
+	if err != nil {
+		return nil, fmt.Errorf("get service: %w", err)
+	}
+
+	rawInfo.Duration, err = detailInfoTabEle.FindAndGetText(detailPageSelectors.Duration)
+	if err != nil {
+		return nil, fmt.Errorf("get duration: %w", err)
+	}
+
+	rawInfo.WorkTime, err = detailInfoTabEle.FindAndGetText(detailPageSelectors.WorkTime)
+	if err != nil {
+		return nil, fmt.Errorf("get work time: %w", err)
+	}
 
 	return rawInfo, nil
 }

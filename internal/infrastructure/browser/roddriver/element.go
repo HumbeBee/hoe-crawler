@@ -70,6 +70,30 @@ func (re *rodElement) GetAttribute(name string) (string, error) {
 	return *attr, nil
 }
 
+func (re *rodElement) FindAndGetText(selector string) (string, error) {
+	elem, err := re.Find(selector)
+	if err != nil {
+		return "", err
+	}
+	text, err := elem.GetText()
+	if err != nil {
+		return "", err
+	}
+	return text, nil
+}
+
+func (re *rodElement) FindAndGetAttribute(selector, attr string) (string, error) {
+	elem, err := re.Find(selector)
+	if err != nil {
+		return "", err
+	}
+	value, err := elem.GetAttribute(attr)
+	if err != nil {
+		return "", err
+	}
+	return value, nil
+}
+
 func (re *rodElement) Click() error {
 	return re.element.Click(proto.InputMouseButtonLeft, 1)
 }

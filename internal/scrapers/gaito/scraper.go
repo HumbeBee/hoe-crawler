@@ -56,5 +56,8 @@ func (s *scraper) GetRawHoeData(baseURL string, relativeURL string) (*dto.RawHoe
 	}
 
 	hoeInfo.Reports = reports
+
+	s.Logger.Info("Raw hoe data: %+v", hoeInfo)
+
 	return hoeInfo, nil
 }
