@@ -12,7 +12,7 @@ func main() {
 	}
 
 	// Example url
-	url := "/gai-goi/chi-tiet/63863/reup-hot-girl-huong-ly-mat-xinh-goi-tinh-body-dep-nhin-rat-sexy"
+	url := "/gai-goi/chi-tiet/63459/baby-tram-anh-tre-trung-xinh-xan-lan-dau-len-song"
 
 	err = appContext.HoeService.ProcessDetailPage(appContext.SiteInfo.BaseURL, url)
 	if err != nil {

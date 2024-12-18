@@ -72,8 +72,11 @@ func (f *failedURLService) RetryFailedURLs() error {
 		return fmt.Errorf("failed to get site info: %w", err)
 	}
 
-	for _, url := range failedUrls {
-		f.browserRateLimiter.Wait()
+	for i, url := range failedUrls {
+		if i > 0 {
+			f.browserRateLimiter.Wait()
+		}
+
 		f.logger.Info(fmt.Sprintf("Processing failed url: %s", url.URL))
 
 		switch url.Type {

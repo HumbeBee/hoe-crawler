@@ -3,8 +3,10 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"regexp"
 	"strings"
+	"time"
 )
 
 func GetIDFromUrl(url string) string {
@@ -36,4 +38,12 @@ func FormatJSON(data interface{}) string {
 
 func PrintJSON(data interface{}) {
 	fmt.Println(FormatJSON(data))
+}
+
+func RandomDelay() {
+	minDelay := 5000  // 5s
+	maxDelay := 10000 // 10s
+	delay := minDelay + rand.Intn(maxDelay-minDelay)
+	time.Sleep(time.Duration(delay) * time.Millisecond)
+
 }

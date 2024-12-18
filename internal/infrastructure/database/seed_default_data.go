@@ -159,9 +159,9 @@ func seedCities(db *gorm.DB) error {
 
 func seedFailedURLs(db *gorm.DB) error {
 	failedURLs := []models.FailedURL{
-		{URL: "/gai-goi/chi-tiet/61543/reup-mie-ly-cocktail-girl-cua-nhung-bua-tiec-sex", Type: "detail", SiteID: 1, LastError: "test error", RetryCount: 0},
+		{URL: "/gai-goi/chi-tiet/63459/baby-tram-anh-tre-trung-xinh-xan-lan-dau-len-song", Type: "detail", SiteID: 1, LastError: "test error", RetryCount: 0},
 		{URL: "/gai-goi/chi-tiet/62010/reup-be-moc-tra-dam-mup-cute-teen-xinh-sang-body-nuot-thom", Type: "detail", SiteID: 1, LastError: "test error", RetryCount: 0},
-		{URL: "/gai-goi/chi-tiet/61614/rep-upbao-han-tretrung-xinh-xan-lam-tinh-chuyen-nghiep", Type: "detail", SiteID: 1, LastError: "test error", RetryCount: 0},
+		{URL: "/gai-goi/chi-tiet/63749/reup-than-dam-thanh-tam-my-nu-dam-dang-hong-hao-non-na", Type: "detail", SiteID: 1, LastError: "test error", RetryCount: 0},
 		{URL: "/gai-goi/chi-tiet/63804/gai-xinh-my-linh-da-trang-mat-xinh-3-vong-sieu-dep-luon", Type: "detail", SiteID: 1, LastError: "test error", RetryCount: 0},
 	}
 

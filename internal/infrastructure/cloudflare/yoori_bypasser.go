@@ -35,8 +35,8 @@ type YooriResponse struct {
 			Path   string `json:"path"`
 			Secure bool   `json:"secure"`
 		} `json:"cookies"`
-		UserAgent string  `json:"userAgent"`
-		Response  *string `json:"response"`
+		UserAgent string `json:"userAgent"`
+		Response  string `json:"response"`
 	} `json:"solution"`
 }
 
@@ -106,5 +106,6 @@ func (y *yooriBypasser) ParseResponse(rawResponse []byte) (*definitions.BypassRe
 		IsChallengeDetected: yooriResp.Message != "Challenge not detected!",
 		Cookies:             cookies,
 		UserAgent:           yooriResp.Solution.UserAgent,
+		HTMLSource:          yooriResp.Solution.Response,
 	}, nil
 }

@@ -1,6 +1,7 @@
 package browser
 
 import (
+	"github.com/HumbeBee/hoe-crawler/internal/utils"
 	"time"
 
 	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/interfaces"
@@ -36,6 +37,8 @@ func ConnectToPage(url string, timeout time.Duration) (*Connection, error) {
 		return nil, err
 	}
 
+	utils.RandomDelay()
+
 	page, err := browser.CreatePage(bypassResult.UserAgent)
 	if err != nil {
 		return nil, err
@@ -45,12 +48,12 @@ func ConnectToPage(url string, timeout time.Duration) (*Connection, error) {
 		return nil, err
 	}
 
-	if err := page.WaitStable(time.Duration(30)); err != nil {
+	if err := page.WaitPageLoad(time.Duration(30)); err != nil {
 		return nil, err
 	}
 
 	root := page.GetRootElement()
-	if err := root.WaitVisible(); err != nil {
+	if err := root.WaitElement(); err != nil {
 		page.Close()
 		browser.Close()
 		return nil, err

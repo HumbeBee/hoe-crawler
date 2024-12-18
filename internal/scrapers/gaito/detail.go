@@ -133,7 +133,7 @@ func (s *detailPageScraper) getReportURLs() ([]string, error) {
 		return nil, fmt.Errorf("click report tab element: %w", err)
 	}
 
-	if err := reportTabEle.WaitVisible(); err != nil {
+	if err := reportTabEle.WaitElement(); err != nil {
 		return nil, fmt.Errorf("wait report tab element visible: %w", err)
 	}
 

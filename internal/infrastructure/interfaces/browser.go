@@ -14,7 +14,7 @@ type Browser interface {
 
 type Page interface {
 	Navigate(url string) error
-	WaitStable(timeout time.Duration) error
+	WaitPageLoad(timeout time.Duration) error
 	WaitElementsMoreThan(selector string, count int) error
 	GetRootElement() Element
 	Close()
@@ -28,8 +28,8 @@ type Element interface {
 	FindAndGetText(selector string) (string, error)
 	FindAndGetAttribute(selector, attr string) (string, error)
 	Click() error
-	WaitVisible() error
 	MustFind(selector string) Element
 	MustGetText() string
 	MustGetAttribute(name string) string
+	WaitElement() error
 }

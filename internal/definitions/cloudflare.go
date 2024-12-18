@@ -8,6 +8,7 @@ type BypassResult struct {
 	Cookies             []*Cookie
 	UserAgent           string
 	Error               error
+	HTMLSource          string
 }
 
 type Cookie struct {

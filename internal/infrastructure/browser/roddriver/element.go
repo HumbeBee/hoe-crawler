@@ -2,6 +2,7 @@ package roddriver
 
 import (
 	"strings"
+	"time"
 
 	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/interfaces"
 	"github.com/go-rod/rod"
@@ -98,7 +99,11 @@ func (re *rodElement) Click() error {
 	return re.element.Click(proto.InputMouseButtonLeft, 1)
 }
 
-func (re *rodElement) WaitVisible() error {
+func (re *rodElement) WaitElement() error {
+	if err := re.element.WaitStable(2 * time.Second); err != nil {
+		return err
+	}
+
 	return re.element.WaitVisible()
 }
 

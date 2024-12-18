@@ -15,7 +15,11 @@ func (rp *rodPage) Navigate(url string) error {
 	return rp.page.Navigate(url)
 }
 
-func (rp *rodPage) WaitStable(timeout time.Duration) error {
+func (rp *rodPage) WaitPageLoad(timeout time.Duration) error {
+	if err := rp.page.WaitDOMStable(timeout, 0.1); err != nil {
+		return err
+	}
+
 	return rp.page.WaitStable(timeout)
 }
 
