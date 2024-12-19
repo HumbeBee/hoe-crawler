@@ -37,6 +37,8 @@ func ConnectToPage(url string, timeout time.Duration) (*Connection, error) {
 		return nil, err
 	}
 
+	// Since bypassing cloudflare is considered a request,
+	// we should wait a bit before connecting to the page.
 	utils.RandomDelay()
 
 	page, err := browser.CreatePage(bypassResult.UserAgent)
