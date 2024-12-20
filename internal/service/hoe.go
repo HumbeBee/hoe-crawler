@@ -9,7 +9,6 @@ import (
 
 	"github.com/HumbeBee/hoe-crawler/internal/interfaces"
 	"github.com/HumbeBee/hoe-crawler/internal/repository"
-	"github.com/HumbeBee/hoe-crawler/internal/utils/errutil"
 	"github.com/HumbeBee/hoe-crawler/internal/utils/logutil"
 )
 
@@ -27,17 +26,15 @@ type hoeService struct {
 func (hs *hoeService) ProcessListPage(baseURL string, relativeURL string) error {
 	detailURLs, err := hs.scraper.GetDetailURLs(baseURL, relativeURL)
 	if err != nil {
-		return errutil.WrapError("get detail urls", err)
+		return fmt.Errorf("get detail urls: %v", err)
 	}
 
 	if len(detailURLs) == 0 {
-		hs.logger.Warn("No items found (Maybe Cloudflare block ?)")
-	} else {
-		hs.logger.Info(fmt.Sprintf("Found %d items\n", len(detailURLs)))
+		return fmt.Errorf("no items found: %s", relativeURL)
+	}
 
-		for _, url := range detailURLs {
-			hs.logger.Info(url)
-		}
+	for _, url := range detailURLs {
+		hs.logger.Info(url)
 	}
 
 	return nil
