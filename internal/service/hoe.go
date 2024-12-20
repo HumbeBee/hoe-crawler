@@ -33,7 +33,16 @@ func (hs *hoeService) ProcessListPage(baseURL string, relativeURL string) error 
 		return fmt.Errorf("no items found: %s", relativeURL)
 	}
 
-	for _, url := range detailURLs {
+	//rawResult := make(chan *dto.RawHoeData, len(detailURLs))
+	for i, url := range detailURLs {
+		if i > 0 {
+			hs.browserRateLimiter.Wait()
+		}
+
+		rawData, err := hs.GetRawHoeData(baseURL, url)
+		if err != nil {
+		}
+
 		hs.logger.Info(url)
 	}
 
