@@ -39,6 +39,7 @@ func (hs *hoeService) ProcessListPage(baseURL string, relativeURL string) error 
 			hs.browserRateLimiter.Wait()
 		}
 
+		// TODO: Use goroutine to process raw data
 		rawData, err := hs.GetRawHoeData(baseURL, url)
 		if err != nil {
 		}
