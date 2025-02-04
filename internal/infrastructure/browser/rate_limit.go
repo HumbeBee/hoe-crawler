@@ -12,7 +12,8 @@ type RateLimiter struct {
 
 func NewBrowserRateLimiter(interval time.Duration) *RateLimiter {
 	// Get a random duration between -5s and +5s
-	jitter := time.Duration(rand.Int63n(10)-5) * time.Second
+	// rand.Int63n(11) - 5  // 0-10 minus 5 gives us -5 to +5
+	jitter := time.Duration(rand.Int63n(11)-5) * time.Second
 
 	// Make sure we don't go negative
 	finalInterval := interval
