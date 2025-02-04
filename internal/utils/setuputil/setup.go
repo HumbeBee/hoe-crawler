@@ -58,10 +58,9 @@ func CreateAppContext() (*AppContext, error) {
 	}
 
 	baseScraperConfig := definitions.ScraperConfig{
-		SiteID:            siteInfo.ID,
-		SiteName:          siteInfo.Name,
-		RequestsPerSecond: 1.0,
-		Logger:            logger,
+		SiteID:   siteInfo.ID,
+		SiteName: siteInfo.Name,
+		Logger:   logger,
 	}
 
 	scraper := scrapers.CreateScraper(baseScraperConfig)
