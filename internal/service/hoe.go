@@ -2,8 +2,10 @@ package service
 
 import (
 	"fmt"
+	"github.com/HumbeBee/hoe-crawler/internal/definitions"
 	"github.com/HumbeBee/hoe-crawler/internal/dto"
 	"github.com/HumbeBee/hoe-crawler/internal/infrastructure/browser"
+	"sync"
 
 	"github.com/HumbeBee/hoe-crawler/internal/models"
 
@@ -23,31 +25,55 @@ type hoeService struct {
 	validateService    interfaces.ValidateService
 }
 
-func (hs *hoeService) ProcessListPage(baseURL string, relativeURL string) error {
+func (hs *hoeService) ProcessListPage(baseURL string, relativeURL string) ([]definitions.FailedData, error) {
 	detailURLs, err := hs.scraper.GetDetailURLs(baseURL, relativeURL)
 	if err != nil {
-		return fmt.Errorf("get detail urls: %v", err)
+		return nil, fmt.Errorf("get detail urls: %v", err)
 	}
 
 	if len(detailURLs) == 0 {
-		return fmt.Errorf("no items found: %s", relativeURL)
+		return nil, fmt.Errorf("no items found: %s", relativeURL)
 	}
 
-	//rawResult := make(chan *dto.RawHoeData, len(detailURLs))
+	var wg sync.WaitGroup
+	failedURLs := make(chan definitions.FailedData, len(detailURLs))
+
 	for i, url := range detailURLs {
+		// Wait before making new request to the host
 		if i > 0 {
 			hs.browserRateLimiter.Wait()
 		}
 
-		// TODO: Use goroutine to process raw data
 		rawData, err := hs.GetRawHoeData(baseURL, url)
 		if err != nil {
+			return nil, fmt.Errorf("get raw hoe data on list page: %v", err)
 		}
+
+		wg.Add(1)
+		go func(data *dto.RawHoeData) {
+			defer wg.Done()
+			if err := hs.ProcessRawHoeData(data); err != nil {
+				failedURLs <- definitions.FailedData{
+					URL: url,
+					Err: err,
+				}
+			}
+		}(rawData)
 
 		hs.logger.Info(url)
 	}
 
-	return nil
+	go func() {
+		wg.Wait()
+		close(failedURLs)
+	}()
+
+	var failedResults []definitions.FailedData
+	for result := range failedURLs {
+		failedResults = append(failedResults, result)
+	}
+
+	return failedResults, nil
 }
 
 func (hs *hoeService) ProcessDetailPage(baseURL string, relativeURL string) error {

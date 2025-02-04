@@ -1,12 +1,13 @@
 package interfaces
 
 import (
+	"github.com/HumbeBee/hoe-crawler/internal/definitions"
 	"github.com/HumbeBee/hoe-crawler/internal/dto"
 	"github.com/HumbeBee/hoe-crawler/internal/models"
 )
 
 type HoeService interface {
-	ProcessListPage(baseURL string, relativeURL string) error
+	ProcessListPage(baseURL string, relativeURL string) ([]definitions.FailedData, error)
 	ProcessDetailPage(baseURL string, relativeURL string) error
 	GetRawHoeData(baseURL string, relativeURL string) (*dto.RawHoeData, error)
 	ProcessRawHoeData(rawHoeData *dto.RawHoeData) error

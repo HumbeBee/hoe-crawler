@@ -41,7 +41,7 @@ package gaito
 // 	reportInfo.Author = &models.Reporter{
 // 		ID:   utils.GetIDFromUrl(*authorUrl),
 // 		Name: authorUrlElement.MustText(),
-// 		Url:  *authorUrl,
+// 		URL:  *authorUrl,
 // 	}
 // 	reportInfo.Time = browser.GetElementText(element, `div.ow_page_padding > div > div > div > div > div > div:nth-child(3) > div > div.col-md-8 > review-detail-cmp > div:nth-child(1) > em > small`, id+"_report_time")
 
