@@ -35,6 +35,8 @@ func (hs *hoeService) ProcessListPage(baseURL string, relativeURL string) ([]def
 		return nil, fmt.Errorf("no items found: %s", relativeURL)
 	}
 
+	fmt.Printf("Total - %d\n", len(detailURLs))
+
 	var wg sync.WaitGroup
 	failedURLs := make(chan definitions.FailedData, len(detailURLs))
 
@@ -46,7 +48,11 @@ func (hs *hoeService) ProcessListPage(baseURL string, relativeURL string) ([]def
 
 		rawData, err := hs.GetRawHoeData(baseURL, url)
 		if err != nil {
-			return nil, fmt.Errorf("get raw hoe data on list page: %v", err)
+			failedURLs <- definitions.FailedData{
+				URL: url,
+				Err: err,
+			}
+			continue
 		}
 
 		wg.Add(1)
@@ -124,7 +130,7 @@ func (hs *hoeService) ProcessRawHoeData(rawHoeData *dto.RawHoeData) error {
 		return err
 	}
 
-	hoeInfo.Print()
+	//hoeInfo.Print()
 
 	return nil
 }
