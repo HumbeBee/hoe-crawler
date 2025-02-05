@@ -62,39 +62,40 @@ func (f *failedURLService) TrackFailedURL(failedType models.FailedType, url stri
 }
 
 func (f *failedURLService) RetryFailedURLs() error {
-	failedUrls, err := f.failedURLRepo.GetFailedURLs()
+	failedURLs, err := f.failedURLRepo.GetFailedURLs()
 	if err != nil {
 		return fmt.Errorf("failed to get failed urls: %w", err)
 	}
 
-	siteInfo, err := f.siteRepo.GetSiteByID(f.siteID)
-	if err != nil {
-		return fmt.Errorf("failed to get site info: %w", err)
-	}
-
-	for i, url := range failedUrls {
+	for i, failedURLData := range failedURLs {
 		if i > 0 {
 			f.browserRateLimiter.Wait()
 		}
 
-		f.logger.Info(fmt.Sprintf("Processing failed url: %s", url.URL))
+		f.logger.Info(fmt.Sprintf("Processing failed failedURLData: %s", failedURLData.URL))
 
-		switch url.Type {
+		siteInfo, err := f.siteRepo.GetSiteByID(failedURLData.SiteID)
+		if err != nil {
+			f.TrackFailedURL(failedURLData.Type, failedURLData.URL, err)
+			continue
+		}
+
+		switch failedURLData.Type {
 		case models.FailedTypeList:
 		case models.FailedTypeDetail:
-			if err := f.hoeService.ProcessDetailPage(siteInfo.BaseURL, url.URL); err != nil {
-				f.TrackFailedURL(models.FailedTypeDetail, url.URL, err)
+			if err := f.hoeService.ProcessDetailPage(siteInfo.BaseURL, failedURLData.URL); err != nil {
+				f.TrackFailedURL(models.FailedTypeDetail, failedURLData.URL, err)
 				continue
 			}
 		case models.FailedTypeReport:
 		case models.FailedTypeUnknown:
 		default:
-			f.TrackFailedURL(models.FailedTypeUnknown, url.URL, fmt.Errorf("unknown failed type: %s", url.Type))
+			f.TrackFailedURL(models.FailedTypeUnknown, failedURLData.URL, fmt.Errorf("unknown failed type: %s", failedURLData.Type))
 			continue
 		}
 
-		if err := f.failedURLRepo.Delete(url); err != nil {
-			return fmt.Errorf("failed to delete failed url: %w", err)
+		if err := f.failedURLRepo.Delete(failedURLData); err != nil {
+			return fmt.Errorf("failed to delete failed failedURLData: %w", err)
 		}
 	}
 

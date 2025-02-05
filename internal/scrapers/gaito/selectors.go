@@ -70,7 +70,7 @@ var (
 		Height:       `product-attribute table > tbody > tr:nth-child(4) > td:nth-child(2) > attribute-number-box .ng-scope`,
 		Weight:       `product-attribute table > tbody > tr:nth-child(5) > td:nth-child(2) > attribute-number-box .ng-scope`,
 		Country:      `product-attribute table > tbody > tr:nth-child(9) > td:nth-child(2) > attribute-radio-box span span[ng-repeat="item in attributeDto.settings.values"]`,
-		Service:      `product-attribute table > tbody > tr:nth-child(12) > td:nth-child(2) > attribute-choices-box span span[ng-repeat="item in attributeDto.settings.values"]`,
+		Service:      `product-attribute table > tbody > tr:nth-child(12) > td:nth-child(2) > attribute-choices-box span span`,
 		Duration:     `product-attribute table > tbody > tr:nth-last-child(3) > td:nth-child(2) > attribute-text-box span`,
 		WorkTime:     `product-attribute table > tbody > tr:nth-last-child(2) > td:nth-child(2) > attribute-text-box span`,
 	}
