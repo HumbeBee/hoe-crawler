@@ -36,6 +36,9 @@ type DetailPageSelectors struct {
 	WorkTime     string
 }
 
+type ReportPageSelectors struct {
+}
+
 var (
 	listPageSelectors = ListPageSelectors{
 		Items:        `div[ng-repeat="item in products"]`,
