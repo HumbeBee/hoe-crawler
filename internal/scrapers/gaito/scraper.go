@@ -50,12 +50,12 @@ func (s *scraper) GetRawHoeData(baseURL string, relativeURL string) (*dto.RawHoe
 	}
 
 	// Get report urls
-	//reports, err := detailScraper.getReportURLs()
-	//if err != nil {
-	//	return nil, fmt.Errorf("get report urls: %w", err)
-	//}
-	//
-	//hoeInfo.Reports = reports
+	reports, err := detailScraper.getReportURLs()
+	if err != nil {
+		return nil, fmt.Errorf("get report urls: %w", err)
+	}
+
+	hoeInfo.Reports = reports
 
 	s.Logger.Info("Raw hoe data: %+v", hoeInfo)
 

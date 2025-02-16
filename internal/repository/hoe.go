@@ -103,6 +103,8 @@ func (r *hoeRepo) updateExistingHoe(tx *gorm.DB, existing *models.HoeInfo, new *
 		}).Error; err != nil {
 			return fmt.Errorf("failed to update profile: %v", err)
 		}
+
+		// Update report urls
 	}
 
 	return nil
