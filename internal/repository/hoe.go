@@ -104,7 +104,13 @@ func (r *hoeRepo) updateExistingHoe(tx *gorm.DB, existing *models.HoeInfo, new *
 			return fmt.Errorf("failed to update profile: %v", err)
 		}
 
-		// Update report urls
+		// Replace all reports of existing profile
+		// @reference https://gorm.io/docs/associations.html#Delete-Association-Record
+		r.logger.Info(fmt.Sprintf("Replacing reports for hoe: %s", existing.Name))
+		if err := tx.Unscoped().Model(&existingProfile).Association("Reports").Unscoped().Replace(newProfile.Reports); err != nil {
+			return fmt.Errorf("failed to clear reports: %v", err)
+		}
+
 	}
 
 	return nil
